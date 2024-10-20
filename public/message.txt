@@ -1,0 +1,876 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+  /dashboard/leaderboard:
+    get:
+      operationId: DashboardController_getLeaderboard
+      summary: Get leaderboard
+      parameters: []
+      responses:
+        '200':
+          description: Returns the formatted leaderboard.
+        '401':
+          description: Unauthorized.
+      tags: &ref_0
+        - Dashboard
+      security: &ref_1
+        - bearer: []
+  /dashboard/allGames:
+    get:
+      operationId: DashboardController_getAllGames
+      summary: Get all games
+      parameters: []
+      responses:
+        '200':
+          description: Returns all games.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/updatePoints/{id}:
+    post:
+      operationId: DashboardController_updateUserPoints
+      summary: Update user points
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Points to add
+        content:
+          application/json:
+            schema:
+              type: number
+      responses:
+        '200':
+          description: User points updated successfully.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/createReport:
+    post:
+      operationId: DashboardController_createReport
+      summary: Create a report
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportDto'
+      responses:
+        '201':
+          description: Report created successfully.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/updateReport/{id}:
+    post:
+      operationId: DashboardController_updateReport
+      summary: Update a report
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportDto'
+      responses:
+        '200':
+          description: Report updated successfully.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/allReports:
+    get:
+      operationId: DashboardController_getAllReports
+      summary: Get all reports
+      parameters: []
+      responses:
+        '200':
+          description: Returns all reports.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/topThreeWinners/{gameId}:
+    get:
+      operationId: DashboardController_getTopThreeWinners
+      summary: Get top three winners for a game
+      parameters:
+        - name: gameId
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Returns top three winners.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/endedGames:
+    get:
+      operationId: DashboardController_getEndedGames
+      summary: Get ended games
+      parameters: []
+      responses:
+        '200':
+          description: Returns ended games.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/endedGamesWithoutReports:
+    get:
+      operationId: DashboardController_getEndedGamesWithoutReports
+      summary: Get ended games without reports
+      parameters: []
+      responses:
+        '200':
+          description: Returns ended games without reports.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/generate-pdf:
+    get:
+      operationId: DashboardController_generatePDF
+      summary: Generate PDF report
+      parameters: []
+      responses:
+        '200':
+          description: Returns a PDF file.
+        '500':
+          description: Error generating or downloading file.
+      tags: *ref_0
+      security: *ref_1
+  /dashboard/unreportedGames:
+    get:
+      operationId: DashboardController_getUnreportedGames
+      summary: Get unreported games
+      parameters: []
+      responses:
+        '200':
+          description: Returns unreported games.
+        '401':
+          description: Unauthorized.
+      tags: *ref_0
+      security: *ref_1
+  /user/profile:
+    get:
+      operationId: UserController_getMyInfo
+      summary: Get current user profile
+      parameters: []
+      responses:
+        '200':
+          description: Returns the user profile.
+        '401':
+          description: Unauthorized.
+      tags: &ref_2
+        - Users
+      security: &ref_3
+        - bearer: []
+  /user/{id}:
+    get:
+      operationId: UserController_getUserInfo
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns the user info.
+        '401':
+          description: Unauthorized.
+      tags: *ref_2
+      security: *ref_3
+  /user:
+    get:
+      operationId: UserController_getAllUsers
+      summary: Get all users
+      parameters: []
+      responses:
+        '200':
+          description: Returns all users.
+        '401':
+          description: Unauthorized.
+      tags: *ref_2
+      security: *ref_3
+  /user/delete/{id}:
+    delete:
+      operationId: UserController_deleteUser
+      summary: Delete a user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted successfully.
+        '401':
+          description: Unauthorized.
+      tags: *ref_2
+      security: *ref_3
+  /user/addDiamond/{id}/{diamond}:
+    get:
+      operationId: UserController_addUserDiamond
+      summary: Add diamonds to a user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: diamond
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Diamonds added successfully.
+        '401':
+          description: Unauthorized.
+      tags: *ref_2
+      security: *ref_3
+  /user/addCoin/{id}/{coin}:
+    get:
+      operationId: UserController_addUserCoin
+      summary: Add coins to a user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: coin
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Coins added successfully.
+        '401':
+          description: Unauthorized.
+      tags: *ref_2
+      security: *ref_3
+  /user/filter:
+    get:
+      operationId: UserController_getUserFilter
+      summary: Filter users with pagination
+      parameters:
+        - name: name
+          required: false
+          in: path
+          schema:
+            type: string
+        - name: diamond
+          required: false
+          in: path
+          schema:
+            type: number
+        - name: coin
+          required: false
+          in: path
+          schema:
+            type: number
+        - name: point
+          required: false
+          in: path
+          schema:
+            type: number
+        - name: type
+          required: false
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: path
+          description: 'Page number (default: 1)'
+          schema:
+            type: number
+        - name: limit
+          required: false
+          in: path
+          description: 'Items per page (default: 10)'
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Returns filtered users with pagination.
+        '401':
+          description: Unauthorized.
+      tags: *ref_2
+      security: *ref_3
+  /user/createUser:
+    post:
+      operationId: UserController_createUser
+      summary: Create a new user
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '201':
+          description: User created successfully.
+        '401':
+          description: Unauthorized.
+        '409':
+          description: User already exists.
+      tags: *ref_2
+      security: *ref_3
+  /game/create:
+    post:
+      operationId: GameController_createGame
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGameDto'
+      responses:
+        '201':
+          description: ''
+  /game/{id}:
+    get:
+      operationId: GameController_getGame
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+  /sponsor:
+    get:
+      operationId: SponsorController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+    post:
+      operationId: SponsorController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSponsorDto'
+      responses:
+        '201':
+          description: ''
+  /sponsor/status:
+    get:
+      operationId: SponsorController_getSponsorsByStatus
+      parameters:
+        - name: status
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+  /sponsor/name:
+    get:
+      operationId: SponsorController_getSponsorsByName
+      parameters:
+        - name: name
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+  /sponsor/{id}:
+    get:
+      operationId: SponsorController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+    patch:
+      operationId: SponsorController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSponsorDto'
+      responses:
+        '200':
+          description: ''
+    delete:
+      operationId: SponsorController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+  /auth/register:
+    post:
+      operationId: AuthController_register
+      summary: Register a new user
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '201':
+          description: User successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponseDto'
+        '400':
+          description: Bad Request.
+      tags: &ref_4
+        - Authentication
+  /auth/login:
+    post:
+      operationId: AuthController_login
+      summary: Login user
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: User successfully logged in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponseDto'
+        '401':
+          description: Unauthorized.
+      tags: *ref_4
+  /auth/google:
+    get:
+      operationId: AuthController_IsGoogleAuth
+      summary: Google authentication
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleDto'
+      responses:
+        '200':
+          description: Google authentication successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleAuthResponseDto'
+        '401':
+          description: Unauthorized.
+      tags: *ref_4
+  /auth/update:
+    post:
+      operationId: AuthController_updateUserInfo
+      summary: Update user information
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '200':
+          description: User information updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateResponseDto'
+        '401':
+          description: Unauthorized.
+      tags: *ref_4
+      security:
+        - bearer: []
+  /auth/updatePassword:
+    post:
+      operationId: AuthController_updatePassword
+      summary: Update user password
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized.
+      tags: *ref_4
+      security:
+        - bearer: []
+  /auth/delete:
+    post:
+      operationId: AuthController_deleteUser
+      summary: Delete user account
+      parameters: []
+      responses:
+        '200':
+          description: User account deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized.
+      tags: *ref_4
+      security:
+        - bearer: []
+  /store:
+    post:
+      operationId: StoreController_createStore
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStoreDto'
+      responses:
+        '201':
+          description: ''
+    get:
+      operationId: StoreController_findAllStores
+      parameters: []
+      responses:
+        '200':
+          description: ''
+  /store/{id}:
+    get:
+      operationId: StoreController_findStoreById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+    patch:
+      operationId: StoreController_updateStore
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+    delete:
+      operationId: StoreController_deleteStore
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+info:
+  title: User API
+  description: The User API description
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    CreateReportDto:
+      type: object
+      properties:
+        userId:
+          type: number
+        gameId:
+          type: number
+        trophyType:
+          type: string
+        sponsorsId:
+          type: array
+          items:
+            type: string
+        expenses:
+          type: number
+        additionalExpenses:
+          type: number
+        amount:
+          type: number
+        reportDate:
+          format: date-time
+          type: string
+        hasTrophy:
+          type: boolean
+      required:
+        - userId
+        - gameId
+        - trophyType
+        - sponsorsId
+        - expenses
+        - additionalExpenses
+        - amount
+        - reportDate
+        - hasTrophy
+    CreateUserDto:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        password:
+          type: string
+        googleId:
+          type: string
+        role:
+          type: string
+        gender:
+          type: string
+        dob:
+          format: date-time
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        dream:
+          type: string
+        type:
+          type: string
+        avatar:
+          type: string
+          format: binary
+      required:
+        - name
+        - email
+        - phoneNumber
+        - password
+        - googleId
+        - role
+        - gender
+        - dob
+        - country
+        - city
+        - dream
+        - type
+    CreateGameDto:
+      type: object
+      properties: {}
+    CreateSponsorDto:
+      type: object
+      properties: {}
+    UpdateSponsorDto:
+      type: object
+      properties: {}
+    UserResponseDto:
+      type: object
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+        email:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        points:
+          type: number
+        avatar:
+          type: string
+        googleId:
+          type: string
+        type:
+          type: string
+        role:
+          type: string
+        dob:
+          format: date-time
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        totatpoints:
+          type: number
+        dream:
+          type: string
+        daimonds:
+          type: number
+        level:
+          type: number
+        gender:
+          type: string
+        phoneNumber:
+          type: string
+      required:
+        - id
+        - username
+        - email
+        - createdAt
+        - updatedAt
+        - points
+        - avatar
+        - googleId
+        - type
+        - role
+        - dob
+        - country
+        - city
+        - totatpoints
+        - dream
+        - daimonds
+        - level
+        - gender
+        - phoneNumber
+    RegisterResponseDto:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResponseDto'
+      required:
+        - accessToken
+        - user
+    LoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    LoginResponseDto:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResponseDto'
+      required:
+        - accessToken
+        - user
+    GoogleDto:
+      type: object
+      properties:
+        googleId:
+          type: string
+      required:
+        - googleId
+    GoogleAuthResponseDto:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResponseDto'
+        token:
+          type: string
+      required:
+        - message
+        - user
+        - token
+    UpdateResponseDto:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResponseDto'
+      required:
+        - message
+        - user
+    CreateStoreDto:
+      type: object
+      properties: {}
