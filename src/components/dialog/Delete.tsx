@@ -14,16 +14,17 @@ import { Trash2 } from "lucide-react"
 import { useState } from "react";
   
 interface DeleteProps {
-    userId: string;
+    id: string;
+    api: string;
   }
 
-  export function Delete({ userId }: DeleteProps) {
+  export function Delete({ id, api }: DeleteProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {
       setIsDeleting(true);
       try {
-        const response = await fetch(`/user/delete/${userId}`, {
+        const response = await fetch(`${api}${id}`, {
           method: 'DELETE',
         });
   

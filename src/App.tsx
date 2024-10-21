@@ -11,13 +11,40 @@ import Reports from './pages/Reports';
 
 
 const ProtectedRoute = () => {
-  const isAuthenticated = !!localStorage.getItem('token');
-  
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     try {
+  //       const response = await fetch("/api/auth/status", {
+  //         method: "GET",
+  //         credentials: "include",
+  //       });
+  //       const data = await response.json();
+  //       if (data.status === "Authenticated") {
+  //         setIsAuthenticated(true);
+  //       } else {
+  //         setIsAuthenticated(false);
+  //       }
+  //     } catch (error) {
+  //       setIsAuthenticated(false);
+  //     }
+  //   };
+    
+  //   checkAuth();
+  // }, []);
+
+  // if (isAuthenticated === null) {
+  //   return <div>Loading...</div>;
+  // }
+
   // if (!isAuthenticated) {
   //   return <Navigate to="/login" replace />;
   // }
+
   return <Outlet />;
 };
+
 
 function App() {
 

@@ -27,18 +27,7 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "@radix-ui/react-alert-dialog";
-
-export type Game = {
-  id: string;
-  name: string;
-  date: string;
-  coins: number;
-  sponsor: { name: string; logo: string }[];
-  licence: string;
-  status: "created" | "started" | "ended" | "closed";
-  winners: string[];
-  prizes: string[];
-};
+import { Game } from "../tables/GameTable";
 
 interface GameReportGenerationProps {
   game: Game;
@@ -139,7 +128,7 @@ const GameReportGeneration: React.FC<GameReportGenerationProps> = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Generate Report for {game.name}</AlertDialogTitle>
             <AlertDialogDescription>
-              Create report for {game.winners[currentWinnerIndex]} (Winner{" "}
+              Create report for {game.winners[currentWinnerIndex].name} (Winner{" "}
               {currentWinnerIndex + 1} of {game.winners.length})
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -248,7 +237,7 @@ const GameReportGeneration: React.FC<GameReportGenerationProps> = ({
           <div className="mt-4">
             <h3 className="font-semibold mb-2">Current Winner and Prize:</h3>
             <p>
-              {game.winners[currentWinnerIndex]} -{" "}
+              {game.winners[currentWinnerIndex].name} -{" "}
               {game.prizes[currentWinnerIndex]}
             </p>
           </div>

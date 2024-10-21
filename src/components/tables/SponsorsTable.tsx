@@ -220,7 +220,7 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Delete userId={sponsor.id} />
+            <Delete id={sponsor.id}  api={''}/>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

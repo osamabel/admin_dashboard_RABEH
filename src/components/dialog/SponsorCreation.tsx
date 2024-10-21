@@ -19,7 +19,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 
 interface SponsorData {
@@ -63,9 +62,9 @@ const SponsorCreation = () => {
         formData.append("avatar", sponsorData.avatar);
       }
 
-      const response = await axios.post("/sponsor/creation", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // const response = await axios.post("/sponsor/creation", formData, {
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
 
       toast({
         title: "Sponsor Created",

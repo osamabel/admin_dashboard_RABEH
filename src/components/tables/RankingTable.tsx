@@ -503,7 +503,7 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-0" asChild>
-            <Delete userId={User.id} />
+            <Delete id={User.id} api="" />
           </DropdownMenuItem>
           <DropdownMenuItem className="p-0" asChild>
             <Donate userId={User.id} />

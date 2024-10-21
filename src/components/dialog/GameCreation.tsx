@@ -14,14 +14,11 @@ import { Input } from "../ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
-import classNames from "classnames";
 import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "@radix-ui/react-alert-dialog";
 
-// Alternatively, you can alias it to `cn` like this:
-const cn = classNames;
 
 interface Sponsor {
   id: number;
@@ -33,11 +30,11 @@ interface FormData {
   gameName: string;
   requiredDiamond: string;
   startingDate: string;
-  endingDate: string;
+  // endingDate: string;
   prizes: string[];
   licences: string;
   sponsors: any[];
-  quizFile: string;
+  quizFile: any[];
 }
 
 interface QuizQuestion {
@@ -77,11 +74,10 @@ const GameCration: React.FC = () => {
     gameName: "",
     requiredDiamond: "",
     startingDate: "",
-    endingDate: "",
     prizes: ["", "", ""],
     licences: "",
     sponsors: [],
-    quizFile: "",
+    quizFile: [],
   });
   useEffect(() => {
     fetchSponsors();
@@ -90,12 +86,33 @@ const GameCration: React.FC = () => {
   const fetchSponsors = async () => {
     try {
       // Replace this with your actual API call
-      const response = await fetch("/api/sponsors");
+      const response = await fetch("/sponsor");
       if (!response.ok) {
         throw new Error("Failed to fetch sponsors");
       }
-      const data = await response.json();
-      // setAvailableSponsors(data);
+      // const data = await response.json();
+      setAvailableSponsors([
+        {
+          id: 1,
+          name: "osama",
+          logo: "/sp.png",
+        },
+        {
+          id: 2,
+          name: "bel",
+          logo: "/sp.png",
+        },
+        {
+          id: 3,
+          name: "soso",
+          logo: "/sp.png",
+        },
+        {
+          id: 4,
+          name: "didi",
+          logo: "/sp.png",
+        },
+      ]);
     } catch (error) {
       toast({
         title: "Error",
@@ -110,13 +127,13 @@ const GameCration: React.FC = () => {
       const newSelectedIds = prevIds.includes(sponsorId)
         ? prevIds.filter((id) => id !== sponsorId) // Remove if already selected
         : [...prevIds, sponsorId]; // Add new selection
-  
+
       // Update formData with selected sponsors
       setFormData((prevState) => ({
         ...prevState,
         sponsors: newSelectedIds, // Ensure selected sponsors are added here
       }));
-  
+
       return newSelectedIds;
     });
   };
@@ -144,16 +161,22 @@ const GameCration: React.FC = () => {
       reader.onload = (event) => {
         const content = event.target?.result as string;
         try {
-          // Validate JSON structure
-          JSON.parse(content);
+          // Parse JSON content
+          const parsedContent = JSON.parse(content);
+
+          // Ensure the parsed content is an array
+          if (!Array.isArray(parsedContent)) {
+            throw new Error("The JSON content is not an array");
+          }
+
           setFormData((prevState) => ({
             ...prevState,
-            quizFile: content,
+            quizFile: parsedContent,
           }));
         } catch (error) {
           console.error("Invalid JSON file:", error);
           alert(
-            "The uploaded file is not a valid JSON. Please check the file and try again."
+            "The uploaded file is not a valid JSON array. Please check the file and try again."
           );
         }
       };
@@ -165,14 +188,14 @@ const GameCration: React.FC = () => {
     e.preventDefault();
     try {
       console.log("formData >>> ", formData);
-      const quizContent: QuizQuestion[] = JSON.parse(formData.quizFile);
+      // const quizContent: QuizQuestion[] = JSON.parse(formData.quizFile);
 
       const submitData = {
         ...formData,
-        quizFile: quizContent,
+        quizFile: formData.quizFile as QuizQuestion[],
       };
 
-      const response = await fetch("/api/game/creation", {
+      const response = await fetch("/game/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,23 +230,23 @@ const GameCration: React.FC = () => {
   };
   const addSelectedSponsor = () => {
     const sponsorId = Number(currentSelection);
-  
+
     if (sponsorId && !selectedSponsorIds.includes(sponsorId)) {
       const selectedSponsor = availableSponsors.find(
         (sponsor) => sponsor.id === sponsorId
       );
-  
+
       if (selectedSponsor) {
         // Update the selected sponsor IDs and formData
         setSelectedSponsorIds((prevIds) => [...prevIds, sponsorId]);
-  
+
         // Update formData with sponsor names or IDs based on your preference
         setFormData((prevState) => ({
           ...prevState,
-          sponsors: [...prevState.sponsors, selectedSponsor.name], // If you want to store names
-          // sponsors: [...prevState.sponsors, String(sponsorId)], // If you want to store IDs as strings
+          // sponsors: [...prevState.sponsors, selectedSponsor.name], // If you want to store names
+          sponsors: [...prevState.sponsors, String(sponsorId)], // If you want to store IDs as strings
         }));
-  
+
         // Clear the current selection
         setCurrentSelection("");
       }
@@ -231,7 +254,7 @@ const GameCration: React.FC = () => {
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog >
       <AlertDialogTrigger asChild>
         <Button className="rounded-[6px]" variant="default">
           Create new Game
@@ -250,7 +273,7 @@ const GameCration: React.FC = () => {
           </CardHeader>
           <CardContent className="p-0">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 mb-[100px]">
+              <div className="grid grid-cols-2 gap-4 mb-[60px]">
                 <div className="space-y-2">
                   <Label htmlFor="gameName">Games Name</Label>
                   <Input
@@ -274,18 +297,18 @@ const GameCration: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="startingDate">Starting date</Label>
+                  <Label htmlFor="startingDate">Starting date and time</Label>
                   <Input
                     className="rounded-[6px]"
                     id="startingDate"
                     name="startingDate"
-                    type="date"
+                    type="datetime-local"
                     value={formData.startingDate}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="endingDate">Ending date</Label>
                   <Input
                     className="rounded-[6px]"
@@ -295,7 +318,8 @@ const GameCration: React.FC = () => {
                     value={formData.endingDate}
                     onChange={handleInputChange}
                   />
-                </div>
+                </div> */}
+                <br />
                 {formData.prizes.map((prize, index) => (
                   <div key={index} className="space-y-2">
                     <Label htmlFor={`prize${index + 1}`}>
@@ -309,6 +333,7 @@ const GameCration: React.FC = () => {
                     />
                   </div>
                 ))}
+                <br />
                 <div className="space-y-2">
                   <Label htmlFor="licences">Licences</Label>
                   <Input
@@ -354,7 +379,7 @@ const GameCration: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 w-full">
+                  <div className="w-full">
                     {selectedSponsorIds.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {selectedSponsorIds.map((id) => {

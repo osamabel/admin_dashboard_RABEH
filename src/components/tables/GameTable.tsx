@@ -37,108 +37,117 @@ import {
 import { SponsorsDialog } from "../dialog/Sponsors";
 import { PrizeDialog } from "../dialog/Prizes";
 import GameReportGeneration from "../dialog/Reports";
+import GameCration from "../dialog/GameCreation";
+import { Delete } from "../dialog/Delete";
 
 const data: Game[] = [
-    {
-      id: "m5gr84i9",
-      name: "Game1",
-      prizes: ["p 1", "p2", "p3"],
-      date: "05-10-2024",
-      coins: 316,
-      status: "created",
-      licence: "yes",
-      winners: ["osama", "bel", "soso"],
-      sponsor: [
-        { name: "Abe45", logo: "sp.png" },
-        { name: "sara98", logo: "sp.png" },
-        { name: "johnDoe", logo: "sp.png" }
-      ]
-    },
-    {
-      id: "n4gj29ke",
-      name: "Game2",
-      prizes: ["p 1", "p2", "p3"],
-      date: "12-10-2024",
-      coins: 150,
-      status: "created",
-      licence: "no",
-      winners: ["alice", "john", "mark"],
-      sponsor: [
-        { name: "sara98", logo: "sp.png" },
-        { name: "gamma87", logo: "sp.png" },
-        { name: "delta32", logo: "sp.png" }
-      ]
-    },
-    {
-      id: "k8tr37ip",
-      name: "Game3",
-      prizes: ["p 1", "p2", "p3"],
-      date: "20-10-2024",
-      coins: 500,
-      status: "created",
-      licence: "yes",
-      winners: ["steve", "ellen", "mike"],
-      sponsor: [
-        { name: "omega21", logo: "sp.png" },
-        { name: "gamma87", logo: "sp.png" }
-      ]
-    },
-    {
-      id: "f9ku54hd",
-      name: "Game4",
-      prizes: ["p 1", "p2", "p3"],
-      date: "01-11-2024",
-      coins: 425,
-      status: "created",
-      licence: "yes",
-      winners: ["lisa", "james", "pat"],
-      sponsor: [
-        { name: "beta34", logo: "sp.png" },
-        { name: "omega21", logo: "sp.png" },
-        { name: "sara98", logo: "sp.png" }
-      ]
-    },
-    {
-      id: "a3xy47qm",
-      name: "Game5",
-      prizes: ["p 1", "p2", "p3"],
-      date: "10-11-2024",
-      coins: 612,
-      status: "created",
-      licence: "no",
-      winners: ["nancy", "carla", "joel"],
-      sponsor: [
-        { name: "gamma87", logo: "sp.png" },
-        { name: "johnDoe", logo: "sp.png" },
-        { name: "sara98", logo: "sp.png" }
-      ]
-    },
-    {
-      id: "b5lk23hf",
-      name: "Game6",
-      prizes: ["p 1", "p2", "p3"],
-      date: "15-12-2024",
-      coins: 730,
-      status: "created",
-      licence: "yes",
-      winners: ["patrick", "marie", "jason"],
-      sponsor: [
-        { name: "Abe45", logo: "sp.png" },
-        { name: "gamma87", logo: "sp.png" }
-      ]
-    }
-  ];
+  {
+    id: "m5gr84i9",
+    name: "Game1",
+    prizes: ["p 1", "p2", "p3"],
+    createAt: "05-10-2024",
+    requiredDiamond: 316,
+    status: "created",
+    licence: "yes",
+    winners: [{ id: "", name: "hel", avatar: "url" }],
+    sponsor: [
+      { name: "Abe45", logo: "sp.png" },
+      { name: "sara98", logo: "sp.png" },
+      { name: "johnDoe", logo: "sp.png" },
+    ],
+    isRported: true,
+  },
+  {
+    id: "n4gj29ke",
+    name: "Game2",
+    prizes: ["p 1", "p2", "p3"],
+    createAt: "12-10-2024",
+    requiredDiamond: 150,
+    status: "created",
+    licence: "no",
+    winners: [{ id: "1", name: "alice", avatar: "url1" }, { id: "2", name: "john", avatar: "url2" }, { id: "3", name: "mark", avatar: "url3" }],
+    sponsor: [
+      { name: "sara98", logo: "sp.png" },
+      { name: "gamma87", logo: "sp.png" },
+      { name: "delta32", logo: "sp.png" },
+    ],
+    isRported: false,
+  },
+  {
+    id: "k8tr37ip",
+    name: "Game3",
+    prizes: ["p 1", "p2", "p3"],
+    createAt: "20-10-2024",
+    requiredDiamond: 500,
+    status: "created",
+    licence: "yes",
+    winners: [{ id: "1", name: "steve", avatar: "url1" }, { id: "2", name: "ellen", avatar: "url2" }, { id: "3", name: "mike", avatar: "url3" }],
+    sponsor: [
+      { name: "omega21", logo: "sp.png" },
+      { name: "gamma87", logo: "sp.png" },
+    ],
+    isRported: true,
+  },
+  {
+    id: "f9ku54hd",
+    name: "Game4",
+    prizes: ["p 1", "p2", "p3"],
+    createAt: "01-11-2024",
+    requiredDiamond: 425,
+    status: "created",
+    licence: "yes",
+    winners: [{ id: "1", name: "lisa", avatar: "url1" }, { id: "2", name: "james", avatar: "url2" }, { id: "3", name: "pat", avatar: "url3" }],
+    sponsor: [
+      { name: "beta34", logo: "sp.png" },
+      { name: "omega21", logo: "sp.png" },
+      { name: "sara98", logo: "sp.png" },
+    ],
+    isRported: true,
+  },
+  {
+    id: "a3xy47qm",
+    name: "Game5",
+    prizes: ["p 1", "p2", "p3"],
+    createAt: "10-11-2024",
+    requiredDiamond: 612,
+    status: "created",
+    licence: "no",
+    winners: [{ id: "1", name: "nancy", avatar: "url1" }, { id: "2", name: "carla", avatar: "url2" }, { id: "3", name: "joel", avatar: "url3" }],
+    sponsor: [
+      { name: "gamma87", logo: "sp.png" },
+      { name: "johnDoe", logo: "sp.png" },
+      { name: "sara98", logo: "sp.png" },
+    ],
+    isRported: false,
+  },
+  {
+    id: "b5lk23hf",
+    name: "Game6",
+    prizes: ["p 1", "p2", "p3"],
+    createAt: "15-12-2024",
+    requiredDiamond: 730,
+    status: "created",
+    licence: "yes",
+    winners: [{ id: "1", name: "patrick", avatar: "url1" }, { id: "2", name: "marie", avatar: "url2" }, { id: "3", name: "jason", avatar: "url3" }],
+    sponsor: [
+      { name: "Abe45", logo: "sp.png" },
+      { name: "gamma87", logo: "sp.png" },
+    ],
+    isRported: true,
+  },
+];
 
 export type Game = {
   id: string;
   name: string;
-  date: string;
-  coins: number;
+  createAt: string;
+  requiredDiamond: number;
   sponsor: { name: string; logo: string }[];
   licence: string;
   status: "created" | "started" | "ended" | "closed";
-  winners: string[]
-  prizes: string[]
+  winners: { id: string; name: string; avatar: string }[];
+  prizes: string[];
+  isRported?: boolean;
 };
 
 export const columns: ColumnDef<Game>[] = [
@@ -160,7 +169,7 @@ export const columns: ColumnDef<Game>[] = [
     ),
   },
   {
-    accessorKey: "date",
+    accessorKey: "createAt",
     header: ({ column }) => {
       return (
         <Button
@@ -173,7 +182,7 @@ export const columns: ColumnDef<Game>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[20px]">{row.getValue("date")}</div>
+      <div className="lowercase pl-[20px]">{row.getValue("createAt")}</div>
     ),
   },
   {
@@ -184,20 +193,20 @@ export const columns: ColumnDef<Game>[] = [
     },
   },
   {
-    accessorKey: "coins",
+    accessorKey: "requiredDiamond",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Coins
+          required Diamond
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">{row.getValue("coins")}</div>
+      <div className="lowercase pl-[30px]">{row.getValue("requiredDiamond")}</div>
     ),
   },
   {
@@ -259,10 +268,15 @@ export const columns: ColumnDef<Game>[] = [
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <GameReportGeneration game={game} />
+            <DropdownMenuItem>
+              <Delete id={game.id} api={'/game/'}/>
             </DropdownMenuItem>
+            {
+              !game.isRported &&
+              <DropdownMenuItem asChild>
+                <GameReportGeneration game={game} />
+              </DropdownMenuItem>
+            }
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -416,6 +430,9 @@ export function DataTableDemo() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          <GameCration />
+        </div>
         <div className="space-x-2">
           <Button
             className="rounded-[6px]"

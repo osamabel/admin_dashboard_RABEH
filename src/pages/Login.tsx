@@ -20,18 +20,38 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Replace with your actual authentication logic
-    if (username === "user" && password === "password") {
-      localStorage.setItem("token", "your-auth-token");
-      navigate("/home");
-    } else {
-      setIsError(true)
-    //   alert("Invalid credentials");
+    setIsLoading(true);
+    setIsError(false);
+
+    try {
+      const response = await fetch('http://10.32.108.154:3000/auth/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: username, password }),
+      });
+
+      console.log("response >>> ",response)
+      if (response.ok) {
+        console.log("HELLO")
+        // If login is successful, redirect to home page
+        navigate('/home');
+      } else {
+        console.log("ELSE")
+        // If login failed, set error state
+        setIsError(true);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
-
+  
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <Card className="w-[500px]">
