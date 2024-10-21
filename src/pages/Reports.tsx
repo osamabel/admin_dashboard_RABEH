@@ -1,5 +1,5 @@
-import { EventTable } from '@/components/tables/EventTable'
 import { DataTableDemo } from '@/components/tables/GameTable'
+import { ReportsTable } from '@/components/tables/ReportsTable'
 
 function Reports() {
   return (
@@ -10,7 +10,7 @@ function Reports() {
       </div>
         <div className="w-full h-[50%]">
           <h1 className="text-[25px] font-semibold">Repports</h1>
-          <EventTable />
+          <ReportsTable />
         </div>
     </div>
   )
