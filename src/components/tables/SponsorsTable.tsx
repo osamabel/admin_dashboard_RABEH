@@ -37,90 +37,27 @@ import {
 import SponsorCreation from "../dialog/SponsorCreation";
 import { Delete } from "../dialog/Delete";
 import SponsorUpdate from "../dialog/UpdateSponsor";
+import { useToast } from "@/hooks/use-toast";
 
-const data: User[] = [
-  {
-    id: "m5gr84i9",
-    manyTime: 316,
-    status: "inactive",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username1",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    manyTime: 242,
-    status: "??",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username2",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    manyTime: 242,
-    status: "active",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username3",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    manyTime: 242,
-    status: "active",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username4",
-    date: "05-10-2024",
-  },
-
-];
-
-export type User = {
-  id: string;
-  name: string;
-  date: string;
-  manyTime: number;
-  sponsor: { name: string; logo: string }[];
-  licence: string;
-  status: "active" | "inactive" | "??";
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = date.toLocaleString('default', { month: 'short' });
+  const year = date.getFullYear();
+  return `${day} ${month}, ${year}`;
 };
 
-export const columns: ColumnDef<User>[] = [
+
+export type Sponsor = {
+  id: string;
+  name: string;
+  logo: string;
+  createdAt: string;
+  games: number;
+  status: "active" | "inactive" | "rejected";
+};
+
+export const columns: ColumnDef<Sponsor>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -135,10 +72,19 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => {
+      const logo = row.original.logo;
+      const name = row.original.name;
       return (
         <div className="capitalize pl-[20px] via-fuchsia-400">
           <div className="flex items-center gap-x-[10px]">
-            <div className="w-[45px] aspect-square border rounded-full"></div>
+            <div className="w-[45px] aspect-square border rounded-full ">
+            {logo ?
+              <img className="w-full h-full rounded-full object-cover" src={`http://10.11.10.13:3000/${logo}`} alt="" />
+              :
+              <div className="w-full h-full flex items-center justify-center opacity-65">{name[0]}</div>
+            }
+            </div>
+            
             <div>{row.getValue("name")}</div>
           </div>
         </div>
@@ -146,7 +92,7 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "manyTime",
+    accessorKey: "games",
     header: ({ column }) => {
       return (
         <Button
@@ -159,11 +105,11 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">{row.getValue("manyTime")}</div>
+      <div className="lowercase pl-[30px]">{row.getValue("games")}</div>
     ),
   },
   {
-    accessorKey: "date",
+    accessorKey: "createdAt",
     header: ({ column }) => {
       return (
         <Button
@@ -176,23 +122,25 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[20px]">{row.getValue("date")}</div>
+      <div className="pl-[20px]">
+        {formatDate(row.getValue("createdAt"))}
+      </div>
     ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "status",
     cell: ({ row }) => {
       const status = row.original.status;
       return (
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-                    ${status === "active" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
-                    ${status === "??" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
-                    ${status === "inactive" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
+                    ${status.toLocaleLowerCase() === "active" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
+                    ${status.toLocaleLowerCase() === "rejected" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
+                    ${status.toLocaleLowerCase() === "inactive" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
           >
-            {status}
+            {status.toLocaleLowerCase()}
           </div>
         </div>
       );
@@ -220,7 +168,7 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Delete id={sponsor.id}  api={''}/>
+            <Delete id={sponsor.id}  api={'sponsor'} />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -232,14 +180,58 @@ export const columns: ColumnDef<User>[] = [
 export function SponsorsTables() {
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = React.useState(1);
+  const [sponsors, setSponsors] = React.useState<Sponsor[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const { toast } = useToast();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // Fetch sponsors
+  const fetchSponsors = async () => {
+    try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await fetch("http://10.11.10.13:3000/sponsor", {
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+        },
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setSponsors(data);
+      console.log("SSS", data)
+    } catch (error) {
+      console.error("Error fetching sponsors:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load sponsors. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial fetch
+  React.useEffect(() => {
+    fetchSponsors();
+  }, []);
+
   const table = useReactTable({
-    data,
+    data: sponsors,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -262,38 +254,48 @@ export function SponsorsTables() {
       },
     },
   });
+
+  // Page size calculation effect
   React.useEffect(() => {
     const updatePageSize = () => {
       if (elementRef.current) {
         const height = elementRef.current.getBoundingClientRect().height;
         const newPageSize = Math.max(1, Math.floor((height - 200) / 73));
         setPageSize(newPageSize);
-        console.log("New page size:", newPageSize);
       }
     };
     updatePageSize();
-    // Add event listener for window resize
     window.addEventListener("resize", updatePageSize);
-    // Cleanup
     return () => window.removeEventListener("resize", updatePageSize);
-  }, []);
+  }, [sponsors]);
 
   // Update table's page size when pageSize state changes
   React.useEffect(() => {
     table.setPageSize(pageSize);
   }, [pageSize, table]);
 
+  if (isLoading) {
+    return <div>Loading sponsors...</div>;
+  }
+
   return (
     <div ref={elementRef} className="w-full h-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by Game name..."
+          placeholder="Search by sponsor name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm rounded-[6px]"
         />
+        <Button 
+          onClick={() => fetchSponsors()} 
+          variant="outline" 
+          className="ml-2 rounded-[6px]"
+        >
+          Refresh
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto rounded-[6px]">
@@ -304,40 +306,35 @@ export function SponsorsTables() {
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-[6px] border ">
+
+      <div className="rounded-[6px] border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -371,6 +368,7 @@ export function SponsorsTables() {
           </TableBody>
         </Table>
       </div>
+
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           <SponsorCreation/>

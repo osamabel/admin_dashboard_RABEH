@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -46,28 +46,7 @@ interface QuizQuestion {
   time: number;
 }
 const GameCration: React.FC = () => {
-  const [availableSponsors, setAvailableSponsors] = useState<Sponsor[]>([
-    {
-      id: 1,
-      name: "osama",
-      logo: "/sp.png",
-    },
-    {
-      id: 2,
-      name: "bel",
-      logo: "/sp.png",
-    },
-    {
-      id: 3,
-      name: "soso",
-      logo: "/sp.png",
-    },
-    {
-      id: 4,
-      name: "didi",
-      logo: "/sp.png",
-    },
-  ]);
+  const [sponsors, setSponsors] = React.useState<Sponsor[]>([]);
   const [selectedSponsorIds, setSelectedSponsorIds] = useState<number[]>([]);
   const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>({
@@ -79,48 +58,42 @@ const GameCration: React.FC = () => {
     sponsors: [],
     quizFile: [],
   });
-  useEffect(() => {
-    fetchSponsors();
-  }, []);
-
   const fetchSponsors = async () => {
     try {
-      // Replace this with your actual API call
-      const response = await fetch("/sponsor");
-      if (!response.ok) {
-        throw new Error("Failed to fetch sponsors");
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        throw new Error('No authentication token found');
       }
-      // const data = await response.json();
-      setAvailableSponsors([
-        {
-          id: 1,
-          name: "osama",
-          logo: "/sp.png",
+
+      const response = await fetch("http://10.11.10.13:3000/sponsor", {
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
         },
-        {
-          id: 2,
-          name: "bel",
-          logo: "/sp.png",
-        },
-        {
-          id: 3,
-          name: "soso",
-          logo: "/sp.png",
-        },
-        {
-          id: 4,
-          name: "didi",
-          logo: "/sp.png",
-        },
-      ]);
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setSponsors(data);
     } catch (error) {
+      console.error("Error fetching sponsors:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch sponsors. Please try again.",
+        description: "Failed to load sponsors. Please try again.",
         variant: "destructive",
       });
     }
   };
+
+  // Initial fetch
+  React.useEffect(() => {
+    fetchSponsors();
+  }, []);
 
   const toggleSponsor = (sponsorId: number) => {
     setSelectedSponsorIds((prevIds) => {
@@ -194,12 +167,17 @@ const GameCration: React.FC = () => {
         ...formData,
         quizFile: formData.quizFile as QuizQuestion[],
       };
-
-      const response = await fetch("/game/create", {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+      const response = await fetch("http://10.11.10.13:3000/game/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Accept: "application/json",
+          'Authorization': `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(submitData),
       });
 
@@ -210,6 +188,7 @@ const GameCration: React.FC = () => {
           description: "Game created successfully",
           variant: "default",
         });
+        window.location.reload();
       } else {
         // Handle error
         throw new Error("Failed to create the game");
@@ -232,7 +211,7 @@ const GameCration: React.FC = () => {
     const sponsorId = Number(currentSelection);
 
     if (sponsorId && !selectedSponsorIds.includes(sponsorId)) {
-      const selectedSponsor = availableSponsors.find(
+      const selectedSponsor = sponsors.find(
         (sponsor) => sponsor.id === sponsorId
       );
 
@@ -356,7 +335,7 @@ const GameCration: React.FC = () => {
                         className="flex-grow p-2 border rounded-[6px]"
                       >
                         <option value="">Select a sponsor...</option>
-                        {availableSponsors.map((sponsor) => (
+                        {sponsors.map((sponsor) => (
                           <option
                             key={sponsor.id}
                             value={sponsor.id}
@@ -383,7 +362,7 @@ const GameCration: React.FC = () => {
                     {selectedSponsorIds.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {selectedSponsorIds.map((id) => {
-                          const sponsor = availableSponsors.find(
+                          const sponsor = sponsors.find(
                             (s) => s.id === id
                           );
                           return sponsor ? (
