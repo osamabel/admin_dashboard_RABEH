@@ -8,40 +8,40 @@ import Users from './pages/Users';
 import Sponsors from './pages/Sponsors';
 import QuizCreator from './components/Quiz';
 import Reports from './pages/Reports';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 
 
 const ProtectedRoute = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch("/api/auth/status", {
-          method: "GET",
-          credentials: "include",
-        });
-        const data = await response.json();
-        if (data.status === "Authenticated") {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     try {
+  //       const response = await fetch("/api/auth/status", {
+  //         method: "GET",
+  //         credentials: "include",
+  //       });
+  //       const data = await response.json();
+  //       if (data.status === "Authenticated") {
+  //         setIsAuthenticated(true);
+  //       } else {
+  //         setIsAuthenticated(false);
+  //       }
+  //     } catch (error) {
+  //       setIsAuthenticated(false);
+  //     }
+  //   };
     
-    checkAuth();
-  }, []);
+  //   checkAuth();
+  // }, []);
 
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>;
-  }
+  // if (isAuthenticated === null) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return <Outlet />;
 };
