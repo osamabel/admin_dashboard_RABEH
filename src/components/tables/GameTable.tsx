@@ -37,115 +37,26 @@ import { PrizeDialog } from "../dialog/Prizes";
 import GameReportGeneration from "../dialog/Reports";
 import GameCration from "../dialog/GameCreation";
 import { Delete } from "../dialog/Delete";
+import { useToast } from "@/hooks/use-toast";
+import { formatDate } from "./SponsorsTable";
 
-const data: Game[] = [
-  {
-    id: "m5gr84i9",
-    name: "Game1",
-    prizes: ["p 1", "p2", "p3"],
-    createAt: "05-10-2024",
-    requiredDiamond: 316,
-    status: "created",
-    licence: "yes",
-    winners: [{ id: "", name: "hel", avatar: "url" }],
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "johnDoe", logo: "sp.png" },
-    ],
-    isRported: true,
-  },
-  {
-    id: "n4gj29ke",
-    name: "Game2",
-    prizes: ["p 1", "p2", "p3"],
-    createAt: "12-10-2024",
-    requiredDiamond: 150,
-    status: "created",
-    licence: "no",
-    winners: [{ id: "1", name: "alice", avatar: "url1" }, { id: "2", name: "john", avatar: "url2" }, { id: "3", name: "mark", avatar: "url3" }],
-    sponsor: [
-      { name: "sara98", logo: "sp.png" },
-      { name: "gamma87", logo: "sp.png" },
-      { name: "delta32", logo: "sp.png" },
-    ],
-    isRported: false,
-  },
-  {
-    id: "k8tr37ip",
-    name: "Game3",
-    prizes: ["p 1", "p2", "p3"],
-    createAt: "20-10-2024",
-    requiredDiamond: 500,
-    status: "created",
-    licence: "yes",
-    winners: [{ id: "1", name: "steve", avatar: "url1" }, { id: "2", name: "ellen", avatar: "url2" }, { id: "3", name: "mike", avatar: "url3" }],
-    sponsor: [
-      { name: "omega21", logo: "sp.png" },
-      { name: "gamma87", logo: "sp.png" },
-    ],
-    isRported: true,
-  },
-  {
-    id: "f9ku54hd",
-    name: "Game4",
-    prizes: ["p 1", "p2", "p3"],
-    createAt: "01-11-2024",
-    requiredDiamond: 425,
-    status: "created",
-    licence: "yes",
-    winners: [{ id: "1", name: "lisa", avatar: "url1" }, { id: "2", name: "james", avatar: "url2" }, { id: "3", name: "pat", avatar: "url3" }],
-    sponsor: [
-      { name: "beta34", logo: "sp.png" },
-      { name: "omega21", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    isRported: true,
-  },
-  {
-    id: "a3xy47qm",
-    name: "Game5",
-    prizes: ["p 1", "p2", "p3"],
-    createAt: "10-11-2024",
-    requiredDiamond: 612,
-    status: "created",
-    licence: "no",
-    winners: [{ id: "1", name: "nancy", avatar: "url1" }, { id: "2", name: "carla", avatar: "url2" }, { id: "3", name: "joel", avatar: "url3" }],
-    sponsor: [
-      { name: "gamma87", logo: "sp.png" },
-      { name: "johnDoe", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    isRported: false,
-  },
-  {
-    id: "b5lk23hf",
-    name: "Game6",
-    prizes: ["p 1", "p2", "p3"],
-    createAt: "15-12-2024",
-    requiredDiamond: 730,
-    status: "created",
-    licence: "yes",
-    winners: [{ id: "1", name: "patrick", avatar: "url1" }, { id: "2", name: "marie", avatar: "url2" }, { id: "3", name: "jason", avatar: "url3" }],
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "gamma87", logo: "sp.png" },
-    ],
-    isRported: true,
-  },
-];
+interface sponsor{
+  logo: string
+  name: string
+  status: string
+}
 
 export type Game = {
   id: string;
   name: string;
-  createAt: string;
-  requiredDiamond: number;
-  sponsor: { name: string; logo: string }[];
-  licence: string;
+  createdAt: string;
+  requiredDiamonds: number;
+  sponsorId: sponsor[];
+  licenseId: string;
   status: "created" | "started" | "ended" | "closed";
   winners: { id: string; name: string; avatar: string }[];
   prizes: string[];
-  isRported?: boolean;
+  isReported?: boolean;
 };
 
 export const columns: ColumnDef<Game>[] = [
@@ -167,7 +78,7 @@ export const columns: ColumnDef<Game>[] = [
     ),
   },
   {
-    accessorKey: "createAt",
+    accessorKey: "createdAt",
     header: ({ column }) => {
       return (
         <Button
@@ -180,18 +91,20 @@ export const columns: ColumnDef<Game>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[20px]">{row.getValue("createAt")}</div>
+      <div className="pl-[20px]">{formatDate(row.getValue("createdAt"))}</div>
     ),
   },
   {
     accessorKey: "prize",
     header: "Prize",
-    cell: () => {
-      return <PrizeDialog />;
+    cell: ({ row }) => {
+      const prz = row.original.prizes;
+
+      return <PrizeDialog prizes={prz} />;
     },
   },
   {
-    accessorKey: "requiredDiamond",
+    accessorKey: "requiredDiamonds",
     header: ({ column }) => {
       return (
         <Button
@@ -204,24 +117,24 @@ export const columns: ColumnDef<Game>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">{row.getValue("requiredDiamond")}</div>
+      <div className="lowercase pl-[30px]">{row.getValue("requiredDiamonds")}</div>
     ),
   },
   {
-    accessorKey: "Sponsor",
+    accessorKey: "sponsorId",
     header: "Sponsors",
     cell: ({ row }) => {
-      const sponsors = row.original.sponsor;
+      const sponsors = row.original.sponsorId;
 
       return <SponsorsDialog sponsors={sponsors} />;
     },
   },
 
   {
-    accessorKey: "licence",
+    accessorKey: "licenseId",
     header: "Licence",
     cell: ({ row }) => (
-      <div className="lowercase pl-[20px]">{row.getValue("licence")}</div>
+      <div className="lowercase pl-[20px]">{row.getValue("licenseId")}</div>
     ),
   },
   {
@@ -233,12 +146,12 @@ export const columns: ColumnDef<Game>[] = [
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-                    ${status === "created" ? "text-[#626262] bg-[#F1F1F1]" : ""}
-                    ${status === "started" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
-                    ${status === "closed" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
-                    ${status === "ended" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
+                    ${status.toLocaleLowerCase() === "pending" ? "text-[#626262] bg-[#F1F1F1]" : ""}
+                    ${status.toLocaleLowerCase() === "started" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
+                    ${status.toLocaleLowerCase() === "closed" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
+                    ${status.toLocaleLowerCase() === "ended" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
           >
-            {status}
+            {status.toLocaleLowerCase()}
           </div>
         </div>
       );
@@ -260,17 +173,12 @@ export const columns: ColumnDef<Game>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(game.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Delete id={game.id} api={'/game/'}/>
+            <DropdownMenuItem asChild>
+              <Delete api={'game'} id={game.id} />
             </DropdownMenuItem>
             {
-              !game.isRported &&
+              !game.isReported &&
               <DropdownMenuItem asChild>
                 <GameReportGeneration game={game} />
               </DropdownMenuItem>
@@ -285,17 +193,79 @@ export const columns: ColumnDef<Game>[] = [
 export function DataTableDemo() {
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = React.useState(1);
+  const [games, setGames] = React.useState<Game[]>([]);
+  const { toast } = useToast();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // Fetch games from API
+  const fetchGames = async () => {
+    try {
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+  
+      const response = await fetch("http://10.13.8.4:3000/dashboard/allGames", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        credentials: "include",
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      
+      // Transform the data to match the Game type
+      const transformedData = Array.isArray(data) 
+        ? data.map(game => ({
+            id: game.id.toString(),
+            name: game.name,
+            createdAt: game.createdAt,  // Keep as is, as per Game type
+            requiredDiamonds: game.requiredDiamonds,
+            sponsorId: game.sponsorId?.map((s: sponsor) => ({
+              name: s.name,
+              logo: s.logo,
+              status: s.status
+            })) || [],
+            licenseId: game.licenseId,
+            status: game.status as "created" | "started" | "ended" | "closed",
+            winners: game.winners?.map((w: any) => ({
+              id: w.id || '',
+              name: w.name || '',
+              avatar: w.avatar || ''
+            })) || [],
+            prizes: game.prizes || [],
+            isReported: game.isReported
+          }))
+        : [];
+  
+      setGames(transformedData);
+    } catch (error: any) {
+      console.error("Error fetching games:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load games. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Initial fetch
+  React.useEffect(() => {
+    fetchGames();
+  }, []);
+
   const table = useReactTable({
-    data,
+    data : games,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -324,7 +294,6 @@ export function DataTableDemo() {
         const height = elementRef.current.getBoundingClientRect().height;
         const newPageSize = Math.max(1, Math.floor((height - 200) / 73));
         setPageSize(newPageSize);
-        console.log("New page size:", newPageSize);
       }
     };
     updatePageSize();

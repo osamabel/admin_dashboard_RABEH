@@ -9,8 +9,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+interface PrizeDialogProps{
+  prizes: string[]
+}
 
-export function PrizeDialog() {
+export function PrizeDialog({prizes}: PrizeDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -29,9 +32,11 @@ export function PrizeDialog() {
                 <img width={20} src="/third.svg" alt="" />
               </div>
               <div className="h-full items-start flex flex-col gap-y-[10px] justify-around text-[15px] font-[500]">
-                <p>Laptop</p>
-                <p>200 Dollars</p>
-                <p>Food</p>
+                {
+                  prizes.map((i, index)=>(
+                    <p key={index}>{i}</p>
+                  ))
+                }
               </div>
             </div>
           </AlertDialogDescription>

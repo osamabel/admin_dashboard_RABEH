@@ -35,18 +35,23 @@ interface UserData {
   type: "NORMAL" | "SPECIAL";
 }
 
-const UpdateUser = ({ userId }: { userId: string }) => {
-  const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+interface UpdateUserProps {
+  userId: any;
+}
 
-  useEffect(() => {
-    // Fetch user data when the dialog opens
-    if (isOpen) {
-      fetchUserData(userId);
-    }
-  }, [isOpen, userId]);
+const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
+  ({ userId }, ref) => {
+    const { toast } = useToast();
+    const [isOpen, setIsOpen] = useState(false);
+    const [userData, setUserData] = useState<UserData | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+    useEffect(() => {
+      // Fetch user data when the dialog opens
+      if (isOpen) {
+        fetchUserData(userId);
+      }
+    }, [isOpen, userId]);
 
   const fetchUserData = async (id: string) => {
     // Mock data - replace with actual API call
@@ -112,6 +117,8 @@ const UpdateUser = ({ userId }: { userId: string }) => {
   };
 
   return (
+    <div ref={ref}>
+
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
@@ -254,7 +261,9 @@ const UpdateUser = ({ userId }: { userId: string }) => {
         )}
       </DialogContent>
     </Dialog>
+    </div>
+
   );
-};
+});
 
 export default UpdateUser;

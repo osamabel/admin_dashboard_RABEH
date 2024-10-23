@@ -26,34 +26,33 @@ const Login = () => {
     setIsError(false);
 
     try {
-      const response = await fetch('http://10.11.10.13:3000/auth/admin/login', {
-        method: 'POST',
+      const response = await fetch("http://10.13.8.4:3000/auth/admin/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify({ email: username, password }),
       });
 
-      
       if (response.ok) {
-        const data = await response.json()
-        if(data.message === "Login success"){
-          localStorage.setItem('jwt_token', data.token);
-          navigate('/home');
+        const data = await response.json();
+        if (data.message === "Login success") {
+          localStorage.setItem("jwt_token", data.token);
+          navigate("/home");
         }
       } else {
         // If login failed, set error state
         setIsError(true);
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       setIsError(true);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <Card className="w-[500px]">
@@ -83,15 +82,19 @@ const Login = () => {
                 placeholder="Enter your password"
               />
             </div>
-            {
-                isLoading ?
-                <ButtonLoading />:
-                <Button type="submit">Login</Button>
-            }
+            {isLoading ? (
+              <ButtonLoading />
+            ) : (
+              <Button type="submit">Login</Button>
+            )}
           </form>
         </CardContent>
         <CardFooter>
-          {isError && <p className="text-[12px] text-red-600">Please Enter The Correct Credentials</p>} 
+          {isError && (
+            <p className="text-[12px] text-red-600">
+              Please Enter The Correct Credentials
+            </p>
+          )}
         </CardFooter>
       </Card>
     </div>

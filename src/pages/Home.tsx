@@ -8,7 +8,7 @@ function Home() {
         <h1 className="text-[25px] font-semibold">Current Games</h1>
         <DataTableDemo />
       </div>
-      <div className="w-full flex h-[50%] gap-x-[20px]">
+      <div className="w-full flex h-[50%] gap-x-[20px] opacity-15">
         <div className="min-w-[60%] h-full">
           <h1 className="text-[25px] font-semibold">Current Event</h1>
           <EventTable />

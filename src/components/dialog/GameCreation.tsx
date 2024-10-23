@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +18,6 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "@radix-ui/react-alert-dialog";
-
 
 interface Sponsor {
   id: number;
@@ -33,20 +32,12 @@ interface FormData {
   // endingDate: string;
   prizes: string[];
   licences: string;
-  sponsors: any[];
+  sponsors: Number[];
   quizFile: any[];
 }
 
-interface QuizQuestion {
-  question: string;
-  options: Array<{
-    text: string;
-    isCorrect: boolean;
-  }>;
-  time: number;
-}
 const GameCration: React.FC = () => {
-  const [sponsors, setSponsors] = React.useState<Sponsor[]>([]);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [selectedSponsorIds, setSelectedSponsorIds] = useState<number[]>([]);
   const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>({
@@ -58,20 +49,21 @@ const GameCration: React.FC = () => {
     sponsors: [],
     quizFile: [],
   });
+
   const fetchSponsors = async () => {
     try {
-      const token = localStorage.getItem('jwt_token');
+      const token = localStorage.getItem("jwt_token");
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.11.10.13:3000/sponsor", {
+      const response = await fetch("http://10.13.8.4:3000/sponsor", {
         method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -90,7 +82,6 @@ const GameCration: React.FC = () => {
     }
   };
 
-  // Initial fetch
   React.useEffect(() => {
     fetchSponsors();
   }, []);
@@ -98,18 +89,18 @@ const GameCration: React.FC = () => {
   const toggleSponsor = (sponsorId: number) => {
     setSelectedSponsorIds((prevIds) => {
       const newSelectedIds = prevIds.includes(sponsorId)
-        ? prevIds.filter((id) => id !== sponsorId) // Remove if already selected
-        : [...prevIds, sponsorId]; // Add new selection
+        ? prevIds.filter((id) => id !== sponsorId)
+        : [...prevIds, sponsorId];
 
-      // Update formData with selected sponsors
       setFormData((prevState) => ({
         ...prevState,
-        sponsors: newSelectedIds, // Ensure selected sponsors are added here
+        sponsors: newSelectedIds,
       }));
 
       return newSelectedIds;
     });
   };
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -120,7 +111,7 @@ const GameCration: React.FC = () => {
     }));
   };
 
-  const handleprizeChange = (index: number, value: string) => {
+  const handlePrizeChange = (index: number, value: string) => {
     setFormData((prevState) => ({
       ...prevState,
       prizes: prevState.prizes.map((prize, i) => (i === index ? value : prize)),
@@ -132,25 +123,46 @@ const GameCration: React.FC = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const content = event.target?.result as string;
         try {
-          // Parse JSON content
+          const content = event.target?.result as string;
           const parsedContent = JSON.parse(content);
 
-          // Ensure the parsed content is an array
           if (!Array.isArray(parsedContent)) {
             throw new Error("The JSON content is not an array");
+          }
+
+          // Validate the structure of each question
+          const isValidQuizFormat = parsedContent.every((question: any) => 
+            typeof question.question === 'string' &&
+            Array.isArray(question.options) &&
+            typeof question.time === 'number' &&
+            question.options.every((option: any) => 
+              typeof option.text === 'string' &&
+              typeof option.isCorrect === 'boolean'
+            )
+          );
+
+          if (!isValidQuizFormat) {
+            throw new Error("Invalid quiz question format");
           }
 
           setFormData((prevState) => ({
             ...prevState,
             quizFile: parsedContent,
           }));
+
+          toast({
+            title: "Success",
+            description: "Quiz file uploaded successfully",
+            variant: "default",
+          });
         } catch (error) {
-          console.error("Invalid JSON file:", error);
-          alert(
-            "The uploaded file is not a valid JSON array. Please check the file and try again."
-          );
+          console.error("Error parsing quiz file:", error);
+          toast({
+            title: "Error",
+            description: "Invalid quiz file format. Please check the file structure.",
+            variant: "destructive",
+          });
         }
       };
       reader.readAsText(file);
@@ -160,80 +172,82 @@ const GameCration: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log("formData >>> ", formData);
-      // const quizContent: QuizQuestion[] = JSON.parse(formData.quizFile);
-
-      const submitData = {
-        ...formData,
-        quizFile: formData.quizFile as QuizQuestion[],
-      };
-      const token = localStorage.getItem('jwt_token');
-      if (!token) {
-        throw new Error('No authentication token found');
+      // Validate required fields
+      if (!formData.gameName || !formData.startingDate || !formData.requiredDiamond) {
+        throw new Error("Please fill in all required fields");
       }
-      const response = await fetch("http://10.11.10.13:3000/game/create", {
+
+      // Validate quiz file
+      if (formData.quizFile.length === 0) {
+        throw new Error("Please upload a quiz file");
+      }
+
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      // Prepare the request body
+      const requestBody = {
+        ...formData,
+        requiredDiamond: parseInt(formData.requiredDiamond, 10),
+        prizes: formData.prizes.filter(prize => prize !== ""), // Remove empty prizes
+      };
+
+      const response = await fetch("http://10.13.8.4:3000/game/create", {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
-          'Authorization': `Bearer ${token}`,
         },
-        credentials: 'include',
-        body: JSON.stringify(submitData),
+        credentials: "include",
+        body: JSON.stringify(requestBody),
       });
 
-      if (response.ok) {
-        // Handle success
-        toast({
-          title: "Success",
-          description: "Game created successfully",
-          variant: "default",
-        });
-        window.location.reload();
-      } else {
-        // Handle error
-        throw new Error("Failed to create the game");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to create the game");
       }
-    } catch (error) {
+
+      toast({
+        title: "Success",
+        description: "Game created successfully",
+        variant: "default",
+      });
+
+      // Reset form or redirect
+      window.location.reload();
+    } catch (error: any) {
       console.error("Error submitting form:", error);
       toast({
         title: "Error",
-        description: "Failed to create the game. Please try again.",
+        description: error.message || "Failed to create the game. Please try again.",
         variant: "destructive",
       });
     }
   };
+
   const [currentSelection, setCurrentSelection] = useState<string>("");
 
   const handleSponsorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrentSelection(event.target.value);
   };
+
   const addSelectedSponsor = () => {
     const sponsorId = Number(currentSelection);
-
     if (sponsorId && !selectedSponsorIds.includes(sponsorId)) {
-      const selectedSponsor = sponsors.find(
-        (sponsor) => sponsor.id === sponsorId
-      );
-
-      if (selectedSponsor) {
-        // Update the selected sponsor IDs and formData
-        setSelectedSponsorIds((prevIds) => [...prevIds, sponsorId]);
-
-        // Update formData with sponsor names or IDs based on your preference
-        setFormData((prevState) => ({
-          ...prevState,
-          // sponsors: [...prevState.sponsors, selectedSponsor.name], // If you want to store names
-          sponsors: [...prevState.sponsors, String(sponsorId)], // If you want to store IDs as strings
-        }));
-
-        // Clear the current selection
-        setCurrentSelection("");
-      }
+      setSelectedSponsorIds((prevIds) => [...prevIds, sponsorId]);
+      setFormData((prevState) => ({
+        ...prevState,
+        sponsors: [...prevState.sponsors, sponsorId],
+      }));
+      setCurrentSelection("");
     }
   };
-
   return (
-    <AlertDialog >
+    <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button className="rounded-[6px]" variant="default">
           Create new Game
@@ -308,7 +322,7 @@ const GameCration: React.FC = () => {
                       className="rounded-[6px]"
                       id={`prize${index + 1}`}
                       value={prize}
-                      onChange={(e) => handleprizeChange(index, e.target.value)}
+                      onChange={(e) => handlePrizeChange(index, e.target.value)}
                     />
                   </div>
                 ))}
@@ -362,9 +376,7 @@ const GameCration: React.FC = () => {
                     {selectedSponsorIds.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {selectedSponsorIds.map((id) => {
-                          const sponsor = sponsors.find(
-                            (s) => s.id === id
-                          );
+                          const sponsor = sponsors.find((s) => s.id === id);
                           return sponsor ? (
                             <div
                               key={id}

@@ -557,7 +557,6 @@ export function RankingTable() {
         const height = elementRef.current.getBoundingClientRect().height;
         const newPageSize = Math.max(1, Math.floor((height - 200) / 73));
         setPageSize(newPageSize);
-        console.log("New page size:", newPageSize);
       }
     };
     updatePageSize();

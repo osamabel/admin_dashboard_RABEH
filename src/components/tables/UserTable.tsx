@@ -37,309 +37,21 @@ import { Delete } from "../dialog/Delete";
 import { Donate } from "../dialog/Donate";
 import UserCration from "../dialog/UserCreation";
 import UpdateUser from "../dialog/UpdateUser";
-
-const data: User[] = [
-  {
-    id: "m5gr84i9",
-    coins: 316,
-    status: "created",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username1",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username2",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "started",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username3",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "closed",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username4",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username5",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-  {
-    id: "3u1reuv4",
-    coins: 242,
-    status: "ended",
-    licence: "yes",
-    sponsor: [
-      { name: "Abe45", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-      { name: "sara98", logo: "sp.png" },
-    ],
-    name: "Username6",
-    date: "05-10-2024",
-  },
-];
+import { useToast } from "@/hooks/use-toast";
 
 export type User = {
-  id: string;
+  id: number;
   name: string;
-  date: string;
-  coins: number;
-  sponsor: { name: string; logo: string }[];
-  licence: string;
-  status: "created" | "started" | "ended" | "closed";
+  phoneNumber: string;
+  email: string;
+  gender: string;
+  points: number;
+  totalPoints: number;
+  type: string;
+  diamonds: number;
+  avatar: string | null;
+  createAt: string;
 };
-
 export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "name",
@@ -355,18 +67,31 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => {
+      const avatar = row.original.avatar;
       return (
         <div className="capitalize pl-[20px] via-fuchsia-400">
           <div className="flex items-center gap-x-[10px]">
-            <div className="w-[45px] aspect-square border rounded-full"></div>
-            <div>{row.getValue("name")}</div>
+            <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
+              {avatar ? (
+                <img 
+                  src={`http://10.13.8.4:3000/${avatar}`}
+                  alt={row.original.name}
+                  className="w-full h-full object-cover"
+                />
+              ):
+              <div className="w-full h-full flex items-center justify-center opacity-65">
+                  {row.original.name[0]}
+                </div>
+            }
+            </div>
+            <div>{row.original.name}</div>
           </div>
         </div>
       );
     },
   },
   {
-    accessorKey: "date",
+    accessorKey: "createAt",
     header: ({ column }) => {
       return (
         <Button
@@ -379,18 +104,20 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[20px]">{row.getValue("date")}</div>
+      <div className="lowercase pl-[20px]">
+        {new Date(row.original.createAt).toLocaleDateString()}
+      </div>
     ),
   },
   {
-    accessorKey: "coins",
+    accessorKey: "points",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Coins
+          Points
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -399,20 +126,20 @@ export const columns: ColumnDef<User>[] = [
       <div className="lowercase pl-[30px]">
         <div className="flex gap-x-[10px]">
           <img width={20} src="/coin.svg" alt="" />
-          <p>{row.getValue("coins")}</p>
+          <p>{row.original.points}</p>
         </div>
       </div>
     ),
   },
   {
-    accessorKey: "coins",
+    accessorKey: "diamonds",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Diamond
+          Diamonds
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -421,36 +148,35 @@ export const columns: ColumnDef<User>[] = [
       <div className="lowercase pl-[30px]">
         <div className="flex gap-x-[10px]">
           <img width={20} src="/diamond.svg" alt="" />
-          <p>{row.getValue("coins")}</p>
+          <p>{row.original.diamonds}</p>
         </div>
       </div>
     ),
   },
   {
-    accessorKey: "rank",
+    accessorKey: "totalPoints",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Rank
+          Total Points
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">{row.getValue("rank")}</div>
+      <div className="lowercase pl-[30px]">{row.original.totalPoints}</div>
     ),
   },
   {
-    accessorKey: "badge",
-    header: "Badge",
+    accessorKey: "type",
+    header: "Type",
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">{row.getValue("badge")}</div>
+      <div className="lowercase pl-[30px]">{row.original.type}</div>
     ),
   },
-
   {
     id: "actions",
     enableHiding: false,
@@ -473,7 +199,7 @@ export const columns: ColumnDef<User>[] = [
               Copy User ID
             </DropdownMenuItem> */}
             <DropdownMenuItem className="p-0" asChild>
-                <UpdateUser userId={User.id} />
+              <UpdateUser userId={User.id} />
             </DropdownMenuItem>
             {/* <DropdownMenuItem className="p-0" asChild>
               <Button
@@ -486,7 +212,7 @@ export const columns: ColumnDef<User>[] = [
             </DropdownMenuItem> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="p-0" asChild>
-              <Delete id={User.id} api={''} />
+              <Delete id={User.id} api={'user/delete'} />
             </DropdownMenuItem>
             <DropdownMenuItem className="p-0" asChild>
               <Donate userId={User.id} />
@@ -501,17 +227,54 @@ export const columns: ColumnDef<User>[] = [
 export function UserTable() {
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = React.useState(1);
+  const [users, setUsers] = React.useState<User[]>([]);
+  const { toast } = useToast();
 
+  // Add these state declarations
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      const response = await fetch("http://10.13.8.4:3000/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load users. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Fetch users on component mount
+  React.useEffect(() => {
+    fetchUsers();
+  }, []);
+  
   const table = useReactTable({
-    data,
+    data: users,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -540,7 +303,6 @@ export function UserTable() {
         const height = elementRef.current.getBoundingClientRect().height;
         const newPageSize = Math.max(1, Math.floor((height - 200) / 73));
         setPageSize(newPageSize);
-        console.log("New page size:", newPageSize);
       }
     };
     updatePageSize();
@@ -645,7 +407,7 @@ export function UserTable() {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          <UserCration />
+          <UserCration onSuccess={fetchUsers}/>
         </div>
         <div className="space-x-2">
           <Button

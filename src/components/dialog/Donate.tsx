@@ -10,26 +10,37 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { ForwardedRef, forwardRef, useState } from "react";
 
 interface DonateProps {
-  userId: string;
+  userId: string | number;
 }
 
-export function Donate({ userId }: DonateProps) {
-  const [donateCoin, setDonateCoin] = useState(false);
-  const [donateDiamond, setDonateDiamond] = useState(false);
-  const [coinAmount, setCoinAmount] = useState("");
-  const [diamondAmount, setDiamondAmount] = useState("");
+export const Donate = forwardRef<HTMLDivElement, DonateProps>(
+  ({ userId }: DonateProps, ref: ForwardedRef<HTMLDivElement>) => {
+    const [donateCoin, setDonateCoin] = useState(false);
+    const [donateDiamond, setDonateDiamond] = useState(false);
+    const [coinAmount, setCoinAmount] = useState("");
+    const [diamondAmount, setDiamondAmount] = useState("");
 
   const handleDonation = async () => {
     try {
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
       // Sending coin donation if coin checkbox is selected
       if (donateCoin && coinAmount) {
         const coinResponse = await fetch(
-          `/user/addCoin/${userId}/${coinAmount}`,
+          `http://10.13.8.4:3000/user/addCoin/${userId}/${coinAmount}`,
           {
-            method: "GET",
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+            credentials: "include",
           }
         );
         if (!coinResponse.ok) throw new Error("Failed to donate coins");
@@ -38,15 +49,22 @@ export function Donate({ userId }: DonateProps) {
       // Sending diamond donation if diamond checkbox is selected
       if (donateDiamond && diamondAmount) {
         const diamondResponse = await fetch(
-          `/user/addDiamond/${userId}/${diamondAmount}`,
+          `http://10.13.8.4:3000/user/addDiamond/${userId}/${diamondAmount}`,
           {
-            method: "GET",
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+            credentials: "include",
           }
         );
         if (!diamondResponse.ok) throw new Error("Failed to donate diamonds");
       }
 
       alert("Donation successful!");
+      window.location.reload();
+
     } catch (error) {
       console.error("Donation failed:", error);
       alert("Donation failed, please try again.");
@@ -54,6 +72,8 @@ export function Donate({ userId }: DonateProps) {
   };
 
   return (
+    <div ref={ref}>
+
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
@@ -135,5 +155,7 @@ export function Donate({ userId }: DonateProps) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+    </div>
+
   );
-}
+})

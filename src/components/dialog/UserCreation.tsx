@@ -26,59 +26,67 @@ interface FormData {
   dob: string;
   country: string;
   city: string;
+  type: string;
   avatar: File | null;
   isDisabled: boolean;
   initialCoins: number;
   initialDiamonds: number;
 }
 
-
-const CopyButton = ({ credentialsString }: { credentialsString: string }) => {
-    const [isCopied, setIsCopied] = useState(false);
-  
-    const handleCopy = useCallback(() => {
-      navigator.clipboard.writeText(credentialsString);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    }, [credentialsString]);
-  
-    return (
-      <Button
-        className="rounded-[6px] flex items-center gap-x-[7px]"
-        onClick={handleCopy}
-      >
-        {isCopied ? (
-          <Check width={16} className="text-green-500" />
-        ) : (
-          <Copy width={16} />
-        )}
-        <p>{isCopied ? "Copied!" : "Copy Credentials"}</p>
-      </Button>
-    );
+interface ApiResponse {
+  message: string;
+  user: {
+    email: string;
+    password: string;
   };
-  
-  const ToastContent = ({ fakeResponse, credentialsString }: { fakeResponse: any, credentialsString: string }) => (
-    <div className="flex flex-col justify-end gap-y-[20px]">
-      <h2 className="text-[20px]">User Created Successfully</h2>
-      <div>
-        <p>
-          <strong>Username:</strong> {fakeResponse.username}
-        </p>
-        <p>
-          <strong>Password:</strong> {fakeResponse.password}
-        </p>
-      </div>
-      <div className="w-full flex justify-start">
-        <CopyButton credentialsString={credentialsString} />
-      </div>
-    </div>
+}
+interface UserCreationProps {
+  onSuccess?: () => void;
+}
+const CopyButton = ({ credentialsString }: { credentialsString: string }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(credentialsString);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  }, [credentialsString]);
+
+  return (
+    <Button
+      className="rounded-[6px] flex items-center gap-x-[7px]"
+      onClick={handleCopy}
+    >
+      {isCopied ? (
+        <Check width={16} className="text-green-500" />
+      ) : (
+        <Copy width={16} />
+      )}
+      <p>{isCopied ? "Copied!" : "Copy Credentials"}</p>
+    </Button>
   );
-  
+};
 
+const ToastContent = ({ response, credentialsString }: { response: ApiResponse; credentialsString: string }) => (
+  <div className="flex flex-col justify-end gap-y-[20px]">
+    <h2 className="text-[20px]">{response.message}</h2>
+    <div>
+      <p>
+        <strong>Email:</strong> {response.user.email}
+      </p>
+      <p>
+        <strong>Password:</strong> {response.user.password}
+      </p>
+    </div>
+    <div className="w-full flex justify-start">
+      <CopyButton credentialsString={credentialsString} />
+    </div>
+  </div>
+);
 
-
-const UserCreation = () => {
+const UserCreation = ({ onSuccess }: UserCreationProps) => {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -88,6 +96,7 @@ const UserCreation = () => {
     dob: "",
     country: "",
     city: "",
+    type: "NORMAL",
     avatar: null,
     isDisabled: false,
     initialCoins: 0,
@@ -117,8 +126,12 @@ const UserCreation = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
       const formDataToSend = new FormData();
+      
+      // Append all form fields to FormData
       Object.entries(formData).forEach(([key, value]) => {
         if (key === "avatar" && value instanceof File) {
           formDataToSend.append(key, value);
@@ -126,35 +139,69 @@ const UserCreation = () => {
           formDataToSend.append(key, String(value));
         }
       });
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+      // Make the API call
+      const response = await fetch("http://10.13.8.4:3000/user/createUser", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: formDataToSend,
+      });
+      for (const pair of formDataToSend.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      // Simulating API call with fake data
-      // const response = await axios.post("/user/create", formDataToSend, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
+      const data: ApiResponse = await response.json();
 
-      // Fake response data
-      const fakeResponse = {
-        username: formData.name,
-        email: formData.email,
-        password: "generatedPassword123!",
-      };
-
-      const credentialsString = `Username: ${fakeResponse.username}\nEmail: ${fakeResponse.email}\nPassword: ${fakeResponse.password}`;
+      // Create credentials string for copying
+      const credentialsString = `Email: ${data.user.email}\nPassword: ${data.user.password}`;
+      
+      // Show success toast
       toast({
-        description: <ToastContent fakeResponse={fakeResponse} credentialsString={credentialsString} />,
+        description: <ToastContent response={data} credentialsString={credentialsString} />,
         duration: 5000,
       });
 
-      console.log("hhh", fakeResponse);
+      // Reset form after successful submission
+      setFormData({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        role: "USER",
+        gender: "",
+        dob: "",
+        country: "",
+        city: "",
+        type: "NORMAL",
+        avatar: null,
+        isDisabled: false,
+        initialCoins: 0,
+        initialDiamonds: 0,
+      });
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error("Error creating user:", error);
       toast({
         title: "Error",
-        description: "Failed to create user. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to create user. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -207,18 +254,6 @@ const UserCreation = () => {
                     required
                   />
                 </div>
-                {/* <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    className="rounded-[6px]"
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    minLength={6}
-                  />
-                </div> */}
                 <div className="space-y-2">
                   <Label htmlFor="gender">Gender</Label>
                   <Input
@@ -260,7 +295,6 @@ const UserCreation = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="avatar">Avatar</Label>
                   <Input
@@ -315,14 +349,15 @@ const UserCreation = () => {
                 )}
               </div>
               <AlertDialogFooter>
-                <AlertDialogCancel className="rounded-[10px]">
+                <AlertDialogCancel className="rounded-[10px]" disabled={isLoading}>
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction
                   type="submit"
                   className="rounded-[10px] bg-green-600 hover:bg-green-700"
+                  disabled={isLoading}
                 >
-                  Create User
+                  {isLoading ? "Creating..." : "Create User"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </form>

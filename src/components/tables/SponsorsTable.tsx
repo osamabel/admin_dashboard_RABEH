@@ -39,14 +39,13 @@ import { Delete } from "../dialog/Delete";
 import SponsorUpdate from "../dialog/UpdateSponsor";
 import { useToast } from "@/hooks/use-toast";
 
-const formatDate = (dateString: string) => {
+export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = date.toLocaleString('default', { month: 'short' });
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = date.toLocaleString("default", { month: "short" });
   const year = date.getFullYear();
   return `${day} ${month}, ${year}`;
 };
-
 
 export type Sponsor = {
   id: string;
@@ -78,13 +77,19 @@ export const columns: ColumnDef<Sponsor>[] = [
         <div className="capitalize pl-[20px] via-fuchsia-400">
           <div className="flex items-center gap-x-[10px]">
             <div className="w-[45px] aspect-square border rounded-full ">
-            {logo ?
-              <img className="w-full h-full rounded-full object-cover" src={`http://10.11.10.13:3000/${logo}`} alt="" />
-              :
-              <div className="w-full h-full flex items-center justify-center opacity-65">{name[0]}</div>
-            }
+              {logo ? (
+                <img
+                  className="w-full h-full rounded-full object-cover"
+                  src={`http://10.13.8.4:3000/${logo}`}
+                  alt=""
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center opacity-65">
+                  {name[0]}
+                </div>
+              )}
             </div>
-            
+
             <div>{row.getValue("name")}</div>
           </div>
         </div>
@@ -122,9 +127,7 @@ export const columns: ColumnDef<Sponsor>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">
-        {formatDate(row.getValue("createdAt"))}
-      </div>
+      <div className="pl-[20px]">{formatDate(row.getValue("createdAt"))}</div>
     ),
   },
   {
@@ -136,9 +139,21 @@ export const columns: ColumnDef<Sponsor>[] = [
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-                    ${status.toLocaleLowerCase() === "active" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
-                    ${status.toLocaleLowerCase() === "rejected" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
-                    ${status.toLocaleLowerCase() === "inactive" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
+                    ${
+                      status.toLocaleLowerCase() === "active"
+                        ? "text-[#0FB71D] bg-[#D0FFCF]"
+                        : ""
+                    }
+                    ${
+                      status.toLocaleLowerCase() === "rejected"
+                        ? "text-[#FF3A3A] bg-[#FFE0E0]"
+                        : ""
+                    }
+                    ${
+                      status.toLocaleLowerCase() === "inactive"
+                        ? "text-[#F49301] bg-[#FFE4BB]"
+                        : ""
+                    }`}
           >
             {status.toLocaleLowerCase()}
           </div>
@@ -155,23 +170,23 @@ export const columns: ColumnDef<Sponsor>[] = [
 
       return (
         <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem asChild>
-            <SponsorUpdate sponsorId={sponsor.id} />
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Delete id={sponsor.id}  api={'sponsor'} />
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <SponsorUpdate sponsorId={sponsor.id} />
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Delete id={sponsor.id} api={"sponsor"} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },
@@ -185,25 +200,28 @@ export function SponsorsTables() {
   const { toast } = useToast();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   // Fetch sponsors
   const fetchSponsors = async () => {
     try {
-      const token = localStorage.getItem('jwt_token');
+      const token = localStorage.getItem("jwt_token");
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.11.10.13:3000/sponsor", {
+      const response = await fetch("http://10.13.8.4:3000/sponsor", {
         method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -212,7 +230,7 @@ export function SponsorsTables() {
 
       const data = await response.json();
       setSponsors(data);
-      console.log("SSS", data)
+      console.log("SSS", data);
     } catch (error) {
       console.error("Error fetching sponsors:", error);
       toast({
@@ -289,9 +307,9 @@ export function SponsorsTables() {
           }
           className="max-w-sm rounded-[6px]"
         />
-        <Button 
-          onClick={() => fetchSponsors()} 
-          variant="outline" 
+        <Button
+          onClick={() => fetchSponsors()}
+          variant="outline"
           className="ml-2 rounded-[6px]"
         >
           Refresh
@@ -371,7 +389,7 @@ export function SponsorsTables() {
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          <SponsorCreation/>
+          <SponsorCreation />
         </div>
         <div className="space-x-2">
           <Button

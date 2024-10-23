@@ -40,64 +40,66 @@ const SponsorCreation = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     try {
       const formData = new FormData();
       formData.append("name", sponsorData.name);
       if (sponsorData.avatar) {
         formData.append("logo", sponsorData.avatar);
       }
-  
+
       // Get token from localStorage or wherever you store it
-      const token = localStorage.getItem('jwt_token');
-      
+      const token = localStorage.getItem("jwt_token");
+
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("No authentication token found");
       }
-  
+
       // Log FormData contents for debugging
-  
-      const response = await fetch("http://10.11.10.13:3000/sponsor", {
+
+      const response = await fetch("http://10.13.8.4:3000/sponsor", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
-        credentials: 'include',
-        body: formData
+        credentials: "include",
+        body: formData,
       });
-  
+
       if (!response.ok) {
         // Try to get error message from response
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+        );
       }
-  
+
       const data = await response.json();
       console.log("Success response:", data);
-  
+
       toast({
         title: "Sponsor Created",
         description: "Sponsor has been successfully created.",
       });
-  
+
       setIsOpen(false);
       setSponsorData({ name: "", avatar: null });
       window.location.reload();
     } catch (error) {
       console.error("Error creating sponsor:", error);
-      
+
       // More specific error handling
       let errorMessage = "Failed to create sponsor. Please try again.";
-      
+
       if (error instanceof Error) {
-        if (error.message.includes('401')) {
+        if (error.message.includes("401")) {
           errorMessage = "Authentication failed. Please log in again.";
-        } else if (error.message.includes('413')) {
+        } else if (error.message.includes("413")) {
           errorMessage = "File size too large. Please choose a smaller image.";
         }
       }
-  
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -110,7 +112,7 @@ const SponsorCreation = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button className="rounded-[6px]" variant="default">
-            Create Sponsor
+          Create Sponsor
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -123,7 +125,8 @@ const SponsorCreation = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input className="rounded-[6px]"
+            <Input
+              className="rounded-[6px]"
               id="name"
               name="name"
               value={sponsorData.name}
@@ -135,10 +138,22 @@ const SponsorCreation = () => {
             <Label htmlFor="avatar">Avatar</Label>
             <div className="flex items-center space-x-4">
               <Avatar>
-                <AvatarImage src={sponsorData.avatar ? URL.createObjectURL(sponsorData.avatar) : undefined} />
+                <AvatarImage
+                  src={
+                    sponsorData.avatar
+                      ? URL.createObjectURL(sponsorData.avatar)
+                      : undefined
+                  }
+                />
                 <AvatarFallback>{sponsorData.name.charAt(0)}</AvatarFallback>
               </Avatar>
-              <Input className="rounded-[6px]" id="avatar" type="file" onChange={handleAvatarChange} accept="image/*" />
+              <Input
+                className="rounded-[6px]"
+                id="avatar"
+                type="file"
+                onChange={handleAvatarChange}
+                accept="image/*"
+              />
             </div>
           </div>
           {/* <div className="space-y-2">
@@ -155,7 +170,9 @@ const SponsorCreation = () => {
             </Select>
           </div> */}
           <DialogFooter>
-            <Button className="rounded-[6px]" type="submit">Create Sponsor</Button>
+            <Button className="rounded-[6px]" type="submit">
+              Create Sponsor
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
