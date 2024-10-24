@@ -40,10 +40,10 @@ import { Delete } from "../dialog/Delete";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
 
-interface sponsor{
-  logo: string
-  name: string
-  status: string
+interface sponsor {
+  logo: string;
+  name: string;
+  status: string;
 }
 
 export type Game = {
@@ -117,7 +117,9 @@ export const columns: ColumnDef<Game>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">{row.getValue("requiredDiamonds")}</div>
+      <div className="lowercase pl-[30px]">
+        {row.getValue("requiredDiamonds")}
+      </div>
     ),
   },
   {
@@ -146,10 +148,26 @@ export const columns: ColumnDef<Game>[] = [
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-                    ${status.toLocaleLowerCase() === "pending" ? "text-[#626262] bg-[#F1F1F1]" : ""}
-                    ${status.toLocaleLowerCase() === "started" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
-                    ${status.toLocaleLowerCase() === "closed" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
-                    ${status.toLocaleLowerCase() === "ended" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
+                    ${
+                      status.toLocaleLowerCase() === "pending"
+                        ? "text-[#626262] bg-[#F1F1F1]"
+                        : ""
+                    }
+                    ${
+                      status.toLocaleLowerCase() === "started"
+                        ? "text-[#0FB71D] bg-[#D0FFCF]"
+                        : ""
+                    }
+                    ${
+                      status.toLocaleLowerCase() === "closed"
+                        ? "text-[#FF3A3A] bg-[#FFE0E0]"
+                        : ""
+                    }
+                    ${
+                      status.toLocaleLowerCase() === "ended"
+                        ? "text-[#F49301] bg-[#FFE4BB]"
+                        : ""
+                    }`}
           >
             {status.toLocaleLowerCase()}
           </div>
@@ -175,14 +193,13 @@ export const columns: ColumnDef<Game>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Delete api={'game'} id={game.id} />
+              <Delete api={"game"} id={game.id} />
             </DropdownMenuItem>
-            {
-              !game.isReported &&
+            {!game.isReported && (
               <DropdownMenuItem asChild>
                 <GameReportGeneration game={game} />
               </DropdownMenuItem>
-            }
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -197,8 +214,11 @@ export function DataTableDemo() {
   const { toast } = useToast();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   // Fetch games from API
@@ -208,46 +228,51 @@ export function DataTableDemo() {
       if (!token) {
         throw new Error("No authentication token found");
       }
-  
-      const response = await fetch("http://10.13.8.4:3000/dashboard/allGames", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-        credentials: "include",
-      });
-  
+
+      const response = await fetch(
+        "http://10.32.108.154:3000/dashboard/allGames",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-      
+
       // Transform the data to match the Game type
-      const transformedData = Array.isArray(data) 
-        ? data.map(game => ({
+      const transformedData = Array.isArray(data)
+        ? data.map((game) => ({
             id: game.id.toString(),
             name: game.name,
-            createdAt: game.createdAt,  // Keep as is, as per Game type
+            createdAt: game.createdAt, // Keep as is, as per Game type
             requiredDiamonds: game.requiredDiamonds,
-            sponsorId: game.sponsorId?.map((s: sponsor) => ({
-              name: s.name,
-              logo: s.logo,
-              status: s.status
-            })) || [],
+            sponsorId:
+              game.sponsorId?.map((s: sponsor) => ({
+                name: s.name,
+                logo: s.logo,
+                status: s.status,
+              })) || [],
             licenseId: game.licenseId,
             status: game.status as "created" | "started" | "ended" | "closed",
-            winners: game.winners?.map((w: any) => ({
-              id: w.id || '',
-              name: w.name || '',
-              avatar: w.avatar || ''
-            })) || [],
+            winners:
+              game.winners?.map((w: any) => ({
+                id: w.id || "",
+                name: w.name || "",
+                avatar: w.avatar || "",
+              })) || [],
             prizes: game.prizes || [],
-            isReported: game.isReported
+            isReported: game.isReported,
           }))
         : [];
-  
+
       setGames(transformedData);
     } catch (error: any) {
       console.error("Error fetching games:", error);
@@ -265,7 +290,7 @@ export function DataTableDemo() {
   }, []);
 
   const table = useReactTable({
-    data : games,
+    data: games,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

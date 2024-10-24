@@ -33,7 +33,7 @@ export const Delete = forwardRef<HTMLDivElement, DeleteProps>(
           throw new Error("No authentication token found");
         }
 
-        const response = await fetch(`http://10.13.8.4:3000/${api}/${id}`, {
+        const response = await fetch(`http://10.32.108.154:3000/${api}/${id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

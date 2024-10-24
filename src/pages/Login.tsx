@@ -26,14 +26,17 @@ const Login = () => {
     setIsError(false);
 
     try {
-      const response = await fetch("http://10.13.8.4:3000/auth/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ email: username, password }),
-      });
+      const response = await fetch(
+        "http://10.32.108.154:3000/auth/admin/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ email: username, password }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();

@@ -13,15 +13,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -33,50 +31,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Delete } from "../dialog/Delete";
-import { Donate } from "../dialog/Donate";
-import UserCration from "../dialog/UserCreation";
-import UpdateUser from "../dialog/UpdateUser";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { Delete } from "@/components/dialog/Delete";
 
-export type User = {
+interface StoreItem {
   id: number;
   name: string;
-  phoneNumber: string;
-  email: string;
-  gender: string;
-  points: number;
-  totalPoints: number;
-  type: string;
-  diamonds: number;
-  avatar: string | null;
-  createAt: string;
-};
+  price: number;
+  reward: number;
+}
 
-
-export function UserTable() {
+export function StoreTable() {
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = React.useState(1);
-  const [users, setUsers] = React.useState<User[]>([]);
+  const [items, setItems] = React.useState<StoreItem[]>([]);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const { toast } = useToast();
 
-  // Add these state declarations
+  // Form state
+  const [formData, setFormData] = React.useState({
+    name: "",
+    price: 0,
+    reward: 0,
+  });
+
+  // Table state
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const fetchUsers = async () => {
+  const fetchItems = async () => {
     try {
       const token = localStorage.getItem("jwt_token");
       if (!token) {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.32.108.154:3000/user", {
+      const response = await fetch("http://10.32.108.154:3000/store", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -86,27 +89,93 @@ export function UserTable() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error("Failed to fetch store items");
       }
 
       const data = await response.json();
-      setUsers(data);
+      setItems(data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching items:", error);
       toast({
         title: "Error",
-        description: "Failed to load users. Please try again.",
+        description: "Failed to load store items. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  // Fetch users on component mount
   React.useEffect(() => {
-    fetchUsers();
+    fetchItems();
   }, []);
 
-  const columns: ColumnDef<User>[] = [
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev : any) => ({
+      ...prev,
+      [name]: name === "name" ? value : Number(value),
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || formData.price <= 0 || formData.reward <= 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all fields with valid values.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      const response = await fetch("http://10.32.108.154:3000/store", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create store item");
+      }
+
+      toast({
+        title: "Success",
+        description: "Store item created successfully.",
+      });
+
+      setFormData({
+        name: "",
+        price: 0,
+        reward: 0,
+      });
+      setIsOpen(false);
+      fetchItems();
+    } catch (error) {
+      console.error("Error creating item:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create store item. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const columns: ColumnDef<StoreItem>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -120,58 +189,19 @@ export function UserTable() {
           </Button>
         );
       },
-      cell: ({ row }) => {
-        const avatar = row.original.avatar;
-        return (
-          <div className="capitalize pl-[20px] via-fuchsia-400">
-            <div className="flex items-center gap-x-[10px]">
-              <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
-                {avatar ? (
-                  <img
-                    src={`http://10.32.108.154:3000/${avatar}`}
-                    alt={row.original.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center opacity-65">
-                    {row.original.name[0]}
-                  </div>
-                )}
-              </div>
-              <div>{row.original.name}</div>
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "createAt",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Created at
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
       cell: ({ row }) => (
-        <div className="lowercase pl-[20px]">
-          {new Date(row.original.createAt).toLocaleDateString()}
-        </div>
+        <div className="capitalize pl-[20px]">{row.getValue("name")}</div>
       ),
     },
     {
-      accessorKey: "points",
+      accessorKey: "price",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Points
+            Price
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -180,20 +210,20 @@ export function UserTable() {
         <div className="lowercase pl-[30px]">
           <div className="flex gap-x-[10px]">
             <img width={20} src="/coin.svg" alt="" />
-            <p>{row.original.points}</p>
+            <p>{row.getValue("price")}</p>
           </div>
         </div>
       ),
     },
     {
-      accessorKey: "diamonds",
+      accessorKey: "reward",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Diamonds
+            Reward
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -202,64 +232,28 @@ export function UserTable() {
         <div className="lowercase pl-[30px]">
           <div className="flex gap-x-[10px]">
             <img width={20} src="/diamond.svg" alt="" />
-            <p>{row.original.diamonds}</p>
+            <p>{row.getValue("reward")}</p>
           </div>
         </div>
-      ),
-    },
-    {
-      accessorKey: "totalPoints",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Total Points
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">{row.original.totalPoints}</div>
-      ),
-    },
-    {
-      accessorKey: "type",
-      header: "Type",
-      cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">{row.original.type}</div>
       ),
     },
     {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const User = row.original;
-  
+        const item = row.original;
+        
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
+              <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-[10px]">
-              {/* <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(User.id)}>
-                Copy User ID
-              </DropdownMenuItem> */}
               <DropdownMenuItem className="p-0" asChild>
-                <UpdateUser userId={User.id} onUpdate={fetchUsers}  />
-              </DropdownMenuItem>
-    
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="p-0" asChild>
-                <Delete id={User.id} api={"user/delete"} />
-              </DropdownMenuItem>
-              <DropdownMenuItem className="p-0" asChild>
-                <Donate userId={User.id} />
+                <Delete id={item.id} api={"store"}/>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -269,7 +263,7 @@ export function UserTable() {
   ];
 
   const table = useReactTable({
-    data: users,
+    data: items,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -292,6 +286,7 @@ export function UserTable() {
       },
     },
   });
+
   React.useEffect(() => {
     const updatePageSize = () => {
       if (elementRef.current) {
@@ -301,13 +296,10 @@ export function UserTable() {
       }
     };
     updatePageSize();
-    // Add event listener for window resize
     window.addEventListener("resize", updatePageSize);
-    // Cleanup
     return () => window.removeEventListener("resize", updatePageSize);
   }, []);
 
-  // Update table's page size when pageSize state changes
   React.useEffect(() => {
     table.setPageSize(pageSize);
   }, [pageSize, table]);
@@ -316,7 +308,7 @@ export function UserTable() {
     <div ref={elementRef} className="w-full h-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by Game name..."
+          placeholder="Search by item name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -350,7 +342,8 @@ export function UserTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-[6px] border ">
+
+      <div className="rounded-[6px] border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -400,9 +393,85 @@ export function UserTable() {
           </TableBody>
         </Table>
       </div>
+
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          <UserCration onSuccess={fetchUsers} />
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button className="rounded-[6px]">
+                <Plus className="mr-2 h-4 w-4" />
+                Create New Item
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] !rounded-[10px]">
+              <DialogHeader>
+                <DialogTitle>Create Store Item</DialogTitle>
+                <DialogDescription>
+                  Add a new item to the store. Fill in all the required information.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit}>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="rounded-[6px]"
+                      placeholder="Enter item name"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="price">Price (Coins)</Label>
+                    <Input
+                      id="price"
+                      name="price"
+                      type="number"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      className="rounded-[6px]"
+                      min="0"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="reward">Reward (Diamonds)</Label>
+                    <Input
+                      id="reward"
+                      name="reward"
+                      type="number"
+                      value={formData.reward}
+                      onChange={handleInputChange}
+                      className="rounded-[6px]"
+                      min="0"
+                      required
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-[6px]"
+                    onClick={() => setIsOpen(false)}
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    className="rounded-[6px]"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Creating..." : "Create"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="space-x-2">
           <Button
@@ -414,17 +483,17 @@ export function UserTable() {
           >
             Previous
           </Button>
-          <Button
-            className="rounded-[6px]"
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
+          <Button className="rounded-[6px]"
+                   variant="outline"
+                   size="sm"
+                   onClick={() => table.nextPage()}
+                   disabled={!table.getCanNextPage()}
+                 >
+                   Next
+                 </Button>
+               </div>
+             </div>
+           </div>
+         );
+       }
+       export default StoreTable;

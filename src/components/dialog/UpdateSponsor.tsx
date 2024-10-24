@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { PenBox } from "lucide-react";
 
-
 interface SponsorData {
   name: string;
   status: string;
@@ -59,7 +58,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
           throw new Error("No authentication token found");
         }
         const response = await fetch(
-          `http://10.13.8.4:3000/sponsor/${sponsorId}`,
+          `http://10.32.108.154:3000/sponsor/${sponsorId}`,
           {
             method: "GET",
             headers: {
@@ -141,7 +140,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
         }
 
         const response = await fetch(
-          `http://10.13.8.4:3000/sponsor/${sponsorId}`,
+          `http://10.32.108.154:3000/sponsor/${sponsorId}`,
           {
             method: "PATCH",
             headers: {
@@ -184,91 +183,90 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
 
     return (
       <div ref={ref}>
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="flex items-center justify-start gap-x-[10px] p-[5px] border-none h-auto w-full hover:bg-transparent"
-          >
-            <PenBox width={16} />
-            <p>Update Sponsor</p>
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="sm:max-w-[425px] !rounded-[10px]">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Update Sponsor</AlertDialogTitle>
-            <AlertDialogDescription>
-              Make changes to the sponsor's information here.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                name="name"
-                value={sponsorData.name}
-                onChange={handleInputChange}
-                className="rounded-[6px]"
-                placeholder="Enter sponsor name"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="avatar">Logo</Label>
-              <div className="flex items-center gap-4">
-                {/* Show current logo if exists */}
-                {sponsorData.logo && (
-                  <img
-                    src={`http://10.13.8.4:3000/${sponsorData.logo}`}
-                    alt="Current logo"
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                )}
+        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="flex items-center justify-start gap-x-[10px] p-[5px] border-none h-auto w-full hover:bg-transparent"
+            >
+              <PenBox width={16} />
+              <p>Update Sponsor</p>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="sm:max-w-[425px] !rounded-[10px]">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Update Sponsor</AlertDialogTitle>
+              <AlertDialogDescription>
+                Make changes to the sponsor's information here.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
                 <Input
-                  id="avatar"
-                  type="file"
-                  onChange={handleAvatarChange}
-                  accept="image/*"
+                  id="name"
+                  name="name"
+                  value={sponsorData.name}
+                  onChange={handleInputChange}
                   className="rounded-[6px]"
+                  placeholder="Enter sponsor name"
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
-              <Select
-                onValueChange={handleSelectChange}
-                value={sponsorData.status.toLowerCase()}
-              >
-                <SelectTrigger className="rounded-[6px]">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <AlertDialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsOpen(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Update Sponsor"}
-              </Button>
-            </AlertDialogFooter>
-          </form>
-        </AlertDialogContent>
-      </AlertDialog>
+              <div className="space-y-2">
+                <Label htmlFor="avatar">Logo</Label>
+                <div className="flex items-center gap-4">
+                  {/* Show current logo if exists */}
+                  {sponsorData.logo && (
+                    <img
+                      src={`http://10.32.108.154:3000/${sponsorData.logo}`}
+                      alt="Current logo"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  )}
+                  <Input
+                    id="avatar"
+                    type="file"
+                    onChange={handleAvatarChange}
+                    accept="image/*"
+                    className="rounded-[6px]"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  onValueChange={handleSelectChange}
+                  value={sponsorData.status.toLowerCase()}
+                >
+                  <SelectTrigger className="rounded-[6px]">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <AlertDialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsOpen(false)}
+                  disabled={isLoading}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? "Updating..." : "Update Sponsor"}
+                </Button>
+              </AlertDialogFooter>
+            </form>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   }
 );
-
 
 export default SponsorUpdate;

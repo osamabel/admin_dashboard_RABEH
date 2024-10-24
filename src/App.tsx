@@ -9,6 +9,7 @@ import Sponsors from "./pages/Sponsors";
 import QuizCreator from "./components/Quiz";
 import Reports from "./pages/Reports";
 import { useEffect, useState } from "react";
+import Store from "./pages/Store";
 
 const ProtectedRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -17,7 +18,7 @@ const ProtectedRoute = () => {
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem("jwt_token");
-        const response = await fetch("http://10.13.8.4:3000/auth/check-auth", {
+        const response = await fetch("http://10.32.108.154:3000/auth/check-auth", {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -70,6 +71,7 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/sponsors" element={<Sponsors />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/store" element={<Store />} />
           <Route path="/newQuiz" element={<QuizCreator />} />
         </Route>
       </Route>

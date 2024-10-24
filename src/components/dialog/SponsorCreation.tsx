@@ -57,7 +57,7 @@ const SponsorCreation = () => {
 
       // Log FormData contents for debugging
 
-      const response = await fetch("http://10.13.8.4:3000/sponsor", {
+      const response = await fetch("http://10.32.108.154:3000/sponsor", {
         method: "POST",
         headers: {
           Accept: "application/json",

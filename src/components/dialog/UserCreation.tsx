@@ -2,8 +2,6 @@ import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -67,7 +65,13 @@ const CopyButton = ({ credentialsString }: { credentialsString: string }) => {
   );
 };
 
-const ToastContent = ({ response, credentialsString }: { response: ApiResponse; credentialsString: string }) => (
+const ToastContent = ({
+  response,
+  credentialsString,
+}: {
+  response: ApiResponse;
+  credentialsString: string;
+}) => (
   <div className="flex flex-col justify-end gap-y-[20px]">
     <h2 className="text-[20px]">{response.message}</h2>
     <div>
@@ -87,6 +91,7 @@ const ToastContent = ({ response, credentialsString }: { response: ApiResponse; 
 const UserCreation = ({ onSuccess }: UserCreationProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -107,7 +112,17 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "initialCoins" || name === "initialDiamonds") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: Number(value) , // Convert the value to a number
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSwitchChange = (checked: boolean) => {
@@ -126,11 +141,22 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+     const requiredFields = ['name', 'email', 'phoneNumber', 'gender', 'dob', 'country', 'city'];
+    const missingFields = requiredFields.filter(field => !formData[field as keyof FormData]);
+    
+    if (missingFields.length > 0) {
+      toast({
+        title: "Error",
+        description: `Please fill in all required fields: ${missingFields.join(', ')}`,
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
 
     try {
       const formDataToSend = new FormData();
-      
+
       // Append all form fields to FormData
       Object.entries(formData).forEach(([key, value]) => {
         if (key === "avatar" && value instanceof File) {
@@ -139,35 +165,38 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
           formDataToSend.append(key, String(value));
         }
       });
+      
       const token = localStorage.getItem("jwt_token");
       if (!token) {
         throw new Error("No authentication token found");
       }
       // Make the API call
-      const response = await fetch("http://10.13.8.4:3000/user/createUser", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: formDataToSend,
-      });
-      for (const pair of formDataToSend.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      const response = await fetch(
+        "http://10.32.108.154:3000/user/createUser",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          credentials: "include",
+          body: formDataToSend,
+        }
+      );
+      const data: ApiResponse = await response.json();
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`ERROR: ${data.message}`);
       }
 
-      const data: ApiResponse = await response.json();
 
       // Create credentials string for copying
       const credentialsString = `Email: ${data.user.email}\nPassword: ${data.user.password}`;
-      
+
       // Show success toast
       toast({
-        description: <ToastContent response={data} credentialsString={credentialsString} />,
+        description: (
+          <ToastContent response={data} credentialsString={credentialsString} />
+        ),
         duration: 5000,
       });
 
@@ -194,7 +223,10 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
       console.error("Error creating user:", error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create user. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to create user. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -203,7 +235,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button className="rounded-[6px]" variant="default">
           Create new User
@@ -215,13 +247,15 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
         </AlertDialogTitle>
         <Card className="w-full border-none shadow-none">
           <CardHeader className="p-0">
-            <AlertDialogDescription>Create a new User</AlertDialogDescription>
+            <AlertDialogDescription>
+              Create a new User (Fields marked with * are required)
+            </AlertDialogDescription>
           </CardHeader>
           <CardContent className="p-0 mt-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+              <div className="space-y-2">
+                  <Label htmlFor="name">Name *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="name"
@@ -229,10 +263,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
+                    placeholder="Enter name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="email"
@@ -241,10 +276,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
+                    placeholder="Enter email"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Label htmlFor="phoneNumber">Phone Number *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="phoneNumber"
@@ -252,20 +288,23 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     required
+                    placeholder="Enter phone number"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="gender">Gender</Label>
+                  <Label htmlFor="gender">Gender *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="gender"
                     name="gender"
                     value={formData.gender}
                     onChange={handleInputChange}
+                    required
+                    placeholder="Enter gender"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="dob">Date of Birth</Label>
+                  <Label htmlFor="dob">Date of Birth *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="dob"
@@ -273,26 +312,31 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     type="date"
                     value={formData.dob}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="country">Country</Label>
+                  <Label htmlFor="country">Country *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="country"
                     name="country"
                     value={formData.country}
                     onChange={handleInputChange}
+                    required
+                    placeholder="Enter country"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="city">City *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="city"
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
+                    required
+                    placeholder="Enter city"
                   />
                 </div>
                 <div className="space-y-2">
@@ -349,16 +393,22 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                 )}
               </div>
               <AlertDialogFooter>
-                <AlertDialogCancel className="rounded-[10px]" disabled={isLoading}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-[10px]"
+                  disabled={isLoading}
+                  onClick={() => setIsOpen(false)}
+                >
                   Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
+                </Button>
+                <Button
                   type="submit"
                   className="rounded-[10px] bg-green-600 hover:bg-green-700"
                   disabled={isLoading}
                 >
                   {isLoading ? "Creating..." : "Create User"}
-                </AlertDialogAction>
+                </Button>
               </AlertDialogFooter>
             </form>
           </CardContent>

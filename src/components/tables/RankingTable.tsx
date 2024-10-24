@@ -33,7 +33,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import UpdateUser from "../dialog/UpdateUser";
 import { Delete } from "../dialog/Delete";
 import { Donate } from "../dialog/Donate";
 
@@ -489,9 +488,6 @@ export const columns: ColumnDef<User>[] = [
           >
             Copy User ID
           </DropdownMenuItem> */}
-          <DropdownMenuItem className="p-0" asChild>
-              <UpdateUser userId={User.id} />
-          </DropdownMenuItem>
           {/* <DropdownMenuItem className="p-0" asChild>
             <Button
               variant="outline"

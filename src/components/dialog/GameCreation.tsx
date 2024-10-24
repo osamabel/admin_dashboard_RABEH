@@ -57,7 +57,7 @@ const GameCration: React.FC = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.13.8.4:3000/sponsor", {
+      const response = await fetch("http://10.32.108.154:3000/sponsor", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -132,14 +132,16 @@ const GameCration: React.FC = () => {
           }
 
           // Validate the structure of each question
-          const isValidQuizFormat = parsedContent.every((question: any) => 
-            typeof question.question === 'string' &&
-            Array.isArray(question.options) &&
-            typeof question.time === 'number' &&
-            question.options.every((option: any) => 
-              typeof option.text === 'string' &&
-              typeof option.isCorrect === 'boolean'
-            )
+          const isValidQuizFormat = parsedContent.every(
+            (question: any) =>
+              typeof question.question === "string" &&
+              Array.isArray(question.options) &&
+              typeof question.time === "number" &&
+              question.options.every(
+                (option: any) =>
+                  typeof option.text === "string" &&
+                  typeof option.isCorrect === "boolean"
+              )
           );
 
           if (!isValidQuizFormat) {
@@ -160,7 +162,8 @@ const GameCration: React.FC = () => {
           console.error("Error parsing quiz file:", error);
           toast({
             title: "Error",
-            description: "Invalid quiz file format. Please check the file structure.",
+            description:
+              "Invalid quiz file format. Please check the file structure.",
             variant: "destructive",
           });
         }
@@ -173,7 +176,11 @@ const GameCration: React.FC = () => {
     e.preventDefault();
     try {
       // Validate required fields
-      if (!formData.gameName || !formData.startingDate || !formData.requiredDiamond) {
+      if (
+        !formData.gameName ||
+        !formData.startingDate ||
+        !formData.requiredDiamond
+      ) {
         throw new Error("Please fill in all required fields");
       }
 
@@ -191,10 +198,10 @@ const GameCration: React.FC = () => {
       const requestBody = {
         ...formData,
         requiredDiamond: parseInt(formData.requiredDiamond, 10),
-        prizes: formData.prizes.filter(prize => prize !== ""), // Remove empty prizes
+        prizes: formData.prizes.filter((prize) => prize !== ""), // Remove empty prizes
       };
 
-      const response = await fetch("http://10.13.8.4:3000/game/create", {
+      const response = await fetch("http://10.32.108.154:3000/game/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -223,7 +230,8 @@ const GameCration: React.FC = () => {
       console.error("Error submitting form:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to create the game. Please try again.",
+        description:
+          error.message || "Failed to create the game. Please try again.",
         variant: "destructive",
       });
     }

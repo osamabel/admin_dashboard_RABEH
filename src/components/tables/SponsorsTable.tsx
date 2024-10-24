@@ -80,7 +80,7 @@ export const columns: ColumnDef<Sponsor>[] = [
               {logo ? (
                 <img
                   className="w-full h-full rounded-full object-cover"
-                  src={`http://10.13.8.4:3000/${logo}`}
+                  src={`http://10.32.108.154:3000/${logo}`}
                   alt=""
                 />
               ) : (
@@ -215,7 +215,7 @@ export function SponsorsTables() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.13.8.4:3000/sponsor", {
+      const response = await fetch("http://10.32.108.154:3000/sponsor", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
