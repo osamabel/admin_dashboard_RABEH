@@ -37,7 +37,7 @@ interface UserData {
 
 interface UpdateUserProps {
   userId: number;
-  onUpdate?: () => void;  // Add this prop for refetching
+  onUpdate?: () => void; // Add this prop for refetching
 }
 
 const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
@@ -60,23 +60,23 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
     const fetchUserData = async (id: number) => {
       try {
         setIsLoading(true);
-      
-        const response = await fetch(`http://10.32.108.154:3000/user/${id}`,{
+
+        const response = await fetch(`http://145.223.117.65:3000/user/${id}`, {
           method: "GET",
           headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-        credentials: "include",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          credentials: "include",
         });
         // const d = await response.json(); console.log(">>>>", d)
         if (!response.ok) {
-          throw new Error('Failed to fetch user data');
+          throw new Error("Failed to fetch user data");
         }
         const data = await response.json();
         setUserData(data);
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error("Error fetching user:", error);
         toast({
           title: "Error",
           description: "Failed to fetch user data. Please try again.",
@@ -108,23 +108,26 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
 
       try {
         setIsLoading(true);
-        
+
         // Handle avatar upload if there's a new file
         let avatarUrl = userData.avatar;
         if (avatarFile) {
           const formData = new FormData();
-          formData.append('avatar', avatarFile);
+          formData.append("avatar", avatarFile);
           // Assuming you have an avatar upload endpoint
-          const uploadResponse = await fetch(`http://10.32.108.154:3000/user/${userData.id}/upload-avatar`, {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-            credentials: "include",
-            body: formData,
-          });
-          // const d = await upl 
+          const uploadResponse = await fetch(
+            `http://145.223.117.65:3000/user/${userData.id}/upload-avatar`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+              },
+              credentials: "include",
+              body: formData,
+            }
+          );
+          // const d = await upl
           if (uploadResponse.ok) {
             const { url } = await uploadResponse.json();
             avatarUrl = url;
@@ -133,22 +136,25 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
 
         const { id, ...userDataWithoutId } = userData;
         // Update user data
-        const response = await fetch(`http://10.32.108.154:3000/user/${userData.id}`, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            ...userDataWithoutId,
-            avatar: avatarUrl,
-          }),
-        });
+        const response = await fetch(
+          `http://145.223.117.65:3000/user/${userData.id}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              ...userDataWithoutId,
+              avatar: avatarUrl,
+            }),
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to update user');
+          throw new Error("Failed to update user");
         }
 
         toast({
@@ -188,8 +194,8 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
             <DialogHeader>
               <DialogTitle>Update User</DialogTitle>
               <DialogDescription>
-                Make changes to the user's information here. Click save when you're
-                done.
+                Make changes to the user's information here. Click save when
+                you're done.
               </DialogDescription>
             </DialogHeader>
             {isLoading && <div className="text-center py-4">Loading...</div>}
@@ -233,7 +239,9 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
                   <div className="space-y-2">
                     <Label htmlFor="gender">Gender</Label>
                     <Select
-                      onValueChange={(value) => handleSelectChange("gender", value)}
+                      onValueChange={(value) =>
+                        handleSelectChange("gender", value)
+                      }
                       value={userData.gender}
                     >
                       <SelectTrigger className="rounded-[6px]">
@@ -280,7 +288,10 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
                     <Label htmlFor="type">User Type</Label>
                     <Select
                       onValueChange={(value) =>
-                        handleSelectChange("type", value as "NORMAL" | "SPECIAL")
+                        handleSelectChange(
+                          "type",
+                          value as "NORMAL" | "SPECIAL"
+                        )
                       }
                       value={userData.type}
                     >
@@ -298,7 +309,9 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
                     <div className="flex items-center space-x-4">
                       <Avatar>
                         <AvatarImage src={userData.avatar || undefined} />
-                        <AvatarFallback>{userData.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>
+                          {userData.name.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
                       <Input
                         className="rounded-[6px]"
@@ -311,12 +324,12 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button 
-                    className="rounded-[6px]" 
+                  <Button
+                    className="rounded-[6px]"
                     type="submit"
                     disabled={isLoading}
                   >
-                    {isLoading ? 'Saving...' : 'Save changes'}
+                    {isLoading ? "Saving..." : "Save changes"}
                   </Button>
                 </DialogFooter>
               </form>

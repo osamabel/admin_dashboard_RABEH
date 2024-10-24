@@ -115,7 +115,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
     if (name === "initialCoins" || name === "initialDiamonds") {
       setFormData((prev) => ({
         ...prev,
-        [name]: Number(value) , // Convert the value to a number
+        [name]: Number(value), // Convert the value to a number
       }));
     } else {
       setFormData((prev) => ({
@@ -141,13 +141,25 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-     const requiredFields = ['name', 'email', 'phoneNumber', 'gender', 'dob', 'country', 'city'];
-    const missingFields = requiredFields.filter(field => !formData[field as keyof FormData]);
-    
+    const requiredFields = [
+      "name",
+      "email",
+      "phoneNumber",
+      "gender",
+      "dob",
+      "country",
+      "city",
+    ];
+    const missingFields = requiredFields.filter(
+      (field) => !formData[field as keyof FormData]
+    );
+
     if (missingFields.length > 0) {
       toast({
         title: "Error",
-        description: `Please fill in all required fields: ${missingFields.join(', ')}`,
+        description: `Please fill in all required fields: ${missingFields.join(
+          ", "
+        )}`,
         variant: "destructive",
       });
       return;
@@ -165,14 +177,14 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
           formDataToSend.append(key, String(value));
         }
       });
-      
+
       const token = localStorage.getItem("jwt_token");
       if (!token) {
         throw new Error("No authentication token found");
       }
       // Make the API call
       const response = await fetch(
-        "http://10.32.108.154:3000/user/createUser",
+        "http://145.223.117.65:3000/user/createUser",
         {
           method: "POST",
           headers: {
@@ -187,7 +199,6 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
       if (!response.ok) {
         throw new Error(`ERROR: ${data.message}`);
       }
-
 
       // Create credentials string for copying
       const credentialsString = `Email: ${data.user.email}\nPassword: ${data.user.password}`;
@@ -254,7 +265,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
           <CardContent className="p-0 mt-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+                <div className="space-y-2">
                   <Label htmlFor="name">Name *</Label>
                   <Input
                     className="rounded-[6px]"

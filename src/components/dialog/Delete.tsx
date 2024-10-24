@@ -33,14 +33,17 @@ export const Delete = forwardRef<HTMLDivElement, DeleteProps>(
           throw new Error("No authentication token found");
         }
 
-        const response = await fetch(`http://10.32.108.154:3000/${api}/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `http://145.223.117.65:3000/${api}/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

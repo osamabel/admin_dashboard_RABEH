@@ -230,7 +230,7 @@ export function DataTableDemo() {
       }
 
       const response = await fetch(
-        "http://10.32.108.154:3000/dashboard/allGames",
+        "http://145.223.117.65:3000/dashboard/allGames",
         {
           method: "GET",
           headers: {

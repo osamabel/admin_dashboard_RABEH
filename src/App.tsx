@@ -18,15 +18,18 @@ const ProtectedRoute = () => {
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem("jwt_token");
-        const response = await fetch("http://10.32.108.154:3000/auth/check-auth", {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          "http://145.223.117.65:3000/auth/check-auth",
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           setIsAuthenticated(false);

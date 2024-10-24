@@ -68,8 +68,11 @@ export function StoreTable() {
 
   // Table state
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const fetchItems = async () => {
@@ -79,7 +82,7 @@ export function StoreTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.32.108.154:3000/store", {
+      const response = await fetch("http://145.223.117.65:3000/store", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -110,7 +113,7 @@ export function StoreTable() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev : any) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: name === "name" ? value : Number(value),
     }));
@@ -118,7 +121,7 @@ export function StoreTable() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || formData.price <= 0 || formData.reward <= 0) {
       toast({
         title: "Validation Error",
@@ -136,7 +139,7 @@ export function StoreTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.32.108.154:3000/store", {
+      const response = await fetch("http://145.223.117.65:3000/store", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -242,7 +245,7 @@ export function StoreTable() {
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
-        
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -253,7 +256,7 @@ export function StoreTable() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-[10px]">
               <DropdownMenuItem className="p-0" asChild>
-                <Delete id={item.id} api={"store"}/>
+                <Delete id={item.id} api={"store"} />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -407,7 +410,8 @@ export function StoreTable() {
               <DialogHeader>
                 <DialogTitle>Create Store Item</DialogTitle>
                 <DialogDescription>
-                  Add a new item to the store. Fill in all the required information.
+                  Add a new item to the store. Fill in all the required
+                  information.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit}>
@@ -461,8 +465,8 @@ export function StoreTable() {
                   >
                     Cancel
                   </Button>
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="rounded-[6px]"
                     disabled={isLoading}
                   >
@@ -483,17 +487,18 @@ export function StoreTable() {
           >
             Previous
           </Button>
-          <Button className="rounded-[6px]"
-                   variant="outline"
-                   size="sm"
-                   onClick={() => table.nextPage()}
-                   disabled={!table.getCanNextPage()}
-                 >
-                   Next
-                 </Button>
-               </div>
-             </div>
-           </div>
-         );
-       }
-       export default StoreTable;
+          <Button
+            className="rounded-[6px]"
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+export default StoreTable;

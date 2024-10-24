@@ -53,7 +53,6 @@ export type User = {
   createAt: string;
 };
 
-
 export function UserTable() {
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = React.useState(1);
@@ -76,7 +75,7 @@ export function UserTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.32.108.154:3000/user", {
+      const response = await fetch("http://145.223.117.65:3000/user", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -128,7 +127,7 @@ export function UserTable() {
               <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
                 {avatar ? (
                   <img
-                    src={`http://10.32.108.154:3000/${avatar}`}
+                    src={`http://145.223.117.65:3000/${avatar}`}
                     alt={row.original.name}
                     className="w-full h-full object-cover"
                   />
@@ -236,7 +235,7 @@ export function UserTable() {
       enableHiding: false,
       cell: ({ row }) => {
         const User = row.original;
-  
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -251,9 +250,9 @@ export function UserTable() {
                 Copy User ID
               </DropdownMenuItem> */}
               <DropdownMenuItem className="p-0" asChild>
-                <UpdateUser userId={User.id} onUpdate={fetchUsers}  />
+                <UpdateUser userId={User.id} onUpdate={fetchUsers} />
               </DropdownMenuItem>
-    
+
               <DropdownMenuSeparator />
               <DropdownMenuItem className="p-0" asChild>
                 <Delete id={User.id} api={"user/delete"} />
