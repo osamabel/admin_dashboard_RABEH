@@ -58,7 +58,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
           throw new Error("No authentication token found");
         }
         const response = await fetch(
-          `https://145.223.117.65:3000/sponsor/${sponsorId}`,
+          `http://145.223.117.65:3000/sponsor/${sponsorId}`,
           {
             method: "GET",
             headers: {
@@ -140,7 +140,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
         }
 
         const response = await fetch(
-          `https://145.223.117.65:3000/sponsor/${sponsorId}`,
+          `http://145.223.117.65:3000/sponsor/${sponsorId}`,
           {
             method: "PATCH",
             headers: {
@@ -218,7 +218,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
                   {/* Show current logo if exists */}
                   {sponsorData.logo && (
                     <img
-                      src={`https://145.223.117.65:3000/${sponsorData.logo}`}
+                      src={`http://145.223.117.65:3000/${sponsorData.logo}`}
                       alt="Current logo"
                       className="w-10 h-10 rounded-full object-cover"
                     />

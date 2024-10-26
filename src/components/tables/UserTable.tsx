@@ -75,7 +75,7 @@ export function UserTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("https://145.223.117.65:3000/user", {
+      const response = await fetch("http://145.223.117.65:3000/user", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -127,7 +127,7 @@ export function UserTable() {
               <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
                 {avatar ? (
                   <img
-                    src={`https://145.223.117.65:3000/${avatar}`}
+                    src={`http://145.223.117.65:3000/${avatar}`}
                     alt={row.original.name}
                     className="w-full h-full object-cover"
                   />

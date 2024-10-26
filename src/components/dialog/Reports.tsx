@@ -45,6 +45,7 @@ type ReportFormValues = z.infer<typeof reportSchema>;
 const GameReportGeneration: React.FC<GameReportGenerationProps> = ({
   game,
 }) => {
+  if(!game) return;
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);

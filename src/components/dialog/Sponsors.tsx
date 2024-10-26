@@ -31,7 +31,7 @@ export function SponsorsDialog({ sponsors }: any) {
                         {sponsor.logo ? (
                           <img
                             className="w-full h-full rounded-full object-cover"
-                            src={`https://145.223.117.65:3000/${sponsor.logo}`}
+                            src={`http://145.223.117.65:3000/${sponsor.logo}`}
                             alt=""
                           />
                         ) : (

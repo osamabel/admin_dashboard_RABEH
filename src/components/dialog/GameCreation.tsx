@@ -57,7 +57,7 @@ const GameCration: React.FC = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("https://145.223.117.65:3000/sponsor", {
+      const response = await fetch("http://145.223.117.65:3000/sponsor", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -201,7 +201,7 @@ const GameCration: React.FC = () => {
         prizes: formData.prizes.filter((prize) => prize !== ""), // Remove empty prizes
       };
 
-      const response = await fetch("https://145.223.117.65:3000/game/create", {
+      const response = await fetch("http://145.223.117.65:3000/game/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
