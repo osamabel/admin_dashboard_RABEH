@@ -33,7 +33,7 @@ export const Donate = forwardRef<HTMLDivElement, DonateProps>(
         // Sending coin donation if coin checkbox is selected
         if (donateCoin && coinAmount) {
           const coinResponse = await fetch(
-            `http://145.223.117.65:3000/user/addCoin/${userId}/${coinAmount}`,
+            `https://145.223.117.65:3000/user/addCoin/${userId}/${coinAmount}`,
             {
               method: "POST",
               headers: {
@@ -49,7 +49,7 @@ export const Donate = forwardRef<HTMLDivElement, DonateProps>(
         // Sending diamond donation if diamond checkbox is selected
         if (donateDiamond && diamondAmount) {
           const diamondResponse = await fetch(
-            `http://145.223.117.65:3000/user/addDiamond/${userId}/${diamondAmount}`,
+            `https://145.223.117.65:3000/user/addDiamond/${userId}/${diamondAmount}`,
             {
               method: "POST",
               headers: {

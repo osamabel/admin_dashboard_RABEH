@@ -82,7 +82,7 @@ export function StoreTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://145.223.117.65:3000/store", {
+      const response = await fetch("https://145.223.117.65:3000/store", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -139,7 +139,7 @@ export function StoreTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://145.223.117.65:3000/store", {
+      const response = await fetch("https://145.223.117.65:3000/store", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

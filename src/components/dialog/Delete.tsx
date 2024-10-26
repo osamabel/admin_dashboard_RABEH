@@ -34,7 +34,7 @@ export const Delete = forwardRef<HTMLDivElement, DeleteProps>(
         }
 
         const response = await fetch(
-          `http://145.223.117.65:3000/${api}/${id}`,
+          `https://145.223.117.65:3000/${api}/${id}`,
           {
             method: "DELETE",
             headers: {

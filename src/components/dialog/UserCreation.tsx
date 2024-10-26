@@ -184,7 +184,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
       }
       // Make the API call
       const response = await fetch(
-        "http://145.223.117.65:3000/user/createUser",
+        "https://145.223.117.65:3000/user/createUser",
         {
           method: "POST",
           headers: {
