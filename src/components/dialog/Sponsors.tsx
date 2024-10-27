@@ -9,7 +9,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 export function SponsorsDialog({ sponsors }: any) {
   return (
     <AlertDialog>
@@ -31,7 +32,7 @@ export function SponsorsDialog({ sponsors }: any) {
                         {sponsor.logo ? (
                           <img
                             className="w-full h-full rounded-full object-cover"
-                            src={`http://10.32.108.154:3000/${sponsor.logo}`}
+                            src={`${apiUrl}:${apiPort}/${sponsor.logo}`}
                             alt=""
                           />
                         ) : (

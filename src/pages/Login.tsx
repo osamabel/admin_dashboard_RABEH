@@ -12,6 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ButtonLoading } from "@/components/ui/ButtonLoading";
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -19,6 +21,7 @@ const Login = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  console.log(`${apiUrl}:${apiPort}/auth/admin/login`);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,17 +29,14 @@ const Login = () => {
     setIsError(false);
 
     try {
-      const response = await fetch(
-        "http://10.32.108.154:3000/auth/admin/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ email: username, password }),
-        }
-      );
+      const response = await fetch(`${apiUrl}:${apiPort}/auth/admin/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email: username, password }),
+      });
 
       if (response.ok) {
         const data = await response.json();

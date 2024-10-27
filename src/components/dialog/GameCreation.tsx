@@ -18,7 +18,8 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "@radix-ui/react-alert-dialog";
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 interface Sponsor {
   id: number;
   name: string;
@@ -57,7 +58,7 @@ const GameCration: React.FC = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.32.108.154:3000/sponsor", {
+      const response = await fetch(`${apiUrl}:${apiPort}/sponsor`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -201,7 +202,7 @@ const GameCration: React.FC = () => {
         prizes: formData.prizes.filter((prize) => prize !== ""), // Remove empty prizes
       };
 
-      const response = await fetch("http://10.32.108.154:3000/game/create", {
+      const response = await fetch(`${apiUrl}:${apiPort}/game/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

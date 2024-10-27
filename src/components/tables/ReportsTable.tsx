@@ -33,7 +33,8 @@ import {
 import { SponsorsDialog } from "../dialog/Sponsors";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 interface Sponsor {
   id: number;
   name: string;
@@ -203,7 +204,7 @@ export function ReportTable() {
       }
 
       const response = await fetch(
-        "http://10.32.108.154:3000/dashboard/allReports",
+        `${apiUrl}:${apiPort}/dashboard/allReports`,
         {
           method: "GET",
           headers: {

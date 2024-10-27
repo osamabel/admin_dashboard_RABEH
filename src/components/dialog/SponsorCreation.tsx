@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 interface SponsorData {
   name: string;
   avatar: File | null;
@@ -57,7 +58,7 @@ const SponsorCreation = () => {
 
       // Log FormData contents for debugging
 
-      const response = await fetch("http://10.32.108.154:3000/sponsor", {
+      const response = await fetch(`${apiUrl}:${apiPort}/sponsor`, {
         method: "POST",
         headers: {
           Accept: "application/json",

@@ -39,9 +39,10 @@ import GameCration from "../dialog/GameCreation";
 import { Delete } from "../dialog/Delete";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
-
+const apiPort = import.meta.env.VITE_API_PORT;
+const apiUrl = import.meta.env.VITE_API_URL;
 interface sponsor {
-  id: number
+  id: number;
   logo: string;
   name: string;
   status: string;
@@ -55,7 +56,7 @@ export type Game = {
   sponsorId: sponsor[];
   licenseId: string;
   status: "created" | "started" | "ended" | "closed";
-  userGames: { userId: string; gameId: string, name: string, avatar: string}[];
+  userGames: { userId: string; gameId: string; name: string; avatar: string }[];
   prizes: string[];
   isReported?: boolean;
 };
@@ -196,9 +197,9 @@ export const columns: ColumnDef<Game>[] = [
             <DropdownMenuItem asChild>
               <Delete api={"game"} id={game.id} />
             </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <GameReportGeneration game={game} />
-              </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <GameReportGeneration game={game} />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -229,7 +230,7 @@ export function GameNeedReports() {
       }
 
       const response = await fetch(
-        "http://10.32.108.154:3000/dashboard/unreportedGames",
+        `${apiUrl}:${apiPort}/dashboard/unreportedGames`,
         {
           method: "GET",
           headers: {

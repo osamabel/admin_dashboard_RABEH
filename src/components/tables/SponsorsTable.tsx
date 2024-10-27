@@ -38,7 +38,8 @@ import SponsorCreation from "../dialog/SponsorCreation";
 import { Delete } from "../dialog/Delete";
 import SponsorUpdate from "../dialog/UpdateSponsor";
 import { useToast } from "@/hooks/use-toast";
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, "0");
@@ -80,7 +81,7 @@ export const columns: ColumnDef<Sponsor>[] = [
               {logo ? (
                 <img
                   className="w-full h-full rounded-full object-cover"
-                  src={`http://10.32.108.154:3000/${logo}`}
+                  src={`${apiUrl}:${apiPort}/${logo}`}
                   alt=""
                 />
               ) : (
@@ -215,7 +216,7 @@ export function SponsorsTables() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.32.108.154:3000/sponsor", {
+      const response = await fetch(`${apiUrl}:${apiPort}/sponsor`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

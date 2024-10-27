@@ -38,7 +38,9 @@ import { Donate } from "../dialog/Donate";
 import UserCration from "../dialog/UserCreation";
 import UpdateUser from "../dialog/UpdateUser";
 import { useToast } from "@/hooks/use-toast";
-
+import { getBadgeImage } from "./RankingTable";
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 export type User = {
   id: number;
   name: string;
@@ -75,7 +77,7 @@ export function UserTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://10.32.108.154:3000/user", {
+      const response = await fetch(`${apiUrl}:${apiPort}/user`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -127,7 +129,7 @@ export function UserTable() {
               <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
                 {avatar ? (
                   <img
-                    src={`http://10.32.108.154:3000/${avatar}`}
+                    src={`${apiUrl}:${apiPort}/${avatar}`}
                     alt={row.original.name}
                     className="w-full h-full object-cover"
                   />
@@ -208,19 +210,16 @@ export function UserTable() {
     },
     {
       accessorKey: "totalPoints",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Total Points
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: "Badge",
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">{row.original.totalPoints}</div>
+        <div className="">
+          <img
+            src={getBadgeImage(row.original.totalPoints)}
+            alt={`Badge for ${row.original.totalPoints} points`}
+            width={32}
+            height={32}
+          />
+        </div>
       ),
     },
     {

@@ -10,54 +10,56 @@ import QuizCreator from "./components/Quiz";
 import Reports from "./pages/Reports";
 import { useEffect, useState } from "react";
 import Store from "./pages/Store";
+const apiPort = import.meta.env.VITE_API_PORT;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const ProtectedRoute = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem("jwt_token");
-        const response = await fetch(
-          "http://10.32.108.154:3000/auth/check-auth",
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              ...(token && { Authorization: `Bearer ${token}` }),
-            },
-            credentials: "include",
-          }
-        );
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     try {
+  //       const token = localStorage.getItem("jwt_token");
+  //       const response = await fetch(
+  //         `${apiUrl}:${apiPort}/auth/check-auth`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Accept: "application/json",
+  //             "Content-Type": "application/json",
+  //             ...(token && { Authorization: `Bearer ${token}` }),
+  //           },
+  //           credentials: "include",
+  //         }
+  //       );
 
-        if (!response.ok) {
-          setIsAuthenticated(false);
-          return;
-        }
+  //       if (!response.ok) {
+  //         setIsAuthenticated(false);
+  //         return;
+  //       }
 
-        const data = await response.json();
-        if (data.status === "Authenticated") {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
+  //       const data = await response.json();
+  //       if (data.status === "Authenticated") {
+  //         setIsAuthenticated(true);
+  //       } else {
+  //         setIsAuthenticated(false);
+  //       }
+  //     } catch (error) {
+  //       setIsAuthenticated(false);
+  //     }
+  //   };
 
-    // Add a small delay to ensure cookie is set
-    setTimeout(checkAuth, 100);
-  }, []);
+  //   // Add a small delay to ensure cookie is set
+  //   setTimeout(checkAuth, 100);
+  // }, []);
 
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>;
-  }
+  // if (isAuthenticated === null) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return <Outlet />;
 };

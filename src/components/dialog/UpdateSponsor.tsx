@@ -20,7 +20,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { PenBox } from "lucide-react";
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 interface SponsorData {
   name: string;
   status: string;
@@ -58,7 +59,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
           throw new Error("No authentication token found");
         }
         const response = await fetch(
-          `http://10.32.108.154:3000/sponsor/${sponsorId}`,
+          `${apiUrl}:${apiPort}/sponsor/${sponsorId}`,
           {
             method: "GET",
             headers: {
@@ -140,7 +141,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
         }
 
         const response = await fetch(
-          `http://10.32.108.154:3000/sponsor/${sponsorId}`,
+          `${apiUrl}:${apiPort}/sponsor/${sponsorId}`,
           {
             method: "PATCH",
             headers: {
@@ -218,7 +219,7 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
                   {/* Show current logo if exists */}
                   {sponsorData.logo && (
                     <img
-                      src={`http://10.32.108.154:3000/${sponsorData.logo}`}
+                      src={`${apiUrl}:${apiPort}/${sponsorData.logo}`}
                       alt="Current logo"
                       className="w-10 h-10 rounded-full object-cover"
                     />

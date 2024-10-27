@@ -39,7 +39,8 @@ import GameCration from "../dialog/GameCreation";
 import { Delete } from "../dialog/Delete";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiPort = import.meta.env.VITE_API_PORT;
 interface sponsor {
   logo: string;
   name: string;
@@ -229,17 +230,14 @@ export function DataTableDemo() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(
-        "http://10.32.108.154:3000/dashboard/allGames",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}:${apiPort}/dashboard/allGames`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        credentials: "include",
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
