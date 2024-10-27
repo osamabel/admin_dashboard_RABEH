@@ -11,14 +11,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowUpDown, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -47,13 +45,7 @@ export type RankingUser = {
   avatar: string | null;
   createAt: string;
 };
-const getRandomDate = () => {
-  const start = new Date(2023, 0, 1);
-  const end = new Date();
-  return new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime())
-  ).toISOString();
-};
+
 export const getBadgeImage = (totalPoints: number) => {
   if (totalPoints < 100) return "badges/badge 1.png";
   if (totalPoints < 200) return "badges/badge 2.png";
@@ -68,141 +60,10 @@ export const getBadgeImage = (totalPoints: number) => {
 };
 
 export function RankingTable() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = React.useState(1);
-  const [users, setUsers] = React.useState<RankingUser[]>([
-    {
-      id: 1,
-      name: "Alex Thompson",
-      phoneNumber: "+1234567890",
-      email: "alex@example.com",
-      gender: "male",
-      points: 450,
-      totalPoints: 950,
-      type: "premium",
-      diamonds: 75,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 2,
-      name: "Sarah Chen",
-      phoneNumber: "+1234567891",
-      email: "sarah@example.com",
-      gender: "female",
-      points: 380,
-      totalPoints: 820,
-      type: "premium",
-      diamonds: 62,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 3,
-      name: "Mike Rodriguez",
-      phoneNumber: "+1234567892",
-      email: "mike@example.com",
-      gender: "male",
-      points: 320,
-      totalPoints: 750,
-      type: "regular",
-      diamonds: 45,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 4,
-      name: "Emma Davis",
-      phoneNumber: "+1234567893",
-      email: "emma@example.com",
-      gender: "female",
-      points: 180,
-      totalPoints: 280,
-      type: "regular",
-      diamonds: 28,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 5,
-      name: "James Wilson",
-      phoneNumber: "+1234567894",
-      email: "james@example.com",
-      gender: "male",
-      points: 150,
-      totalPoints: 190,
-      type: "regular",
-      diamonds: 15,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 6,
-      name: "Linda Kim",
-      phoneNumber: "+1234567895",
-      email: "linda@example.com",
-      gender: "female",
-      points: 90,
-      totalPoints: 120,
-      type: "regular",
-      diamonds: 8,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 7,
-      name: "David Brown",
-      phoneNumber: "+1234567896",
-      email: "david@example.com",
-      gender: "male",
-      points: 60,
-      totalPoints: 85,
-      type: "regular",
-      diamonds: 5,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 8,
-      name: "Sophie Taylor",
-      phoneNumber: "+1234567897",
-      email: "sophie@example.com",
-      gender: "female",
-      points: 40,
-      totalPoints: 65,
-      type: "regular",
-      diamonds: 3,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 9,
-      name: "Chris Martinez",
-      phoneNumber: "+1234567898",
-      email: "chris@example.com",
-      gender: "male",
-      points: 30,
-      totalPoints: 45,
-      type: "regular",
-      diamonds: 2,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-    {
-      id: 10,
-      name: "Rachel Lee",
-      phoneNumber: "+1234567899",
-      email: "rachel@example.com",
-      gender: "female",
-      points: 20,
-      totalPoints: 25,
-      type: "regular",
-      diamonds: 1,
-      avatar: null,
-      createAt: getRandomDate(),
-    },
-  ]);
+  const [users, setUsers] = React.useState<RankingUser[]>([]);
 
   // Add these state declarations
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -238,140 +99,8 @@ export function RankingTable() {
       const sortedUsers = data.sort(
         (a: RankingUser, b: RankingUser) => b.totalPoints - a.totalPoints
       );
-      // setUsers(sortedUsers);
+      setUsers(sortedUsers);
 
-      setUsers([
-        {
-          id: 1,
-          name: "Alex Thompson",
-          phoneNumber: "+1234567890",
-          email: "alex@example.com",
-          gender: "male",
-          points: 450,
-          totalPoints: 950,
-          type: "premium",
-          diamonds: 75,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 2,
-          name: "Sarah Chen",
-          phoneNumber: "+1234567891",
-          email: "sarah@example.com",
-          gender: "female",
-          points: 380,
-          totalPoints: 820,
-          type: "premium",
-          diamonds: 62,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 3,
-          name: "Mike Rodriguez",
-          phoneNumber: "+1234567892",
-          email: "mike@example.com",
-          gender: "male",
-          points: 320,
-          totalPoints: 750,
-          type: "regular",
-          diamonds: 45,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 4,
-          name: "Emma Davis",
-          phoneNumber: "+1234567893",
-          email: "emma@example.com",
-          gender: "female",
-          points: 180,
-          totalPoints: 280,
-          type: "regular",
-          diamonds: 28,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 5,
-          name: "James Wilson",
-          phoneNumber: "+1234567894",
-          email: "james@example.com",
-          gender: "male",
-          points: 150,
-          totalPoints: 190,
-          type: "regular",
-          diamonds: 15,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 6,
-          name: "Linda Kim",
-          phoneNumber: "+1234567895",
-          email: "linda@example.com",
-          gender: "female",
-          points: 90,
-          totalPoints: 120,
-          type: "regular",
-          diamonds: 8,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 7,
-          name: "David Brown",
-          phoneNumber: "+1234567896",
-          email: "david@example.com",
-          gender: "male",
-          points: 60,
-          totalPoints: 85,
-          type: "regular",
-          diamonds: 5,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 8,
-          name: "Sophie Taylor",
-          phoneNumber: "+1234567897",
-          email: "sophie@example.com",
-          gender: "female",
-          points: 40,
-          totalPoints: 65,
-          type: "regular",
-          diamonds: 3,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 9,
-          name: "Chris Martinez",
-          phoneNumber: "+1234567898",
-          email: "chris@example.com",
-          gender: "male",
-          points: 30,
-          totalPoints: 45,
-          type: "regular",
-          diamonds: 2,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-        {
-          id: 10,
-          name: "Rachel Lee",
-          phoneNumber: "+1234567899",
-          email: "rachel@example.com",
-          gender: "female",
-          points: 20,
-          totalPoints: 25,
-          type: "regular",
-          diamonds: 1,
-          avatar: null,
-          createAt: getRandomDate(),
-        },
-      ]);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
