@@ -19,7 +19,7 @@ const ProtectedRoute = () => {
       try {
         const token = localStorage.getItem("jwt_token");
         const response = await fetch(
-          "http://145.223.117.65:3000/auth/check-auth",
+          "http://10.32.108.154:3000/auth/check-auth",
           {
             method: "GET",
             headers: {

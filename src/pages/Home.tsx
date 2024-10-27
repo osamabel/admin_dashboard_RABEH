@@ -9,18 +9,18 @@ function Home() {
         <DataTableDemo />
       </div>
       <div className="w-full flex h-[50%] gap-x-[20px] opacity-15">
-        <div className="min-w-[60%] h-full">
+        <div className="w-full h-full">
           <h1 className="text-[25px] font-semibold">Current Event</h1>
           <EventTable />
         </div>
-        <div className="w-full h-full flex flex-col">
+        {/* <div className="w-full h-full flex flex-col">
           <h1 className="text-[25px] font-semibold">Results</h1>
           <div className="border h-full rounded-[10px] flex flex-col gap-y-[10px] p-[20px] overflow-auto">
             <div className="border rounded-[6px] min-h-[80px]">hello</div>
             <div className="border rounded-[6px] min-h-[80px]">hello</div>
             <div className="border rounded-[6px] min-h-[80px]">hello</div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -34,13 +34,14 @@ import {
 } from "@/components/ui/table";
 import { SponsorsDialog } from "../dialog/Sponsors";
 import { PrizeDialog } from "../dialog/Prizes";
-// import GameReportGeneration from "../dialog/Reports";
+import GameReportGeneration from "../dialog/Reports";
 import GameCration from "../dialog/GameCreation";
 import { Delete } from "../dialog/Delete";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
 
 interface sponsor {
+  id: number
   logo: string;
   name: string;
   status: string;
@@ -54,7 +55,7 @@ export type Game = {
   sponsorId: sponsor[];
   licenseId: string;
   status: "created" | "started" | "ended" | "closed";
-  winners: { id: string; name: string; avatar: string }[];
+  userGames: { userId: string; gameId: string, name: string, avatar: string}[];
   prizes: string[];
   isReported?: boolean;
 };
@@ -195,11 +196,9 @@ export const columns: ColumnDef<Game>[] = [
             <DropdownMenuItem asChild>
               <Delete api={"game"} id={game.id} />
             </DropdownMenuItem>
-            {/* {!game.isReported && (
               <DropdownMenuItem asChild>
                 <GameReportGeneration game={game} />
               </DropdownMenuItem>
-            )} */}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -207,7 +206,7 @@ export const columns: ColumnDef<Game>[] = [
   },
 ];
 
-export function DataTableDemo() {
+export function GameNeedReports() {
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = React.useState(1);
   const [games, setGames] = React.useState<Game[]>([]);
@@ -230,7 +229,7 @@ export function DataTableDemo() {
       }
 
       const response = await fetch(
-        "http://10.32.108.154:3000/dashboard/allGames",
+        "http://10.32.108.154:3000/dashboard/unreportedGames",
         {
           method: "GET",
           headers: {
@@ -262,9 +261,10 @@ export function DataTableDemo() {
               })) || [],
             licenseId: game.licenseId,
             status: game.status as "created" | "started" | "ended" | "closed",
-            winners:
-              game.winners?.map((w: any) => ({
-                id: w.id || "",
+            userGames:
+              game.userGames?.map((w: any) => ({
+                userId: w.userId || "",
+                gameId: w.gameId || "",
                 name: w.name || "",
                 avatar: w.avatar || "",
               })) || [],
