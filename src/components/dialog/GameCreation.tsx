@@ -262,21 +262,21 @@ const GameCration: React.FC = () => {
           Create new Game
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="!rounded-[10px]">
-        <AlertDialogTitle className="text-2xl font-bold">
+      <AlertDialogContent className="!rounded-[10px] h-[100vh]">
+        <AlertDialogTitle className="text-xl font-bold">
           Games Creation
         </AlertDialogTitle>
         <Card className="w-full flex flex-col gap-y-[40px] mx-auto border-none shadow-none">
           <CardHeader className="p-0">
             {/* <CardTitle className="text-2xl font-bold">Games Creation</CardTitle> */}
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-sm">
               Create a new Quiz Game
             </AlertDialogDescription>
           </CardHeader>
-          <CardContent className="p-0">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 mb-[60px]">
-                <div className="space-y-2">
+          <CardContent className="p-0 ">
+            <form onSubmit={handleSubmit} className="">
+              <div className="grid grid-cols-2 gap-2 mb-[60px]">
+                <div className="">
                   <Label htmlFor="gameName">Games Name</Label>
                   <Input
                     className="rounded-[6px]"
@@ -286,7 +286,7 @@ const GameCration: React.FC = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="">
                   <Label htmlFor="requiredDiamond">
                     Required Diamond to play
                   </Label>
@@ -298,7 +298,7 @@ const GameCration: React.FC = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="">
                   <Label htmlFor="startingDate">Starting date and time</Label>
                   <Input
                     className="rounded-[6px]"
@@ -310,7 +310,7 @@ const GameCration: React.FC = () => {
                   />
                 </div>
 
-                {/* <div className="space-y-2">
+                {/* <div className="">
                   <Label htmlFor="endingDate">Ending date</Label>
                   <Input
                     className="rounded-[6px]"
@@ -323,7 +323,7 @@ const GameCration: React.FC = () => {
                 </div> */}
                 <br />
                 {formData.prizes.map((prize, index) => (
-                  <div key={index} className="space-y-2">
+                  <div key={index} className="">
                     <Label htmlFor={`prize${index + 1}`}>
                       prize {index + 1}
                     </Label>
@@ -336,7 +336,7 @@ const GameCration: React.FC = () => {
                   </div>
                 ))}
                 <br />
-                <div className="space-y-2">
+                <div className="">
                   <Label htmlFor="licences">Licences</Label>
                   <Input
                     className="rounded-[6px] "
@@ -406,7 +406,7 @@ const GameCration: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="space-y-2 mt-[200px]">
+              <div className=" mt-[100px]">
                 <Label htmlFor="quizFileUpload">Upload Quiz JSON File</Label>
                 <Input
                   className="rounded-[6px]"
