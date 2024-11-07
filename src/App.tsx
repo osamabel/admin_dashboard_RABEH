@@ -66,21 +66,23 @@ const ProtectedRoute = () => {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route element={<ProtectedRoute />}>
-        <Route element={<Dashboard />}>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/ranking" element={<Ranking />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/sponsors" element={<Sponsors />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/store" element={<Store />} />
-          <Route path="/newQuiz" element={<QuizCreator />} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Dashboard />}>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/ranking" element={<Ranking />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/sponsors" element={<Sponsors />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/newQuiz" element={<QuizCreator />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+        {/* Add catch-all route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
   );
 }
 
