@@ -114,7 +114,7 @@ export const FeedbackAnalyticsDialog: React.FC<Props> = ({ feedbackId }) => {
             <Tooltip />
             <Bar dataKey="count" fill="#8884d8" radius={[4, 4, 0, 0]}>
               {distribution.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell key={`cell-${index}${entry}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Bar>
           </BarChart>
@@ -157,7 +157,7 @@ export const FeedbackAnalyticsDialog: React.FC<Props> = ({ feedbackId }) => {
                 dataKey="value"
               >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={index === 0 ? '#4ade80' : '#f87171'} />
+                  <Cell key={`cell-${index}${entry}`} fill={index === 0 ? '#4ade80' : '#f87171'} />
                 ))}
               </Pie>
               <Tooltip />
