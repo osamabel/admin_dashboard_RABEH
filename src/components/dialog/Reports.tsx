@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,13 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "axios";
-import {
-  FileText,
-  ChevronLeft,
-  ChevronRight,
-  Upload,
-  User,
-} from "lucide-react";
+import { FileText, ChevronLeft, ChevronRight, User } from "lucide-react";
 import {
   AlertDialogCancel,
   AlertDialogDescription,
@@ -35,32 +29,33 @@ import {
 } from "@radix-ui/react-alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Game } from "../tables/GameNeedReports";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiPort = import.meta.env.VITE_API_PORT;
+
+type WinnerReport = {
+  winnerId: number;
+  prizeId: string;
+  dateOfDelivery: string;
+  expenseOfPrize: string;
+  additionalExpense: string;
+  isPrizeDelivered: boolean;
+  videoUrl: string;
+};
 interface GameReportGenerationProps {
   game: Game;
 }
-
-const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
-const ACCEPTED_VIDEO_TYPES = [
-  "video/mp4",
-  "video/quicktime",
-  "video/x-msvideo",
-];
 
 const reportSchema = z.object({
   dateOfDelivery: z.string().min(1, "Date of delivery is required"),
   expenseOfPrize: z.string().min(1, "Expense of prize is required"),
   additionalExpense: z.string().min(1, "Additional expense is required"),
   isPrizeDelivered: z.boolean(),
-  video: z
-    .any()
-    .refine((file) => file instanceof File, "Video is required")
-    .refine((file) => file?.size <= MAX_FILE_SIZE, "Max file size is 500MB")
-    .refine(
-      (file) => ACCEPTED_VIDEO_TYPES.includes(file?.type),
-      "Only .mp4, .mov and .avi formats are supported"
-    ),
+  videoUrl: z
+    .string()
+    .url("Please enter a valid URL")
+    .optional()
+    .or(z.literal("")),
 });
 
 type ReportFormValues = z.infer<typeof reportSchema>;
@@ -73,8 +68,7 @@ const GameReportGeneration = forwardRef<
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentWinnerIndex, setCurrentWinnerIndex] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [winnerReports, setWinnerReports] = useState<WinnerReport[]>([]);
 
   const form = useForm<ReportFormValues>({
     resolver: zodResolver(reportSchema),
@@ -83,74 +77,114 @@ const GameReportGeneration = forwardRef<
       expenseOfPrize: "",
       additionalExpense: "",
       isPrizeDelivered: false,
-      video: undefined,
+      videoUrl: "",
     },
   });
-  console.log(">>>game", game);
+
   const onSubmit = async (data: ReportFormValues) => {
+    // Save current winner's report
+    const userId = Number(game.userGames[currentWinnerIndex].userId);
+    const currentReport: WinnerReport = {
+      winnerId: userId,
+      prizeId: game.prizes[currentWinnerIndex],
+      dateOfDelivery: data.dateOfDelivery,
+      expenseOfPrize: data.expenseOfPrize,
+      additionalExpense: data.additionalExpense,
+      isPrizeDelivered: data.isPrizeDelivered,
+      videoUrl: data.videoUrl || "",
+    };
+
+    // Update winner reports
+    const updatedReports = [...winnerReports];
+    updatedReports[currentWinnerIndex] = currentReport;
+    setWinnerReports(updatedReports);
+
     if (currentWinnerIndex < game.userGames.length - 1) {
+      // Move to next winner
       setCurrentWinnerIndex(currentWinnerIndex + 1);
       form.reset();
-      setSelectedFileName("");
     } else {
-      await submitReport(data);
+      // Submit all reports when on last winner
+      await submitAllReports(updatedReports);
     }
   };
 
-  const submitReport = async (formData: ReportFormValues) => {
+  const submitReport = async (reportData: WinnerReport) => {
+    const sponsorIds = game.sponsorId.map((sponsor) => sponsor.id);
+    const payload = {
+      gameId: game.id,
+      winnerId: reportData.winnerId,
+      prizeId: reportData.prizeId,
+      dateOfDelivery: reportData.dateOfDelivery,
+      expenseOfPrize: reportData.expenseOfPrize,
+      additionalExpense: reportData.additionalExpense,
+      isPrizeDelivered: reportData.isPrizeDelivered,
+      videoUrl: reportData.videoUrl,
+      sponsorIds: sponsorIds,
+    };
+
+
+    const token = localStorage.getItem("jwt_token");
+    const response = await axios.post(
+      `${apiUrl}:${apiPort}/dashboard/${game.id}/winner-report`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log('API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      data: response.data
+    });
+  };
+
+  const submitAllReports = async (reports: WinnerReport[]) => {
     setIsSubmitting(true);
     try {
-      // Create FormData object to handle file upload
-      const submitData = new FormData();
-
-      // Get sponsor IDs from the game object
-      const sponsorIds = game.sponsorId.map((sponsor) => sponsor.id);
-
-      // Append all form fields
-      submitData.append("gameId", game.id.toString());
-      submitData.append(
-        "winnerId",
-        game.userGames[currentWinnerIndex].userId.toString()
+      console.log(
+        "Preparing to submit reports for all winners:",
+        reports.map((report, index) => ({
+          winnerIndex: index + 1,
+          winnerId: report.winnerId,
+          prizeId: report.prizeId,
+          dateOfDelivery: report.dateOfDelivery,
+          expenseOfPrize: report.expenseOfPrize,
+          additionalExpense: report.additionalExpense,
+          isPrizeDelivered: report.isPrizeDelivered,
+          videoUrl: report.videoUrl,
+        }))
       );
-      submitData.append("prizeId", game.prizes[currentWinnerIndex]);
-      submitData.append("dateOfDelivery", formData.dateOfDelivery);
-      submitData.append("expenseOfPrize", formData.expenseOfPrize);
-      submitData.append("additionalExpense", formData.additionalExpense);
-      submitData.append(
-        "isPrizeDelivered",
-        formData.isPrizeDelivered.toString()
-      );
-      submitData.append("video", formData.video);
-      submitData.append("sponsorIds", JSON.stringify(sponsorIds));
 
-      console.log("FormData entries:");
-      for (let pair of submitData.entries()) {
-        console.log(pair[0] + ": " + pair[1]);
+      // Submit reports sequentially
+      for (let i = 0; i < reports.length; i++) {
+        console.log(
+          `Submitting report for winner ${i + 1}/${reports.length}:`,
+          reports[i]
+        );
+        await submitReport(reports[i]);
+        console.log(`Successfully submitted report for winner ${i + 1}`);
       }
 
-      const token = localStorage.getItem("jwt_token");
-      await axios.post(
-        `${apiUrl}:${apiPort}/dashboard/${game.id}/winners-report`,
-        submitData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
       toast({
-        title: "Report Created",
-        description: `Report for ${game.name} has been successfully created and sent.`,
+        title: "Reports Created",
+        description: `All reports for ${game.name} have been successfully created and sent.`,
       });
 
       setIsOpen(false);
+      // Reset the form and stored reports
+      setWinnerReports([]);
+      setCurrentWinnerIndex(0);
+      form.reset();
     } catch (error) {
-      console.error("Error creating report:", error);
+      console.error("Error creating reports:", error);
       toast({
         title: "Error",
-        description: "Failed to create report. Please try again.",
+        description: "Failed to create some reports. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -158,18 +192,34 @@ const GameReportGeneration = forwardRef<
     }
   };
 
+  // const handlePrevious = () => {
+  //   if (currentWinnerIndex > 0) {
+  //     const prevIndex = currentWinnerIndex - 1;
+  //     setCurrentWinnerIndex(prevIndex);
+
+  //     // Load previous winner's data if it exists
+  //     const prevReport = winnerReports[prevIndex];
+  //     if (prevReport) {
+  //       form.reset({
+  //         dateOfDelivery: prevReport.dateOfDelivery,
+  //         expenseOfPrize: prevReport.expenseOfPrize,
+  //         additionalExpense: prevReport.additionalExpense,
+  //         isPrizeDelivered: prevReport.isPrizeDelivered,
+  //         videoUrl: prevReport.videoUrl,
+  //       });
+  //     } else {
+  //       form.reset();
+  //     }
+  //   }
+  // };
+
   const handleOpenDialog = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsOpen(true);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFileName(file.name);
-      form.setValue("video", file);
-    }
+    setWinnerReports([]); // Reset stored reports when opening dialog
+    setCurrentWinnerIndex(0);
+    form.reset();
   };
 
   const currentWinner = game.userGames[currentWinnerIndex];
@@ -258,39 +308,20 @@ const GameReportGeneration = forwardRef<
               />
               <FormField
                 control={form.control}
-                name="video"
-                render={({ field: { value, onChange, ...field } }) => (
+                name="videoUrl"
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Video</FormLabel>
+                    <FormLabel>Video URL (Optional)</FormLabel>
                     <FormControl>
-                      <div className="flex gap-2">
-                        <Input
-                          {...field}
-                          disabled
-                          value={selectedFileName}
-                          placeholder="No file selected"
-                          className="rounded-[6px]"
-                        />
-                        <Input
-                          type="file"
-                          accept="video/*"
-                          className="hidden"
-                          ref={fileInputRef}
-                          onChange={handleFileSelect}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          className="shrink-0"
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <Upload className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <Input
+                        type="url"
+                        placeholder="Enter video URL"
+                        {...field}
+                        className="rounded-[6px]"
+                      />
                     </FormControl>
                     <FormDescription>
-                      Upload a video file (max 500MB, .mp4, .mov, or .avi)
+                      Enter a valid URL for the video content
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -323,7 +354,6 @@ const GameReportGeneration = forwardRef<
                     const prevIndex = currentWinnerIndex - 1;
                     setCurrentWinnerIndex(prevIndex);
                     form.reset();
-                    setSelectedFileName("");
                   }}
                   disabled={currentWinnerIndex === 0}
                   className="rounded-[6px]"
@@ -339,10 +369,12 @@ const GameReportGeneration = forwardRef<
                   className="rounded-[6px]"
                 >
                   {isSubmitting
-                    ? "Submitting..."
+                    ? `Submitting ${currentWinnerIndex + 1}/${
+                        game.userGames.length
+                      }...`
                     : currentWinnerIndex === game.userGames.length - 1
-                    ? "Finish"
-                    : "Next"}
+                    ? "Submit All Reports"
+                    : "Save & Next"}
                   {currentWinnerIndex < game.userGames.length - 1 && (
                     <ChevronRight className="ml-2 h-4 w-4" />
                   )}

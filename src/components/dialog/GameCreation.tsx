@@ -6,7 +6,7 @@ import {
   AlertDialogFooter,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Label } from "../ui/label";
@@ -15,7 +15,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
 import {
-  AlertDialogDescription,
   AlertDialogTitle,
 } from "@radix-ui/react-alert-dialog";
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -30,11 +29,12 @@ interface FormData {
   gameName: string;
   requiredDiamond: string;
   startingDate: string;
-  // endingDate: string;
   prizes: string[];
   licences: string;
   sponsors: Number[];
   quizFile: any[];
+  startCondition: "PLAYERS" | "TIME";
+  requiredPlayers?: number;
 }
 
 const GameCration: React.FC = () => {
@@ -49,7 +49,19 @@ const GameCration: React.FC = () => {
     licences: "",
     sponsors: [],
     quizFile: [],
+    startCondition: "TIME",
+    requiredPlayers: undefined,
   });
+
+  const handleModeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const mode = e.target.value as "PLAYERS" | "TIME";
+    setFormData((prev) => ({
+      ...prev,
+      startCondition: mode,
+      // Reset requiredPlayers when switching away from PLAYERS mode
+      requiredPlayers: mode === "TIME" ? undefined : prev.requiredPlayers,
+    }));
+  };
 
   const fetchSponsors = async () => {
     try {
@@ -255,6 +267,21 @@ const GameCration: React.FC = () => {
       setCurrentSelection("");
     }
   };
+
+
+  const addPrize = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      prizes: [...prevState.prizes, ""],
+    }));
+  };
+
+  const removePrize = (index: number) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      prizes: prevState.prizes.filter((_, i) => i !== index),
+    }));
+  };
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -262,100 +289,168 @@ const GameCration: React.FC = () => {
           Create new Game
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="!rounded-[10px] h-[100vh]">
+      <AlertDialogContent className="!rounded-[10px]">
         <AlertDialogTitle className="text-xl font-bold">
           Games Creation
         </AlertDialogTitle>
         <Card className="w-full flex flex-col gap-y-[40px] mx-auto border-none shadow-none">
-          <CardHeader className="p-0">
-            {/* <CardTitle className="text-2xl font-bold">Games Creation</CardTitle> */}
-            <AlertDialogDescription className="text-sm">
-              Create a new Quiz Game
-            </AlertDialogDescription>
-          </CardHeader>
           <CardContent className="p-0 ">
-            <form onSubmit={handleSubmit} className="">
-              <div className="grid grid-cols-2 gap-2 mb-[60px]">
-                <div className="">
-                  <Label htmlFor="gameName">Games Name</Label>
-                  <Input
-                    className="rounded-[6px]"
-                    id="gameName"
-                    name="gameName"
-                    value={formData.gameName}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="">
-                  <Label htmlFor="requiredDiamond">
-                    Required Diamond to play
-                  </Label>
-                  <Input
-                    className="rounded-[6px]"
-                    id="requiredDiamond"
-                    name="requiredDiamond"
-                    value={formData.requiredDiamond}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="">
-                  <Label htmlFor="startingDate">Starting date and time</Label>
-                  <Input
-                    className="rounded-[6px]"
-                    id="startingDate"
-                    name="startingDate"
-                    type="datetime-local"
-                    value={formData.startingDate}
-                    onChange={handleInputChange}
-                  />
+            <form
+              onSubmit={handleSubmit}
+              className="max-h-[calc(100vh-200px)] overflow-y-auto pr-4"
+            >
+              <div className="flex flex-col gap-4">
+                {/* Basic Game Information Section */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-sm">Basic Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="w-full">
+                      <Label htmlFor="gameName">Game Name</Label>
+                      <Input
+                        className="rounded-[6px]"
+                        id="gameName"
+                        name="gameName"
+                        value={formData.gameName}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Label htmlFor="requiredDiamond">Required Diamond</Label>
+                      <Input
+                        className="rounded-[6px]"
+                        id="requiredDiamond"
+                        name="requiredDiamond"
+                        value={formData.requiredDiamond}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                {/* <div className="">
-                  <Label htmlFor="endingDate">Ending date</Label>
-                  <Input
-                    className="rounded-[6px]"
-                    id="endingDate"
-                    name="endingDate"
-                    type="date"
-                    value={formData.endingDate}
-                    onChange={handleInputChange}
-                  />
-                </div> */}
-                <br />
-                {formData.prizes.map((prize, index) => (
-                  <div key={index} className="">
-                    <Label htmlFor={`prize${index + 1}`}>
-                      prize {index + 1}
-                    </Label>
+                {/* Game Settings Section */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-sm">Game Settings</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="w-full">
+                      <Label htmlFor="startingDate">Starting Date & Time</Label>
+                      <Input
+                        className="rounded-[6px]"
+                        id="startingDate"
+                        name="startingDate"
+                        type="datetime-local"
+                        value={formData.startingDate}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Label htmlFor="startCondition">Game Mode</Label>
+                      <select
+                        id="startCondition"
+                        name="startCondition"
+                        value={formData.startCondition}
+                        onChange={handleModeChange}
+                        className="w-full h-10 px-3 border rounded-[6px]"
+                      >
+                        <option value="TIME">Time-based</option>
+                        <option value="PLAYERS">Players-based</option>
+                      </select>
+                    </div>
+                    {formData.startCondition === "PLAYERS" && (
+                      <div className="w-full">
+                        <Label htmlFor="requiredPlayers">
+                          Required Players
+                        </Label>
+                        <Input
+                          className="rounded-[6px]"
+                          id="requiredPlayers"
+                          name="requiredPlayers"
+                          type="number"
+                          min="1"
+                          value={formData.requiredPlayers || ""}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value);
+                            setFormData((prev) => ({
+                              ...prev,
+                              requiredPlayers: isNaN(value) ? undefined : value,
+                            }));
+                          }}
+                          placeholder="Enter number of players"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold text-sm">Prizes</h3>
+                    <Button
+                      type="button"
+                      onClick={addPrize}
+                      variant="outline"
+                      size="sm"
+                      className="rounded-[6px]"
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Add Prize
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    {formData.prizes.map((prize, index) => (
+                      <div key={index} className="flex gap-2 items-center">
+                        <div className="flex-1">
+                          <Label htmlFor={`prize${index + 1}`}>
+                            Prize {index + 1}
+                          </Label>
+                          <Input
+                            className="rounded-[6px]"
+                            id={`prize${index + 1}`}
+                            value={prize}
+                            onChange={(e) =>
+                              handlePrizeChange(index, e.target.value)
+                            }
+                          />
+                        </div>
+                        {index > 0 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="mt-6"
+                            onClick={() => removePrize(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* License Section */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-sm">License</h3>
+                  <div className="w-full">
+                    <Label htmlFor="licences">License Key</Label>
                     <Input
                       className="rounded-[6px]"
-                      id={`prize${index + 1}`}
-                      value={prize}
-                      onChange={(e) => handlePrizeChange(index, e.target.value)}
+                      id="licences"
+                      name="licences"
+                      value={formData.licences}
+                      onChange={handleInputChange}
                     />
                   </div>
-                ))}
-                <br />
-                <div className="">
-                  <Label htmlFor="licences">Licences</Label>
-                  <Input
-                    className="rounded-[6px] "
-                    id="licences"
-                    name="licences"
-                    value={formData.licences}
-                    onChange={handleInputChange}
-                  />
                 </div>
 
-                <div className="col-span-2 w-full flex flex-col gap-y-[10px]">
-                  <div className="mt-4 w-full">
-                    <Label htmlFor="sponsors">Select Sponsors</Label>
-                    <div className="flex gap-2 mt-1">
+                {/* Sponsors Section */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-sm">Sponsors</h3>
+                  <div className="w-full">
+                    <div className="flex gap-2">
                       <select
                         id="sponsors"
                         value={currentSelection}
                         onChange={handleSponsorSelect}
-                        className="flex-grow p-2 border rounded-[6px]"
+                        className="flex-grow h-10 px-3 border rounded-[6px]"
                       >
                         <option value="">Select a sponsor...</option>
                         {sponsors.map((sponsor) => (
@@ -379,9 +474,6 @@ const GameCration: React.FC = () => {
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
-                  </div>
-
-                  <div className="w-full">
                     {selectedSponsorIds.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {selectedSponsorIds.map((id) => {
@@ -389,7 +481,7 @@ const GameCration: React.FC = () => {
                           return sponsor ? (
                             <div
                               key={id}
-                              className="bg-black/5 border flex items-center bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-sm"
+                              className="bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-sm flex items-center"
                             >
                               {sponsor.name}
                               <button
@@ -405,16 +497,23 @@ const GameCration: React.FC = () => {
                     )}
                   </div>
                 </div>
-              </div>
-              <div className=" mt-[100px]">
-                <Label htmlFor="quizFileUpload">Upload Quiz JSON File</Label>
-                <Input
-                  className="rounded-[6px]"
-                  id="quizFileUpload"
-                  type="file"
-                  accept=".json"
-                  onChange={handleFileUpload}
-                />
+
+                {/* Quiz File Section */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-sm">Quiz File</h3>
+                  <div className="w-full">
+                    <Label htmlFor="quizFileUpload">
+                      Upload Quiz JSON File
+                    </Label>
+                    <Input
+                      className="rounded-[6px]"
+                      id="quizFileUpload"
+                      type="file"
+                      accept=".json"
+                      onChange={handleFileUpload}
+                    />
+                  </div>
+                </div>
               </div>
             </form>
           </CardContent>

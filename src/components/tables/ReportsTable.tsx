@@ -13,14 +13,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown } from "lucide-react";
+import { ArrowUpDown, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -278,9 +272,67 @@ export function ReportTable() {
     table.setPageSize(pageSize);
   }, [pageSize, table]);
 
+  const [isLoading, setIsLoading] = React.useState(false);
+  const handleDownloadPDF = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("jwt_token");
+      if (!token) throw new Error("No authentication token found");
+
+      const response = await fetch(`${apiUrl}:${apiPort}/dashboard/generate-pdf`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/pdf",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to download PDF");
+      }
+
+      // Get filename from response headers if available
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = `Repport.pdf`;
+      
+      if (contentDisposition) {
+        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "PDF downloaded successfully",
+      });
+
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      toast({
+        title: "Error",
+        description: "Failed to download PDF",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div ref={elementRef} className="w-full h-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 w-full justify-between">
         <Input
           placeholder="Filter by game name..."
           value={(table.getColumn("game")?.getFilterValue() as string) ?? ""}
@@ -289,32 +341,26 @@ export function ReportTable() {
           }
           className="max-w-sm rounded-[6px]"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto rounded-[6px]">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      
+        <Button
+          onClick={handleDownloadPDF}
+          className="rounded-[6px] "
+          variant="outline"
+          size="sm"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <FileText className="h-4 w-4 mr-2" />
+              Download PDF
+            </>
+          )}
+        </Button>
       </div>
       <div className="rounded-[6px] border">
         <Table>

@@ -196,11 +196,6 @@ export const columns: ColumnDef<Game>[] = [
             <DropdownMenuItem asChild>
               <Delete api={"game"} id={game.id} />
             </DropdownMenuItem>
-            {/* {!game.isReported && (
-              <DropdownMenuItem asChild>
-                <GameReportGeneration game={game} />
-              </DropdownMenuItem>
-            )} */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -8,7 +8,7 @@ function Home() {
         <h1 className="text-[25px] font-semibold">Current Games</h1>
         <DataTableDemo />
       </div>
-      <div className="w-full flex h-[50%] gap-x-[20px] opacity-15">
+      <div className="w-full flex h-[50%] gap-x-[20px]">
         <div className="w-full h-full">
           <h1 className="text-[25px] font-semibold">Current Event</h1>
           <EventTable />
@@ -25,5 +25,22 @@ function Home() {
     </div>
   );
 }
+
+// api creation :
+// event/create
+
+// api fetch:
+// /event
+
+// api delete:
+// /event
+
+// {
+//   name:
+//   type: "QUIZ" | "SQRATSH" 
+//   rewad: 500 Coin
+//   quiz: ?
+//   scratch: [{ type: "Coins"| "diamond", number: 40 },{},{}]
+// }
 
 export default Home;

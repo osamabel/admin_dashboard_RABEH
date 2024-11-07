@@ -6,6 +6,7 @@ import {
   FileText,
   Star,
   Newspaper,
+  CircleDollarSign,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -15,7 +16,8 @@ const navItems = [
   { to: "/Ranking", name: "Ranking", icon: Gamepad2 },
   { to: "/store", name: "Store", icon: ShoppingBag },
   { to: "/reports", name: "Reports", icon: FileText },
-  { to: "/sponsors", name: "Sponsors", icon: Star },
+  { to: "/sponsors", name: "Sponsors", icon: CircleDollarSign },
+  { to: "/Feedback", name: "Feedback", icon: Star },
 ];
 
 function SideBar() {

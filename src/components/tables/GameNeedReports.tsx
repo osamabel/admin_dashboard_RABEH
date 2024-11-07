@@ -246,7 +246,6 @@ export function GameNeedReports() {
       }
 
       const data = await response.json();
-
       // Transform the data to match the Game type
       const transformedData = Array.isArray(data)
         ? data.map((game) => ({
@@ -256,6 +255,7 @@ export function GameNeedReports() {
             requiredDiamonds: game.requiredDiamonds,
             sponsorId:
               game.sponsorId?.map((s: sponsor) => ({
+                id: s.id,
                 name: s.name,
                 logo: s.logo,
                 status: s.status,
