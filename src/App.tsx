@@ -81,8 +81,10 @@ function App() {
           <Route path="/newQuiz" element={<QuizCreator />} />
           <Route path="/Feedback" element={<Feedback />} />
         </Route>
-      </Route>
-    </Routes>
+        </Route>
+        {/* Add catch-all route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
   );
 }
 
