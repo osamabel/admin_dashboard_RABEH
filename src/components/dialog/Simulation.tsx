@@ -224,7 +224,7 @@ function Simulation({ formData }: { formData: FormData }) {
   return (
     <Card
       ref={phoneSimulation}
-      className="w-full mx-auto border-none shadow-none overflow-hidden h-[60vh]"
+      className="w-full mx-auto border-none shadow-none overflow-hidden h-[80vh]"
     >
       <CardContent className="p-0 h-full w-[85%] mx-auto overflow-hidden relative">
         <motion.div
