@@ -70,13 +70,13 @@ export const columns: ColumnDef<Game>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Game Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          اسم اللعبة
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="capitalize pl-[20px]">{row.getValue("name")}</div>
+      <div className="capitalize pr-[20px]">{row.getValue("name")}</div>
     ),
   },
   {
@@ -87,21 +87,20 @@ export const columns: ColumnDef<Game>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created at
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          تاريخ الإنشاء
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">{formatDate(row.getValue("createdAt"))}</div>
+      <div className="pr-[20px]">{formatDate(row.getValue("createdAt"))}</div>
     ),
   },
   {
     accessorKey: "prize",
-    header: "Prize",
+    header: "الجوائز",
     cell: ({ row }) => {
       const prz = row.original.prizes;
-
       return <PrizeDialog prizes={prz} />;
     },
   },
@@ -113,65 +112,57 @@ export const columns: ColumnDef<Game>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          required Diamond
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          الماس المطلوب
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">
+      <div className="lowercase pr-[30px]">
         {row.getValue("requiredDiamonds")}
       </div>
     ),
   },
   {
     accessorKey: "sponsorId",
-    header: "Sponsors",
+    header: "الرعاة",
     cell: ({ row }) => {
       const sponsors = row.original.sponsorId;
-
       return <SponsorsDialog sponsors={sponsors} />;
     },
   },
-
   {
     accessorKey: "licenseId",
-    header: "Licence",
+    header: "الترخيص",
     cell: ({ row }) => (
-      <div className="lowercase pl-[20px]">{row.getValue("licenseId")}</div>
+      <div className="lowercase pr-[20px]">{row.getValue("licenseId")}</div>
     ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "الحالة",
     cell: ({ row }) => {
       const status = row.original.status;
+      const getStatusText = (status: string) => {
+        switch (status.toLowerCase()) {
+          case "pending": return "قيد الانتظار";
+          case "started": return "بدأت";
+          case "closed": return "مغلقة";
+          case "ended": return "انتهت";
+          default: return status;
+        }
+      };
+
       return (
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-                    ${
-                      status.toLocaleLowerCase() === "pending"
-                        ? "text-[#626262] bg-[#F1F1F1]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "started"
-                        ? "text-[#0FB71D] bg-[#D0FFCF]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "closed"
-                        ? "text-[#FF3A3A] bg-[#FFE0E0]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "ended"
-                        ? "text-[#F49301] bg-[#FFE4BB]"
-                        : ""
-                    }`}
+                    ${status.toLowerCase() === "pending" ? "text-[#626262] bg-[#F1F1F1]" : ""}
+                    ${status.toLowerCase() === "started" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
+                    ${status.toLowerCase() === "closed" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
+                    ${status.toLowerCase() === "ended" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
           >
-            {status.toLocaleLowerCase()}
+            {getStatusText(status)}
           </div>
         </div>
       );
@@ -187,12 +178,12 @@ export const columns: ColumnDef<Game>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">فتح القائمة</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuContent align="start">
+            <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Delete api={"game"} id={game.id} />
@@ -335,43 +326,52 @@ export function GameNeedReports() {
   }, [pageSize, table]);
 
   return (
-    <div ref={elementRef} className="w-full h-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Search by Game name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm rounded-[6px]"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto rounded-[6px]">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+    <div ref={elementRef} className="w-full h-full" dir="rtl">
+    <div className="flex items-center py-4">
+      <Input
+        placeholder="البحث باسم اللعبة..."
+        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+        onChange={(event) =>
+          table.getColumn("name")?.setFilterValue(event.target.value)
+        }
+        className="max-w-sm rounded-[6px]"
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="mr-auto rounded-[6px]">
+            الأعمدة <ChevronDown className="mr-2 h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {table
+            .getAllColumns()
+            .filter((column) => column.getCanHide())
+            .map((column) => {
+              const columnNames = {
+                name: "اسم اللعبة",
+                createdAt: "تاريخ الإنشاء",
+                prize: "الجوائز",
+                requiredDiamonds: "الماس المطلوب",
+                sponsorId: "الرعاة",
+                licenseId: "الترخيص",
+                status: "الحالة"
+              };
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(!!value)
+                  }
+                >
+                  {columnNames[column.id as keyof typeof columnNames] || column.id}
+                </DropdownMenuCheckboxItem>
+              );
+            })}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
       <div className="rounded-[6px] border ">
         <Table>
           <TableHeader>
@@ -379,7 +379,7 @@ export function GameNeedReports() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead className="text-right" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -415,7 +415,7 @@ export function GameNeedReports() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
@@ -434,7 +434,7 @@ export function GameNeedReports() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            سابق
           </Button>
           <Button
             className="rounded-[6px]"
@@ -443,7 +443,7 @@ export function GameNeedReports() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            التالي
           </Button>
         </div>
       </div>

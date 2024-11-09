@@ -212,28 +212,28 @@ const CreateEventDialog = ({ onEventCreated }: { onEventCreated: () => void }) =
     <Dialog>
       <DialogTrigger asChild>
         <Button className="rounded-[6px]" variant="default">
-          <Plus className="mr-2 h-4 w-4" /> Create new Event
+          <Plus className="ml-2 h-4 w-4" /> إنشاء فعالية جديدة
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" dir="rtl">
         <DialogHeader>
-          <DialogTitle>Create New Event</DialogTitle>
+          <DialogTitle>إنشاء فعالية جديدة</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label>Event Name</Label>
+            <Label>اسم الفعالية</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
           </div>
 
           <div className="grid gap-2">
-            <Label>Event Type</Label>
+            <Label>نوع الفعالية</Label>
             <Select value={type} onValueChange={(value: "QUIZ" | "SCRATCH") => setType(value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select event type" />
+                <SelectValue placeholder="اختر نوع الفعالية" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="QUIZ">Quiz</SelectItem>
-                <SelectItem value="SCRATCH">Scratch</SelectItem>
+                <SelectItem value="QUIZ">مسابقة</SelectItem>
+                <SelectItem value="SCRATCH">سحب</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -241,7 +241,7 @@ const CreateEventDialog = ({ onEventCreated }: { onEventCreated: () => void }) =
           {type === "QUIZ" ? (
             <>
               <div className="grid gap-2">
-                <Label>Reward (Coins)</Label>
+                <Label>المكافأة (عملات)</Label>
                 <Input 
                   type="number"
                   value={reward}
@@ -249,7 +249,7 @@ const CreateEventDialog = ({ onEventCreated }: { onEventCreated: () => void }) =
                 />
               </div>
               <div className="grid gap-2">
-                <Label>Quiz File (JSON)</Label>
+                <Label>ملف المسابقة (JSON)</Label>
                 <Input
                   type="file"
                   accept=".json"
@@ -259,7 +259,7 @@ const CreateEventDialog = ({ onEventCreated }: { onEventCreated: () => void }) =
             </>
           ) : (
             <div className="space-y-4">
-              <Label>Scratch Rewards</Label>
+              <Label>جوائز السحب</Label>
               {scratchRewards.map((reward, index) => (
                 <div key={index} className="flex gap-2">
                   <Select
@@ -272,8 +272,8 @@ const CreateEventDialog = ({ onEventCreated }: { onEventCreated: () => void }) =
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Coins">Coins</SelectItem>
-                      <SelectItem value="diamond">Diamond</SelectItem>
+                      <SelectItem value="Coins">عملات</SelectItem>
+                      <SelectItem value="diamond">ماس</SelectItem>
                     </SelectContent>
                   </Select>
                   <Input
@@ -282,14 +282,14 @@ const CreateEventDialog = ({ onEventCreated }: { onEventCreated: () => void }) =
                     onChange={(e) => 
                       handleScratchRewardChange(index, "number", parseInt(e.target.value))
                     }
-                    placeholder="Amount"
+                    placeholder="القيمة"
                   />
                 </div>
               ))}
             </div>
           )}
 
-          <Button onClick={handleSubmit}>Create Event</Button>
+          <Button onClick={handleSubmit}>إنشاء الفعالية</Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -301,7 +301,6 @@ export function EventTable() {
   const [pageSize, setPageSize] = React.useState(1);
   const [events, setEvents] = React.useState<Event[]>([]);
   const { toast } = useToast();
-
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -373,34 +372,34 @@ export function EventTable() {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Event Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          اسم الفعالية
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div className="capitalize pl-[20px]">{row.getValue("name")}</div>,
+      cell: ({ row }) => <div className="capitalize pr-[20px]">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "type",
-      header: "Type",
+      header: "النوع",
       cell: ({ row }) => (
-        <div className="pl-[20px]">
-          {row.getValue("type")}
+        <div className="pr-[20px]">
+          {row.getValue("type") === "QUIZ" ? "مسابقة" : "سحب"}
         </div>
       ),
     },
     {
       accessorKey: "reward",
-      header: "Reward",
+      header: "المكافأة",
       cell: ({ row }) => {
         const event = row.original;
         if (event.type === "QUIZ") {
-          return <div className="pl-[20px]">{event.reward} Coins</div>;
+          return <div className="pr-[20px]">{event.reward} عملة</div>;
         } else {
           return (
-            <div className="pl-[20px]">
+            <div className="pr-[20px]">
               {event.scratch?.map((reward, index) => (
                 <div key={index}>
-                  {reward.number} {reward.type}
+                  {reward.number} {reward.type === "Coins" ? "عملة" : "ماس"}
                 </div>
               ))}
             </div>
@@ -415,12 +414,12 @@ export function EventTable() {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created At
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          تاريخ الإنشاء
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="pl-[20px]">
+        <div className="pr-[20px]">
           {new Date(row.getValue("createdAt")).toLocaleDateString()}
         </div>
       ),
@@ -430,22 +429,22 @@ export function EventTable() {
       enableHiding: false,
       cell: ({ row }) => {
         const event = row.original;
-
+  
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">فتح القائمة</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="start">
               <DropdownMenuItem
                 onClick={() => handleDelete(event.id)}
                 className="text-red-600"
               >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                <Trash2 className="ml-2 h-4 w-4" />
+                حذف
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -500,7 +499,7 @@ export function EventTable() {
     <div ref={eventRef} className="w-full h-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by event name..."
+          placeholder="البحث عن اسم الفعالية.."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -514,7 +513,7 @@ export function EventTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead className='text-right' key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -534,7 +533,7 @@ export function EventTable() {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className=""  key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -549,7 +548,7 @@ export function EventTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
@@ -568,7 +567,7 @@ export function EventTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            السابق
           </Button>
           <Button
             className="rounded-[6px]"
@@ -577,7 +576,7 @@ export function EventTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            التالي
           </Button>
         </div>
       </div>

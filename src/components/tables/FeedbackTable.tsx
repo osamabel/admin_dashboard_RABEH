@@ -34,7 +34,6 @@ import { formatDate } from "./SponsorsTable";
 import { FeedbackAnalyticsDialog } from "../dialog/FeedbackAnalytics";
 import { FeedbackCreationDialog } from "../dialog/FeedbackCreation";
 
-
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiPort = import.meta.env.VITE_API_PORT;
 
@@ -65,20 +64,20 @@ export const columns: ColumnDef<Feedback>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          العنوان
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="capitalize pl-[20px]">{row.getValue("title")}</div>
+      <div className="capitalize pr-[20px]">{row.getValue("title")}</div>
     ),
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: "الوصف",
     cell: ({ row }) => (
-      <div className="pl-[20px] max-w-[300px] truncate">
+      <div className="pr-[20px] max-w-[300px] truncate">
         {row.getValue("description")}
       </div>
     ),
@@ -91,27 +90,31 @@ export const columns: ColumnDef<Feedback>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created at
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          تاريخ الإنشاء
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">{formatDate(row.getValue("createdAt"))}</div>
+      <div className="pr-[20px]">{formatDate(row.getValue("createdAt"))}</div>
     ),
   },
   {
     accessorKey: "isActive",
-    header: "Status",
+    header: "الحالة",
     cell: ({ row }) => {
       const isActive = row.getValue("isActive");
       return (
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-              ${isActive ? "text-[#0FB71D] bg-[#D0FFCF]" : "text-[#FF3A3A] bg-[#FFE0E0]"}`}
+              ${
+                isActive
+                  ? "text-[#0FB71D] bg-[#D0FFCF]"
+                  : "text-[#FF3A3A] bg-[#FFE0E0]"
+              }`}
           >
-            {isActive ? "Active" : "Inactive"}
+            {isActive ? "نشط" : "غير نشط"}
           </div>
         </div>
       );
@@ -134,8 +137,11 @@ export function FeedbackTable() {
   const [feedbacks, setFeedbacks] = React.useState<Feedback[]>([]);
   const { toast } = useToast();
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   // Fetch sponsors
@@ -153,14 +159,15 @@ export function FeedbackTable() {
         credentials: "include",
       });
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setSponsors(data);
     } catch (error: any) {
       console.error("Error fetching sponsors:", error);
       toast({
-        title: "Error",
-        description: "Failed to load sponsors. Please try again.",
+        title: "خطأ",
+        description: "فشل في تحميل الرعاة. يرجى المحاولة مرة أخرى.",
         variant: "destructive",
       });
     }
@@ -173,22 +180,26 @@ export function FeedbackTable() {
       const token = localStorage.getItem("jwt_token");
       if (!token) throw new Error("No authentication token found");
 
-      const response = await fetch(`${apiUrl}:${apiPort}/sponsor-forms/sponsor/${sponsorId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${apiUrl}:${apiPort}/sponsor-forms/sponsor/${sponsorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          credentials: "include",
+        }
+      );
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setFeedbacks(data);
     } catch (error: any) {
       console.error("Error fetching feedbacks:", error);
       toast({
-        title: "Error",
-        description: "Failed to load feedbacks. Please try again.",
+        title: "خطأ",
+        description: "فشل في تحميل التعليقات. يرجى المحاولة مرة أخرى.",
         variant: "destructive",
       });
     } finally {
@@ -226,9 +237,8 @@ export function FeedbackTable() {
       rowSelection,
     },
   });
-
   return (
-    <div className="w-full">
+    <div className="w-full" dir="rtl">
       <div className="flex items-center py-4 gap-4 w-full justify-between">
         <div className="flex-1 max-w-sm">
           <Select
@@ -237,7 +247,7 @@ export function FeedbackTable() {
             disabled={isLoading}
           >
             <SelectTrigger className="rounded-[6px]">
-              <SelectValue placeholder="Select a sponsor" />
+              <SelectValue placeholder="اختر راعياً" />
             </SelectTrigger>
             <SelectContent>
               {sponsors.map((sponsor) => (
@@ -250,7 +260,7 @@ export function FeedbackTable() {
         </div>
         {selectedSponsorId && (
           <Input
-            placeholder="Filter feedbacks..."
+            placeholder="البحث في التعليقات..."
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("title")?.setFilterValue(event.target.value)
@@ -278,73 +288,74 @@ export function FeedbackTable() {
             ))}
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24">
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="h-6 w-6 animate-spin" />
-                  </div>
-                </TableCell>
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24">
+                <div className="flex items-center justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </TableCell>
+                ))}
               </TableRow>
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  {selectedSponsorId ? "No feedbacks found." : "Select a sponsor to view feedbacks."}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      {selectedSponsorId && (
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <div className="flex-1 text-sm text-muted-foreground">
-            <FeedbackCreationDialog
-            //   sponsorId={parseInt(selectedSponsorId)} 
-              onSuccess={() => fetchFeedbacks(selectedSponsorId)}
-            />
-          </div>
-          <div className="space-x-2">
-            <Button
-              className="rounded-[6px]"
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              className="rounded-[6px]"
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center"
+              >
+                {selectedSponsorId
+                  ? "لا توجد تعليقات."
+                  : "اختر راعياً لعرض التعليقات."}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
+    {selectedSponsorId && (
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          <FeedbackCreationDialog
+            onSuccess={() => fetchFeedbacks(selectedSponsorId)}
+          />
+        </div>
+        <div className="space-x-2 flex-row-reverse">
+          <Button
+            className="rounded-[6px] mx-2"
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            السابق
+          </Button>
+          <Button
+            className="rounded-[6px]"
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            التالي
+          </Button>
+        </div>
+      </div>
+    )}
+  </div>
   );
 }

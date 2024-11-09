@@ -101,10 +101,11 @@ export function StoreTable() {
     } catch (error) {
       console.error("Error fetching items:", error);
       toast({
-        title: "Error",
-        description: "Failed to load store items. Please try again.",
+        title: "خطأ",
+        description: "فشل في تحميل المنتجات. يرجى المحاولة مرة أخرى.",
         variant: "destructive",
       });
+      
     }
   };
 
@@ -125,8 +126,8 @@ export function StoreTable() {
 
     if (!formData.name || formData.price <= 0 || formData.reward <= 0) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in all fields with valid values.",
+        title: "خطأ في التحقق",
+        description: "يرجى ملء جميع الحقول بقيم صحيحة.",
         variant: "destructive",
       });
       return;
@@ -156,8 +157,8 @@ export function StoreTable() {
       }
 
       toast({
-        title: "Success",
-        description: "Store item created successfully.",
+        title: "نجاح",
+        description: "تم إنشاء المنتج بنجاح.",
       });
 
       setFormData({
@@ -170,8 +171,8 @@ export function StoreTable() {
     } catch (error) {
       console.error("Error creating item:", error);
       toast({
-        title: "Error",
-        description: "Failed to create store item. Please try again.",
+        title: "خطأ",
+        description: "فشل في تحميل المنتجات. يرجى المحاولة مرة أخرى.",
         variant: "destructive",
       });
     } finally {
@@ -188,13 +189,13 @@ export function StoreTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            الاسم
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="capitalize pl-[20px]">{row.getValue("name")}</div>
+        <div className="capitalize pr-[20px]">{row.getValue("name")}</div>
       ),
     },
     {
@@ -205,16 +206,16 @@ export function StoreTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Price
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            السعر
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">
+        <div className="lowercase pr-[30px]">
           <div className="flex gap-x-[10px]">
-            <img width={20} src="/coin.svg" alt="" />
             <p>{row.getValue("price")}</p>
+            <img width={20} src="/coin.svg" alt="عملات" />
           </div>
         </div>
       ),
@@ -227,16 +228,16 @@ export function StoreTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Reward
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            المكافأة
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">
+        <div className="lowercase pr-[30px]">
           <div className="flex gap-x-[10px]">
-            <img width={20} src="/diamond.svg" alt="" />
             <p>{row.getValue("reward")}</p>
+            <img width={20} src="/diamond.svg" alt="ماس" />
           </div>
         </div>
       ),
@@ -309,10 +310,10 @@ export function StoreTable() {
   }, [pageSize, table]);
 
   return (
-    <div ref={elementRef} className="w-full h-full">
+    <div ref={elementRef} className="w-full h-full" dir="rtl">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by item name..."
+          placeholder="البحث باسم المنتج..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -321,15 +322,20 @@ export function StoreTable() {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto rounded-[6px]">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="mr-auto rounded-[6px]">
+              الأعمدة <ChevronDown className="mr-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="start">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
+                const columnNames = {
+                  name: "الاسم",
+                  price: "السعر",
+                  reward: "المكافأة",
+                };
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -339,7 +345,8 @@ export function StoreTable() {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {columnNames[column.id as keyof typeof columnNames] ||
+                      column.id}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -354,7 +361,7 @@ export function StoreTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead className="text-right" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -390,47 +397,48 @@ export function StoreTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button className="rounded-[6px]">
-                <Plus className="mr-2 h-4 w-4" />
-                Create New Item
+                <Plus className="ml-2 h-4 w-4" />
+                إضافة منتج جديد
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] !rounded-[10px]">
+            <DialogContent
+              className="sm:max-w-[425px] !rounded-[10px]"
+              dir="rtl"
+            >
               <DialogHeader>
-                <DialogTitle>Create Store Item</DialogTitle>
+                <DialogTitle>إضافة منتج جديد</DialogTitle>
                 <DialogDescription>
-                  Add a new item to the store. Fill in all the required
-                  information.
+                  أضف منتجاً جديداً للمتجر. املأ جميع المعلومات المطلوبة.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit}>
                 <div className="grid gap-4 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="name">الاسم</Label>
                     <Input
                       id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
                       className="rounded-[6px]"
-                      placeholder="Enter item name"
+                      placeholder="أدخل اسم المنتج"
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="price">Price (Coins)</Label>
+                    <Label htmlFor="price">السعر (عملات)</Label>
                     <Input
                       id="price"
                       name="price"
@@ -443,7 +451,7 @@ export function StoreTable() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="reward">Reward (Diamonds)</Label>
+                    <Label htmlFor="reward">المكافأة (ماس)</Label>
                     <Input
                       id="reward"
                       name="reward"
@@ -456,7 +464,7 @@ export function StoreTable() {
                     />
                   </div>
                 </div>
-                <DialogFooter>
+                <DialogFooter className="flex-row-reverse sm:flex-row-reverse">
                   <Button
                     type="button"
                     variant="outline"
@@ -464,29 +472,29 @@ export function StoreTable() {
                     onClick={() => setIsOpen(false)}
                     disabled={isLoading}
                   >
-                    Cancel
+                    إلغاء
                   </Button>
                   <Button
                     type="submit"
                     className="rounded-[6px]"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Creating..." : "Create"}
+                    {isLoading ? "جاري الإنشاء..." : "إنشاء"}
                   </Button>
                 </DialogFooter>
               </form>
             </DialogContent>
           </Dialog>
         </div>
-        <div className="space-x-2">
+        <div className="space-x-2 flex-row-reverse">
           <Button
-            className="rounded-[6px]"
+            className="rounded-[6px] mx-2"
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            السابق
           </Button>
           <Button
             className="rounded-[6px]"
@@ -495,7 +503,7 @@ export function StoreTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            التالي
           </Button>
         </div>
       </div>

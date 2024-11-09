@@ -66,8 +66,8 @@ export const columns: ColumnDef<Sponsor>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          الاسم
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
@@ -75,14 +75,14 @@ export const columns: ColumnDef<Sponsor>[] = [
       const logo = row.original.logo;
       const name = row.original.name;
       return (
-        <div className="capitalize pl-[20px] via-fuchsia-400">
+        <div className="capitalize pr-[20px] via-fuchsia-400">
           <div className="flex items-center gap-x-[10px]">
             <div className="w-[45px] aspect-square border rounded-full ">
               {logo ? (
                 <img
                   className="w-full h-full rounded-full object-cover"
                   src={`${apiUrl}:${apiPort}/${logo}`}
-                  alt=""
+                  alt={name}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center opacity-65">
@@ -90,7 +90,6 @@ export const columns: ColumnDef<Sponsor>[] = [
                 </div>
               )}
             </div>
-
             <div>{row.getValue("name")}</div>
           </div>
         </div>
@@ -105,13 +104,13 @@ export const columns: ColumnDef<Sponsor>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Number of Sponsored Games
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          عدد الألعاب المدعومة
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">{row.getValue("games")}</div>
+      <div className="lowercase pr-[30px]">{row.getValue("games")}</div>
     ),
   },
   {
@@ -122,47 +121,43 @@ export const columns: ColumnDef<Sponsor>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created at
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          تاريخ الإنشاء
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">{formatDate(row.getValue("createdAt"))}</div>
+      <div className="pr-[20px]">{formatDate(row.getValue("createdAt"))}</div>
     ),
   },
   {
     accessorKey: "status",
-    header: "status",
+    header: "الحالة",
     cell: ({ row }) => {
       const status = row.original.status;
+      const getStatusText = (status: string) => {
+        switch (status.toLowerCase()) {
+          case "active": return "نشط";
+          case "rejected": return "مرفوض";
+          case "inactive": return "غير نشط";
+          default: return status;
+        }
+      };
+      
       return (
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-                    ${
-                      status.toLocaleLowerCase() === "active"
-                        ? "text-[#0FB71D] bg-[#D0FFCF]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "rejected"
-                        ? "text-[#FF3A3A] bg-[#FFE0E0]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "inactive"
-                        ? "text-[#F49301] bg-[#FFE4BB]"
-                        : ""
-                    }`}
+                    ${status.toLowerCase() === "active" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
+                    ${status.toLowerCase() === "rejected" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
+                    ${status.toLowerCase() === "inactive" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
           >
-            {status.toLocaleLowerCase()}
+            {getStatusText(status)}
           </div>
         </div>
       );
     },
   },
-
   {
     id: "actions",
     enableHiding: false,
@@ -173,12 +168,12 @@ export const columns: ColumnDef<Sponsor>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">فتح القائمة</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuContent align="start">
+            <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <SponsorUpdate sponsorId={sponsor.id} />
             </DropdownMenuItem>
@@ -235,8 +230,8 @@ export function SponsorsTables() {
     } catch (error) {
       console.error("Error fetching sponsors:", error);
       toast({
-        title: "Error",
-        description: "Failed to load sponsors. Please try again.",
+        title: "خطأ",
+        description: "فشل في تحميل الرعاة. يرجى المحاولة مرة أخرى.",
         variant: "destructive",
       });
     } finally {
@@ -294,14 +289,14 @@ export function SponsorsTables() {
   }, [pageSize, table]);
 
   if (isLoading) {
-    return <div>Loading sponsors...</div>;
+    return <div>جاري تحميل الرعاة...</div>;
   }
 
   return (
-    <div ref={elementRef} className="w-full h-full">
+    <div ref={elementRef} className="w-full h-full" dir="rtl">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by sponsor name..."
+          placeholder="البحث باسم الراعي..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -311,30 +306,38 @@ export function SponsorsTables() {
         <Button
           onClick={() => fetchSponsors()}
           variant="outline"
-          className="ml-2 rounded-[6px]"
+          className="mr-2 rounded-[6px]"
         >
-          Refresh
+          تحديث
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto rounded-[6px]">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="mr-auto rounded-[6px]">
+              الأعمدة <ChevronDown className="mr-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="start">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
+              .map((column) => {
+                const columnNames = {
+                  name: "الاسم",
+                  games: "عدد الألعاب المدعومة",
+                  createdAt: "تاريخ الإنشاء",
+                  status: "الحالة"
+                };
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {columnNames[column.id as keyof typeof columnNames] || column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -380,7 +383,7 @@ export function SponsorsTables() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
@@ -389,30 +392,30 @@ export function SponsorsTables() {
       </div>
 
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          <SponsorCreation />
-        </div>
-        <div className="space-x-2">
-          <Button
-            className="rounded-[6px]"
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            className="rounded-[6px]"
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+      <div className="flex-1 text-sm text-muted-foreground">
+        <SponsorCreation />
+      </div>
+      <div className="space-x-2 flex-row-reverse">
+        <Button
+          className="rounded-[6px] mx-2"
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          السابق
+        </Button>
+        <Button
+          className="rounded-[6px]"
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          التالي
+        </Button>
       </div>
     </div>
-  );
+  </div>
+);
 }

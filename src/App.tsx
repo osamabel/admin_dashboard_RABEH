@@ -68,23 +68,22 @@ const ProtectedRoute = () => {
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route element={<ProtectedRoute />}>
-        <Route element={<Dashboard />}>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/ranking" element={<Ranking />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/sponsors" element={<Sponsors />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/store" element={<Store />} />
-          <Route path="/newQuiz" element={<QuizCreator />} />
-          <Route path="/Feedback" element={<Feedback />} />
-        </Route>
-        </Route>
-        {/* Add catch-all route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+    <Route path="/تسجيل-الدخول" element={<Login />} />
+    <Route element={<ProtectedRoute />}>
+      <Route element={<Dashboard />}>
+        <Route path="/" element={<Navigate to="/الرئيسية" replace />} />
+        <Route path="/الرئيسية" element={<Home />} />
+        <Route path="/التصنيف" element={<Ranking />} />
+        <Route path="/المستخدمين" element={<Users />} />
+        <Route path="/الرعاة" element={<Sponsors />} />
+        <Route path="/التقارير" element={<Reports />} />
+        <Route path="/المتجر" element={<Store />} />
+        <Route path="/اختبار-جديد" element={<QuizCreator />} />
+        <Route path="/التعليقات" element={<Feedback />} />
+      </Route>
+    </Route>
+    <Route path="*" element={<Navigate to="/" replace />} />
+  </Routes>
   );
 }
 

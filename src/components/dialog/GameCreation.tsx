@@ -285,12 +285,12 @@ const GameCration: React.FC = () => {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button className="rounded-[6px]" variant="default">
-          Create new Game
+          إنشاء لعبة جديدة
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="!rounded-[10px]">
+      <AlertDialogContent className="!rounded-[10px]" dir="rtl">
         <AlertDialogTitle className="text-xl font-bold flex items-center justify-between">
-          <p>{onSimulation ? "Game Simulation" : "Games Creation"}</p>
+          <p>{onSimulation ? "محاكاة اللعبة" : "إنشاء اللعبة"}</p>
           {onSimulation && (
             <button onClick={() => setOnSimulation(false)}>
               <X />
@@ -301,18 +301,18 @@ const GameCration: React.FC = () => {
           <Simulation formData={formData} />
         ) : (
           <Card className="w-full flex flex-col gap-y-[40px] mx-auto border-none shadow-none">
-            <CardContent className="p-0 ">
+            <CardContent className="p-0">
               <form
                 onSubmit={handleSubmit}
-                className="max-h-[calc(100vh-200px)] overflow-y-auto pr-4"
+                className="max-h-[calc(100vh-200px)] overflow-y-auto pl-4"
               >
                 <div className="flex flex-col gap-4">
-                  {/* Basic Game Information Section */}
+                  {/* معلومات اللعبة الأساسية */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-sm">Basic Information</h3>
+                    <h3 className="font-semibold text-sm">المعلومات الأساسية</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="w-full">
-                        <Label htmlFor="gameName">Game Name</Label>
+                        <Label htmlFor="gameName">اسم اللعبة</Label>
                         <Input
                           className="rounded-[6px]"
                           id="gameName"
@@ -323,7 +323,7 @@ const GameCration: React.FC = () => {
                       </div>
                       <div className="w-full">
                         <Label htmlFor="requiredDiamond">
-                          Required Diamond
+                          الماس المطلوب
                         </Label>
                         <Input
                           className="rounded-[6px]"
@@ -335,14 +335,14 @@ const GameCration: React.FC = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* Game Settings Section */}
+  
+                  {/* إعدادات اللعبة */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-sm">Game Settings</h3>
+                    <h3 className="font-semibold text-sm">إعدادات اللعبة</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="w-full">
                         <Label htmlFor="startingDate">
-                          Starting Date & Time
+                          تاريخ ووقت البدء
                         </Label>
                         <Input
                           className="rounded-[6px]"
@@ -354,7 +354,7 @@ const GameCration: React.FC = () => {
                         />
                       </div>
                       <div className="w-full">
-                        <Label htmlFor="startCondition">Game Mode</Label>
+                        <Label htmlFor="startCondition">وضع اللعبة</Label>
                         <select
                           id="startCondition"
                           name="startCondition"
@@ -362,14 +362,14 @@ const GameCration: React.FC = () => {
                           onChange={handleModeChange}
                           className="w-full h-10 px-3 border rounded-[6px]"
                         >
-                          <option value="TIME">Time-based</option>
-                          <option value="PLAYERS">Players-based</option>
+                          <option value="TIME">حسب الوقت</option>
+                          <option value="PLAYERS">حسب عدد اللاعبين</option>
                         </select>
                       </div>
                       {formData.startCondition === "PLAYERS" && (
                         <div className="w-full">
                           <Label htmlFor="requiredPlayers">
-                            Required Players
+                            عدد اللاعبين المطلوب
                           </Label>
                           <Input
                             className="rounded-[6px]"
@@ -387,15 +387,17 @@ const GameCration: React.FC = () => {
                                   : value,
                               }));
                             }}
-                            placeholder="Enter number of players"
+                            placeholder="أدخل عدد اللاعبين"
                           />
                         </div>
                       )}
                     </div>
                   </div>
+  
+                  {/* الجوائز */}
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-sm">Prizes</h3>
+                      <h3 className="font-semibold text-sm">الجوائز</h3>
                       <Button
                         type="button"
                         onClick={addPrize}
@@ -403,8 +405,8 @@ const GameCration: React.FC = () => {
                         size="sm"
                         className="rounded-[6px]"
                       >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add Prize
+                        <Plus className="h-4 w-4 ml-1" />
+                        إضافة جائزة
                       </Button>
                     </div>
                     <div className="grid grid-cols-1 gap-4">
@@ -412,7 +414,7 @@ const GameCration: React.FC = () => {
                         <div key={index} className="flex gap-2 items-center">
                           <div className="flex-1">
                             <Label htmlFor={`prize${index + 1}`}>
-                              Prize {index + 1}
+                              الجائزة {index + 1}
                             </Label>
                             <Input
                               className="rounded-[6px]"
@@ -438,12 +440,12 @@ const GameCration: React.FC = () => {
                       ))}
                     </div>
                   </div>
-
-                  {/* License Section */}
+  
+                  {/* الترخيص */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-sm">License</h3>
+                    <h3 className="font-semibold text-sm">الترخيص</h3>
                     <div className="w-full">
-                      <Label htmlFor="licences">License Key</Label>
+                      <Label htmlFor="licences">مفتاح الترخيص</Label>
                       <Input
                         className="rounded-[6px]"
                         id="licences"
@@ -453,10 +455,10 @@ const GameCration: React.FC = () => {
                       />
                     </div>
                   </div>
-
-                  {/* Sponsors Section */}
+  
+                  {/* الرعاة */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-sm">Sponsors</h3>
+                    <h3 className="font-semibold text-sm">الرعاة</h3>
                     <div className="w-full">
                       <div className="flex gap-2">
                         <select
@@ -465,7 +467,7 @@ const GameCration: React.FC = () => {
                           onChange={handleSponsorSelect}
                           className="flex-grow h-10 px-3 border rounded-[6px]"
                         >
-                          <option value="">Select a sponsor...</option>
+                          <option value="">اختر راعياً...</option>
                           {sponsors.map((sponsor) => (
                             <option
                               key={sponsor.id}
@@ -474,7 +476,7 @@ const GameCration: React.FC = () => {
                             >
                               {sponsor.name}{" "}
                               {selectedSponsorIds.includes(sponsor.id)
-                                ? "(Selected)"
+                                ? "(تم الاختيار)"
                                 : ""}
                             </option>
                           ))}
@@ -499,7 +501,7 @@ const GameCration: React.FC = () => {
                                 {sponsor.name}
                                 <button
                                   onClick={() => toggleSponsor(id)}
-                                  className="ml-1 text-secondary-foreground/50 hover:text-secondary-foreground"
+                                  className="mr-1 text-secondary-foreground/50 hover:text-secondary-foreground"
                                 >
                                   <X width={14} />
                                 </button>
@@ -510,13 +512,13 @@ const GameCration: React.FC = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Quiz File Section */}
+  
+                  {/* ملف الأسئلة */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-sm">Quiz File</h3>
+                    <h3 className="font-semibold text-sm">ملف الأسئلة</h3>
                     <div className="w-full">
                       <Label htmlFor="quizFileUpload">
-                        Upload Quiz JSON File
+                        تحميل ملف الأسئلة JSON
                       </Label>
                       <Input
                         className="rounded-[6px]"
@@ -532,21 +534,20 @@ const GameCration: React.FC = () => {
             </CardContent>
           </Card>
         )}
-
+  
         <AlertDialogFooter className="flex items-center !justify-between">
-          <div className=" flex gap-2">
+          <div className="flex gap-2">
             <AlertDialogCancel className="rounded-[10px]">
-              Cancel
+              إلغاء
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => handleSubmit(e as any)}
               className="rounded-[10px] bg-green-600 hover:bg-green-700"
             >
-              Create
+              إنشاء
             </AlertDialogAction>
           </div>
-          {
-            !onSimulation &&
+          {!onSimulation &&
             formData.gameName &&
             formData.requiredDiamond &&
             formData.quizFile.length !== 0 && (
@@ -554,7 +555,7 @@ const GameCration: React.FC = () => {
                 onClick={() => setOnSimulation((prev: boolean) => !prev)}
                 className="bg-[#0392FF] text-white px-[16px] rounded-xl py-[8px]"
               >
-                Simulation
+                المحاكاة
               </button>
             )}
         </AlertDialogFooter>

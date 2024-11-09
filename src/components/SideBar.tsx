@@ -11,15 +11,14 @@ import {
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { to: "/home", name: "Home", icon: House },
-  { to: "/users", name: "Users", icon: Users },
-  { to: "/Ranking", name: "Ranking", icon: Gamepad2 },
-  { to: "/store", name: "Store", icon: ShoppingBag },
-  { to: "/reports", name: "Reports", icon: FileText },
-  { to: "/sponsors", name: "Sponsors", icon: CircleDollarSign },
-  { to: "/Feedback", name: "Feedback", icon: Star },
+  { to: "/الرئيسية", name: "الرئيسية", icon: House }, // Home
+  { to: "/المستخدمين", name: "المستخدمين", icon: Users }, // Users
+  { to: "/التصنيف", name: "التصنيف", icon: Gamepad2 }, // Ranking
+  { to: "/المتجر", name: "المتجر", icon: ShoppingBag }, // Store
+  { to: "/التقارير", name: "التقارير", icon: FileText }, // Reports
+  { to: "/الرعاة", name: "الرعاة", icon: CircleDollarSign }, // Sponsors
+  { to: "/التعليقات", name: "التعليقات", icon: Star }, // Feedback
 ];
-
 function SideBar() {
   return (
     <div className="min-w-[300px] h-full bg-black rounded-[10px] py-[40px]">
@@ -54,7 +53,7 @@ function SideBar() {
         <div className="flex flex-col gap-y-[10px] px-[20px] w-full">
           <div className="w-full bg-white/10 rounded-[6px]">
               <NavLink
-                to={'newQuiz'}
+                to={'اختبار-جديد'}
                 className={({ isActive }) =>
                   isActive
                     ? "flex items-end justify-center gap-x-[5px] py-[10px] w-full group active-class"
@@ -69,7 +68,7 @@ function SideBar() {
                     <Newspaper width={16} />
                   </div>
                 </div>
-                <p className="text-[14px]">New Quiz</p>
+                <p className="text-[14px]">اختبار جديد</p>
               </NavLink>
             </div>
         </div>

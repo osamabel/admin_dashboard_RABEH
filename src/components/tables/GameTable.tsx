@@ -34,7 +34,6 @@ import {
 } from "@/components/ui/table";
 import { SponsorsDialog } from "../dialog/Sponsors";
 import { PrizeDialog } from "../dialog/Prizes";
-// import GameReportGeneration from "../dialog/Reports";
 import GameCration from "../dialog/GameCreation";
 import { Delete } from "../dialog/Delete";
 import { useToast } from "@/hooks/use-toast";
@@ -66,16 +65,17 @@ export const columns: ColumnDef<Game>[] = [
     header: ({ column }) => {
       return (
         <Button
+        className=""
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Game Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          اسم اللعبة
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="capitalize pl-[20px]">{row.getValue("name")}</div>
+      <div className="capitalize pr-[20px]">{row.getValue("name")}</div>
     ),
   },
   {
@@ -86,21 +86,20 @@ export const columns: ColumnDef<Game>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created at
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          تاريخ الإنشاء
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">{formatDate(row.getValue("createdAt"))}</div>
+      <div className="pr-[20px]">{formatDate(row.getValue("createdAt"))}</div>
     ),
   },
   {
     accessorKey: "prize",
-    header: "Prize",
+    header: "الجوائز",
     cell: ({ row }) => {
       const prz = row.original.prizes;
-
       return <PrizeDialog prizes={prz} />;
     },
   },
@@ -112,65 +111,55 @@ export const columns: ColumnDef<Game>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          required Diamond
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          الماس المطلوب
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase pl-[30px]">
-        {row.getValue("requiredDiamonds")}
-      </div>
+      <div className="lowercase pr-[30px]">{row.getValue("requiredDiamonds")}</div>
     ),
   },
   {
     accessorKey: "sponsorId",
-    header: "Sponsors",
+    header: "الرعاة",
     cell: ({ row }) => {
       const sponsors = row.original.sponsorId;
-
       return <SponsorsDialog sponsors={sponsors} />;
     },
   },
-
   {
     accessorKey: "licenseId",
-    header: "Licence",
+    header: "الترخيص",
     cell: ({ row }) => (
-      <div className="lowercase pl-[20px]">{row.getValue("licenseId")}</div>
+      <div className="lowercase pr-[20px]">{row.getValue("licenseId")}</div>
     ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "الحالة",
     cell: ({ row }) => {
       const status = row.original.status;
+      const getStatusText = (status: string) => {
+        switch(status.toLowerCase()) {
+          case 'created': return 'تم الإنشاء';
+          case 'started': return 'بدأت';
+          case 'ended': return 'انتهت';
+          case 'closed': return 'مغلقة';
+          default: return status;
+        }
+      };
+      
       return (
         <div className="flex h-full items-center justify-center max-w-[80px]">
           <div
             className={`py-[5px] px-[15px] rounded-[10px] w-full text-[12px] text-center 
-                    ${
-                      status.toLocaleLowerCase() === "pending"
-                        ? "text-[#626262] bg-[#F1F1F1]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "started"
-                        ? "text-[#0FB71D] bg-[#D0FFCF]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "closed"
-                        ? "text-[#FF3A3A] bg-[#FFE0E0]"
-                        : ""
-                    }
-                    ${
-                      status.toLocaleLowerCase() === "ended"
-                        ? "text-[#F49301] bg-[#FFE4BB]"
-                        : ""
-                    }`}
+                    ${status.toLowerCase() === "created" ? "text-[#626262] bg-[#F1F1F1]" : ""}
+                    ${status.toLowerCase() === "started" ? "text-[#0FB71D] bg-[#D0FFCF]" : ""}
+                    ${status.toLowerCase() === "closed" ? "text-[#FF3A3A] bg-[#FFE0E0]" : ""}
+                    ${status.toLowerCase() === "ended" ? "text-[#F49301] bg-[#FFE4BB]" : ""}`}
           >
-            {status.toLocaleLowerCase()}
+            {getStatusText(status)}
           </div>
         </div>
       );
@@ -181,17 +170,16 @@ export const columns: ColumnDef<Game>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const game = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">فتح القائمة</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Delete api={"game"} id={game.id} />
@@ -327,10 +315,10 @@ export function DataTableDemo() {
   }, [pageSize, table]);
 
   return (
-    <div ref={elementRef} className="w-full h-full">
+    <div ref={elementRef} className="w-full h-full" dir="rtl">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by Game name..."
+          placeholder="البحث عن اسم اللعبة..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -339,8 +327,8 @@ export function DataTableDemo() {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto rounded-[6px]">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="mr-auto rounded-[6px]">
+              الأعمدة <ChevronDown className="mr-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -357,21 +345,29 @@ export function DataTableDemo() {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {column.id === "name" ? "اسم اللعبة" :
+                     column.id === "createdAt" ? "تاريخ الإنشاء" :
+                     column.id === "prize" ? "الجوائز" :
+                     column.id === "requiredDiamonds" ? "الماس المطلوب" :
+                     column.id === "sponsorId" ? "الرعاة" :
+                     column.id === "licenseId" ? "الترخيص" :
+                     column.id === "status" ? "الحالة" :
+                     column.id}
                   </DropdownMenuCheckboxItem>
                 );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-[6px] border ">
+
+      <div className="rounded-[6px] border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow  key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead className="text-right" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -407,26 +403,27 @@ export function DataTableDemo() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
+
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           <GameCration />
         </div>
-        <div className="space-x-2">
+        <div className="space-x-2 flex-row-reverse">
           <Button
-            className="rounded-[6px]"
+            className="rounded-[6px] mx-2"
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            السابق
           </Button>
           <Button
             className="rounded-[6px]"
@@ -435,7 +432,7 @@ export function DataTableDemo() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            التالي
           </Button>
         </div>
       </div>

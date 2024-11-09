@@ -100,7 +100,6 @@ export function RankingTable() {
         (a: RankingUser, b: RankingUser) => b.totalPoints - a.totalPoints
       );
       setUsers(sortedUsers);
-
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -109,7 +108,7 @@ export function RankingTable() {
   React.useEffect(() => {
     fetchUsers();
   }, []);
-
+  
   const columns: ColumnDef<RankingUser>[] = [
     {
       accessorKey: "name",
@@ -119,8 +118,8 @@ export function RankingTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            الاسم
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
@@ -128,42 +127,42 @@ export function RankingTable() {
         const avatar = row.original.avatar;
         const index = row.index;
         let badge = null;
-
+  
         if (index === 0) {
           badge = (
             <img
               src="/first.svg"
-              alt="First place"
+              alt="المركز الأول"
               width={24}
               height={24}
-              className="ml-2"
+              className="mr-2"
             />
           );
         } else if (index === 1) {
           badge = (
             <img
               src="/second.svg"
-              alt="Second place"
+              alt="المركز الثاني"
               width={20}
               height={24}
-              className="ml-2"
+              className="mr-2"
             />
           );
         } else if (index === 2) {
           badge = (
             <img
               src="/third.svg"
-              alt="Third place"
+              alt="المركز الثالث"
               width={24}
               height={24}
-              className="ml-2"
+              className="mr-2"
             />
           );
         }
-
+  
         return (
-          <div className="capitalize pl-[20px] flex items-center">
-            <div className="flex items-center justify-between gap-x-[10px]  w-[200px]">
+          <div className="capitalize pr-[20px] flex items-center">
+            <div className="flex items-center justify-between gap-x-[10px] w-[200px]">
               <div className="min-w-[100px] max-w-[180px] flex items-center gap-3">
                 <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
                   {avatar ? (
@@ -194,13 +193,13 @@ export function RankingTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Created at
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            تاريخ التسجيل
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[20px]">
+        <div className="pr-[20px]">
           {new Date(row.original.createAt).toLocaleDateString()}
         </div>
       ),
@@ -213,16 +212,16 @@ export function RankingTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Coins
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            العملات
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">
+        <div className="pr-[30px]">
           <div className="flex gap-x-[10px] items-center">
-            <img width={20} src="/coin.svg" alt="Coins" />
             <p>{row.original.points}</p>
+            <img width={20} src="/coin.svg" alt="عملات" />
           </div>
         </div>
       ),
@@ -235,58 +234,34 @@ export function RankingTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Diamonds
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            الماس
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">
+        <div className="pr-[30px]">
           <div className="flex gap-x-[10px] items-center">
-            <img width={20} src="/diamond.svg" alt="Diamonds" />
             <p>{row.original.diamonds}</p>
+            <img width={20} src="/diamond.svg" alt="ماس" />
           </div>
         </div>
       ),
     },
     {
       accessorKey: "totalPoints",
-      header: "Badge",
+      header: "الوسام",
       cell: ({ row }) => (
         <div className="">
           <img
             src={getBadgeImage(row.original.totalPoints)}
-            alt={`Badge for ${row.original.totalPoints} points`}
+            alt={`وسام ${row.original.totalPoints} نقطة`}
             width={32}
             height={32}
           />
         </div>
       ),
     },
-    // {
-    //   id: "actions",
-    //   enableHiding: false,
-    //   cell: ({ row }) => {
-    //     const user = row.original;
-
-    //     return (
-    //       <DropdownMenu>
-    //         <DropdownMenuTrigger asChild>
-    //           <Button variant="ghost" className="h-8 w-8 p-0">
-    //             <span className="sr-only">Open menu</span>
-    //             <MoreHorizontal className="h-4 w-4" />
-    //           </Button>
-    //         </DropdownMenuTrigger>
-    //         <DropdownMenuContent align="end">
-    //           <DropdownMenuItem onClick={() => navigate(`/user/${user.id}`)}>
-    //             <User className="mr-2 h-4 w-4" />
-    //             <span>View Profile</span>
-    //           </DropdownMenuItem>
-    //         </DropdownMenuContent>
-    //       </DropdownMenu>
-    //     );
-    //   },
-    // },
   ];
 
   const table = useReactTable({
@@ -333,10 +308,10 @@ export function RankingTable() {
   }, [pageSize, table]);
 
   return (
-    <div ref={elementRef} className="w-full h-full">
+    <div ref={elementRef} className="w-full h-full" dir="rtl">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by name..."
+          placeholder="البحث بالاسم..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -345,11 +320,11 @@ export function RankingTable() {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto rounded-[6px]">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="mr-auto rounded-[6px]">
+              الأعمدة <ChevronDown className="mr-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="start">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
@@ -363,7 +338,12 @@ export function RankingTable() {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {column.id === "name" ? "الاسم" :
+                     column.id === "createAt" ? "تاريخ التسجيل" :
+                     column.id === "points" ? "العملات" :
+                     column.id === "diamonds" ? "الماس" :
+                     column.id === "totalPoints" ? "الوسام" :
+                     column.id}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -376,7 +356,7 @@ export function RankingTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead className="text-right" key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -411,36 +391,36 @@ export function RankingTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            className="rounded-[6px]"
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            className="rounded-[6px]"
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+         </TableBody>
+      </Table>
+    </div>
+    <div className="flex items-center justify-start space-x-2 py-4">
+      <div className="space-x-2 flex-row-reverse">
+        <Button
+          className="rounded-[6px] mx-2"
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          السابق
+        </Button>
+        <Button
+          className="rounded-[6px]"
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          التالي
+        </Button>
       </div>
     </div>
+  </div>
   );
 }
 

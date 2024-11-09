@@ -116,15 +116,15 @@ export function UserTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            الاسم
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => {
         const avatar = row.original.avatar;
         return (
-          <div className="capitalize pl-[20px] via-fuchsia-400">
+          <div className="capitalize pr-[20px] via-fuchsia-400">
             <div className="flex items-center gap-x-[10px]">
               <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
                 {avatar ? (
@@ -153,13 +153,13 @@ export function UserTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Created at
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            تاريخ التسجيل
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[20px]">
+        <div className="lowercase pr-[20px]">
           {new Date(row.original.createAt).toLocaleDateString()}
         </div>
       ),
@@ -172,16 +172,16 @@ export function UserTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Points
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            النقاط
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">
+        <div className="lowercase pr-[30px]">
           <div className="flex gap-x-[10px]">
-            <img width={20} src="/coin.svg" alt="" />
             <p>{row.original.points}</p>
+            <img width={20} src="/coin.svg" alt="عملات" />
           </div>
         </div>
       ),
@@ -194,28 +194,28 @@ export function UserTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Diamonds
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            الماس
+            <ArrowUpDown className="mr-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">
+        <div className="lowercase pr-[30px]">
           <div className="flex gap-x-[10px]">
-            <img width={20} src="/diamond.svg" alt="" />
             <p>{row.original.diamonds}</p>
+            <img width={20} src="/diamond.svg" alt="ماس" />
           </div>
         </div>
       ),
     },
     {
       accessorKey: "totalPoints",
-      header: "Badge",
+      header: "الوسام",
       cell: ({ row }) => (
         <div className="">
           <img
             src={getBadgeImage(row.original.totalPoints)}
-            alt={`Badge for ${row.original.totalPoints} points`}
+            alt={`وسام ${row.original.totalPoints} نقطة`}
             width={32}
             height={32}
           />
@@ -224,9 +224,11 @@ export function UserTable() {
     },
     {
       accessorKey: "type",
-      header: "Type",
+      header: "النوع",
       cell: ({ row }) => (
-        <div className="lowercase pl-[30px]">{row.original.type}</div>
+        <div className="lowercase pr-[30px]">
+          {row.original.type === 'NORMAL' ? 'عادي' : 'اصحاب الهمم'}
+        </div>
       ),
     },
     {
@@ -234,24 +236,24 @@ export function UserTable() {
       enableHiding: false,
       cell: ({ row }) => {
         const User = row.original;
-
+  
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">فتح القائمة</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-[10px]">
-              {/* <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuContent align="start" className="rounded-[10px]">
+              {/* <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(User.id)}>
-                Copy User ID
+                نسخ معرف المستخدم
               </DropdownMenuItem> */}
               <DropdownMenuItem className="p-0" asChild>
                 <UpdateUser userId={User.id} onUpdate={fetchUsers} />
               </DropdownMenuItem>
-
+  
               <DropdownMenuSeparator />
               <DropdownMenuItem className="p-0" asChild>
                 <Delete id={User.id} api={"user/delete"} />
@@ -323,8 +325,8 @@ export function UserTable() {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto rounded-[6px]">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="mr-auto rounded-[6px]">
+            الأعمدة <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -355,7 +357,7 @@ export function UserTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead className="text-right" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -391,7 +393,7 @@ export function UserTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
@@ -410,7 +412,7 @@ export function UserTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            سابق
           </Button>
           <Button
             className="rounded-[6px]"
@@ -419,7 +421,7 @@ export function UserTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            التالي
           </Button>
         </div>
       </div>

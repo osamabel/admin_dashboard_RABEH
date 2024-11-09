@@ -60,7 +60,7 @@ const CopyButton = ({ credentialsString }: { credentialsString: string }) => {
       ) : (
         <Copy width={16} />
       )}
-      <p>{isCopied ? "Copied!" : "Copy Credentials"}</p>
+      <p>{isCopied ? "تم النسخ!" : "نسخ بيانات الدخول"}</p>
     </Button>
   );
 };
@@ -72,14 +72,14 @@ const ToastContent = ({
   response: ApiResponse;
   credentialsString: string;
 }) => (
-  <div className="flex flex-col justify-end gap-y-[20px]">
+  <div className="flex flex-col justify-end gap-y-[20px]" dir="rtl">
     <h2 className="text-[20px]">{response.message}</h2>
     <div>
       <p>
-        <strong>Email:</strong> {response.user.email}
+        <strong>البريد الإلكتروني:</strong> {response.user.email}
       </p>
       <p>
-        <strong>Password:</strong> {response.user.password}
+        <strong>كلمة المرور:</strong> {response.user.password}
       </p>
     </div>
     <div className="w-full flex justify-start">
@@ -247,24 +247,24 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button className="rounded-[6px]" variant="default">
-          Create new User
+          إضافة مستخدم جديد
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="max-w-3xl !rounded-[10px]">
+      <AlertDialogContent className="max-w-3xl !rounded-[10px]" dir="rtl">
         <AlertDialogTitle className="text-2xl font-bold">
-          User Creation
+          إضافة مستخدم
         </AlertDialogTitle>
         <Card className="w-full border-none shadow-none">
           <CardHeader className="p-0">
             <AlertDialogDescription>
-              Create a new User (Fields marked with * are required)
+              إنشاء مستخدم جديد (الحقول المميزة بعلامة * مطلوبة)
             </AlertDialogDescription>
           </CardHeader>
           <CardContent className="p-0 mt-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
+                  <Label htmlFor="name">الاسم *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="name"
@@ -272,11 +272,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    placeholder="Enter name"
+                    placeholder="أدخل الاسم"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email">البريد الإلكتروني *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="email"
@@ -285,11 +285,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    placeholder="Enter email"
+                    placeholder="أدخل البريد الإلكتروني"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phoneNumber">Phone Number *</Label>
+                  <Label htmlFor="phoneNumber">رقم الهاتف *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="phoneNumber"
@@ -297,11 +297,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     required
-                    placeholder="Enter phone number"
+                    placeholder="أدخل رقم الهاتف"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="gender">Gender *</Label>
+                  <Label htmlFor="gender">الجنس *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="gender"
@@ -309,11 +309,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.gender}
                     onChange={handleInputChange}
                     required
-                    placeholder="Enter gender"
+                    placeholder="أدخل الجنس"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="dob">Date of Birth *</Label>
+                  <Label htmlFor="dob">تاريخ الميلاد *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="dob"
@@ -325,7 +325,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="country">Country *</Label>
+                  <Label htmlFor="country">الدولة *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="country"
@@ -333,11 +333,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.country}
                     onChange={handleInputChange}
                     required
-                    placeholder="Enter country"
+                    placeholder="أدخل الدولة"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="city">City *</Label>
+                  <Label htmlFor="city">المدينة *</Label>
                   <Input
                     className="rounded-[6px]"
                     id="city"
@@ -345,11 +345,11 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                     value={formData.city}
                     onChange={handleInputChange}
                     required
-                    placeholder="Enter city"
+                    placeholder="أدخل المدينة"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="avatar">Avatar</Label>
+                  <Label htmlFor="avatar">الصورة الشخصية</Label>
                   <Input
                     className="rounded-[6px]"
                     id="avatar"
@@ -360,22 +360,23 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="isDisabled">Special User</Label>
-                  <div className="flex items-center space-x-2">
+                  <Label htmlFor="isDisabled">مستخدم مميز</Label>
+                  <div className="flex items-center space-x-2 gap-x-[10px]">
                     <Switch
+                      dir="ltr"
                       id="isDisabled"
                       checked={formData.isDisabled}
                       onCheckedChange={handleSwitchChange}
                     />
                     <Label htmlFor="isDisabled">
-                      {formData.isDisabled ? "Yes" : "No"}
+                      {formData.isDisabled ? "نعم" : "لا"}
                     </Label>
                   </div>
                 </div>
                 {formData.isDisabled && (
                   <>
                     <div className="space-y-2">
-                      <Label htmlFor="initialCoins">Initial Coins</Label>
+                      <Label htmlFor="initialCoins">العملات الأولية</Label>
                       <Input
                         className="rounded-[6px]"
                         id="initialCoins"
@@ -387,7 +388,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="initialDiamonds">Initial Diamonds</Label>
+                      <Label htmlFor="initialDiamonds">الماس الأولي</Label>
                       <Input
                         className="rounded-[6px]"
                         id="initialDiamonds"
@@ -401,7 +402,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                   </>
                 )}
               </div>
-              <AlertDialogFooter>
+              <AlertDialogFooter className="flex-row-reverse sm:flex-row-reverse">
                 <Button
                   type="button"
                   variant="outline"
@@ -409,14 +410,14 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
                   disabled={isLoading}
                   onClick={() => setIsOpen(false)}
                 >
-                  Cancel
+                  إلغاء
                 </Button>
                 <Button
                   type="submit"
                   className="rounded-[10px] bg-green-600 hover:bg-green-700"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Creating..." : "Create User"}
+                  {isLoading ? "جاري الإنشاء..." : "إنشاء المستخدم"}
                 </Button>
               </AlertDialogFooter>
             </form>

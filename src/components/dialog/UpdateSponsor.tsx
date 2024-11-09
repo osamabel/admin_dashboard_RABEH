@@ -77,8 +77,8 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
       } catch (error) {
         console.error("Error fetching sponsor data:", error);
         toast({
-          title: "Error",
-          description: "Failed to load sponsor data. Please try again.",
+          title: "خطأ",
+          description: "فشل في تحميل بيانات الراعي. يرجى المحاولة مرة أخرى.",
           variant: "destructive",
         });
       }
@@ -134,8 +134,8 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
         // First, check if there's anything to update
         if (formData.entries().next().done) {
           toast({
-            title: "No Changes",
-            description: "No changes were made to update.",
+            title: "نجاح",
+            description: "تم تحديث الراعي بنجاح",
           });
           return;
         }
@@ -161,20 +161,20 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
         console.log("Update response:", updatedData);
 
         toast({
-          title: "Success",
-          description: "Sponsor updated successfully",
+          title: "نجاح",
+          description: "تم تحديث الراعي بنجاح",
         });
 
         setIsOpen(false);
         window.location.reload(); // Consider using a more elegant way to refresh data
       } catch (error) {
         console.error("Error updating sponsor:", error);
-        toast({
-          title: "Error",
-          description:
-            error instanceof Error ? error.message : "Failed to update sponsor",
-          variant: "destructive",
-        });
+  
+toast({
+  title: "خطأ",
+  description: error instanceof Error ? error.message : "فشل في تحديث الراعي",
+  variant: "destructive",
+});
       } finally {
         setIsLoading(false);
       }
@@ -191,36 +191,35 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
               className="flex items-center justify-start gap-x-[10px] p-[5px] border-none h-auto w-full hover:bg-transparent"
             >
               <PenBox width={16} />
-              <p>Update Sponsor</p>
+              <p>تحديث الراعي</p>
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="sm:max-w-[425px] !rounded-[10px]">
+          <AlertDialogContent className="sm:max-w-[425px] !rounded-[10px]" dir="rtl">
             <AlertDialogHeader>
-              <AlertDialogTitle>Update Sponsor</AlertDialogTitle>
+              <AlertDialogTitle>تحديث الراعي</AlertDialogTitle>
               <AlertDialogDescription>
-                Make changes to the sponsor's information here.
+                قم بإجراء التغييرات على معلومات الراعي هنا.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">الاسم</Label>
                 <Input
                   id="name"
                   name="name"
                   value={sponsorData.name}
                   onChange={handleInputChange}
                   className="rounded-[6px]"
-                  placeholder="Enter sponsor name"
+                  placeholder="أدخل اسم الراعي"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="avatar">Logo</Label>
+                <Label htmlFor="avatar">الشعار</Label>
                 <div className="flex items-center gap-4">
-                  {/* Show current logo if exists */}
                   {sponsorData.logo && (
                     <img
                       src={`${apiUrl}:${apiPort}/${sponsorData.logo}`}
-                      alt="Current logo"
+                      alt="الشعار الحالي"
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   )}
@@ -234,32 +233,32 @@ export const SponsorUpdate = forwardRef<HTMLDivElement, SponsorUpdateProps>(
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
+                <Label htmlFor="status">الحالة</Label>
                 <Select
                   onValueChange={handleSelectChange}
                   value={sponsorData.status.toLowerCase()}
                 >
                   <SelectTrigger className="rounded-[6px]">
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="اختر الحالة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="active">نشط</SelectItem>
+                    <SelectItem value="inactive">غير نشط</SelectItem>
+                    <SelectItem value="rejected">مرفوض</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <AlertDialogFooter>
+              <AlertDialogFooter className="flex-row-reverse sm:flex-row-reverse">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setIsOpen(false)}
                   disabled={isLoading}
                 >
-                  Cancel
+                  إلغاء
                 </Button>
                 <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Updating..." : "Update Sponsor"}
+                  {isLoading ? "جاري التحديث..." : "تحديث الراعي"}
                 </Button>
               </AlertDialogFooter>
             </form>

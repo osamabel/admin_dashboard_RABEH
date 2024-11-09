@@ -5,12 +5,12 @@ function Home() {
   return (
     <div className="bg-redf-300 w-full h-full overflow-hidfden flex flex-col gap-y-[20px]">
       <div className="w-full h-[50%]">
-        <h1 className="text-[25px] font-semibold">Current Games</h1>
+        <h1 className="text-[25px] font-semibold">الألعاب الحالية</h1>
         <DataTableDemo />
       </div>
       <div className="w-full flex h-[50%] gap-x-[20px]">
         <div className="w-full h-full">
-          <h1 className="text-[25px] font-semibold">Current Event</h1>
+          <h1 className="text-[25px] font-semibold">الاحداث الحالية</h1>
           <EventTable />
         </div>
         {/* <div className="w-full h-full flex flex-col">

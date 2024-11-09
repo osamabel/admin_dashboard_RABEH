@@ -70,39 +70,38 @@ export const Delete = forwardRef<HTMLDivElement, DeleteProps>(
 
     return (
       <div ref={ref}>
-        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="outline"
-              className="flex items-center justify-start gap-x-[10px] p-[5px] border-none h-auto w-full hover:bg-transparent"
-            >
-              <Trash2 width={16} />
-              <p>Delete</p>
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="!rounded-[10px]">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete this
-                item and remove its data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="rounded-[10px]">
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                className="rounded-[10px] bg-red-600 hover:bg-red-700"
-                disabled={isDeleting}
-              >
-                {isDeleting ? "Deleting..." : "Delete"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+  <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialogTrigger asChild>
+      <Button
+        variant="outline"
+        className="flex items-center justify-start gap-x-[10px] p-[5px] border-none h-auto w-full hover:bg-transparent"
+      >
+        <Trash2 width={16} />
+        <p>حذف</p>
+      </Button>
+    </AlertDialogTrigger>
+    <AlertDialogContent className="!rounded-[10px]" dir="rtl">
+      <AlertDialogHeader>
+        <AlertDialogTitle>هل أنت متأكد تماماً؟</AlertDialogTitle>
+        <AlertDialogDescription>
+          لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف هذا العنصر نهائياً وإزالة بياناته من خوادمنا.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter className="flex-row-reverse sm:flex-row-reverse">
+        <AlertDialogCancel className="rounded-[10px]">
+          إلغاء
+        </AlertDialogCancel>
+        <AlertDialogAction
+          onClick={handleDelete}
+          className="rounded-[10px] bg-red-600 hover:bg-red-700"
+          disabled={isDeleting}
+        >
+          {isDeleting ? "جاري الحذف..." : "حذف"}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+</div>
     );
   }
 );

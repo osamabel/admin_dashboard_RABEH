@@ -26,18 +26,18 @@ function Simulation({ formData }: { formData: FormData }) {
   const [score, setScore] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
   const [showAnswers, setShowAnswers] = useState(false);
-  const [timerActive, setTimerActive] = useState(false);  // Add this new state
+  const [timerActive, setTimerActive] = useState(false); // Add this new state
 
   useEffect(() => {
-    if (gameState === "playing" && timer > 0 && timerActive) {  // Add timerActive condition
+    if (gameState === "playing" && timer > 0 && timerActive) {
+      // Add timerActive condition
       const countdown = setInterval(() => {
         setTimer((prev) => prev - 1);
       }, 1000);
 
       return () => clearInterval(countdown);
     }
-  }, [gameState, timer, timerActive]);  // Add timerActive to dependencies
-
+  }, [gameState, timer, timerActive]); // Add timerActive to dependencies
 
   const startGame = () => {
     setGameState("playing");
@@ -46,7 +46,7 @@ function Simulation({ formData }: { formData: FormData }) {
     setScore(0);
     setShowAnswers(false);
     setSelectedOptions([]);
-    setTimerActive(true);  // Start timer when game starts
+    setTimerActive(true); // Start timer when game starts
   };
 
   const handleOptionSelect = (index: number) => {
@@ -63,7 +63,7 @@ function Simulation({ formData }: { formData: FormData }) {
   const verifyAnswer = () => {
     if (selectedOptions.length > 0) {
       setShowAnswers(true);
-      setTimerActive(false);  // Stop timer on verify
+      setTimerActive(false); // Stop timer on verify
     }
   };
 
@@ -93,8 +93,7 @@ function Simulation({ formData }: { formData: FormData }) {
       setTimer(formData.quizFile[currentQuestion + 1].time);
       setSelectedOptions([]);
       setShowAnswers(false);
-      setTimerActive(true);  // Restart timer for next question
-
+      setTimerActive(true); // Restart timer for next question
     } else {
       setGameState("result");
     }
@@ -106,7 +105,7 @@ function Simulation({ formData }: { formData: FormData }) {
     setScore(0);
     setSelectedOptions([]);
     setShowAnswers(false);
-    setTimerActive(false);  // Reset timer state
+    setTimerActive(false); // Reset timer state
   };
 
   const getOptionStyle = (option: Option, index: number) => {
@@ -133,15 +132,15 @@ function Simulation({ formData }: { formData: FormData }) {
             <div className="w-full max-w-xs bg-gradient-to-t from-[#DFB334] to-[#EAB040] rounded-[30px] p-6 text-center space-y-8">
               <h1 className="text-2xl font-bold">{formData.gameName}</h1>
               <div className="flex items-center justify-center gap-2">
+                <span>مطلوبة</span>
                 <span>{formData.requiredDiamond}</span>
                 <img src="/coin.svg" alt="" />
-                <span>are required</span>
               </div>
               <Button
                 onClick={startGame}
                 className="w-full bg-white text-yellow-500 hover:bg-white/90 rounded-[30px]"
               >
-                Start
+                ابدأ
               </Button>
             </div>
           </div>
@@ -198,7 +197,7 @@ function Simulation({ formData }: { formData: FormData }) {
                     : "bg-[#EAB040] hover:bg-[#DFB334]"
                 }`}
             >
-              {showAnswers ? "Next" : "Verify"}
+              {showAnswers ? "التالي" : "Verify"}
             </Button>
           </div>
         );
@@ -214,7 +213,7 @@ function Simulation({ formData }: { formData: FormData }) {
               onClick={retryGame}
               className="w-full max-w-xs bg-[#EAB040] hover:bg-[#DFB334] rounded-full"
             >
-              Retry
+              إعادة المحاولة
             </Button>
           </div>
         );

@@ -71,27 +71,27 @@ export const columns: ColumnDef<Report>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Game Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          اسم اللعبة
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="capitalize pl-[20px]">{row.original.game.name}</div>
+      <div className="capitalize pr-[20px]">{row.original.game.name}</div>
     ),
   },
   {
     accessorKey: "user",
-    header: "Winner",
+    header: "الفائز",
     cell: ({ row }) => (
-      <div className="capitalize pl-[20px]">{row.original.user.name}</div>
+      <div className="capitalize pr-[20px]">{row.original.user.name}</div>
     ),
   },
   {
     accessorKey: "trophyType",
-    header: "Trophy Type",
+    header: "نوع الكأس",
     cell: ({ row }) => (
-      <div className="capitalize pl-[20px]">{row.getValue("trophyType")}</div>
+      <div className="capitalize pr-[20px]">{row.getValue("trophyType")}</div>
     ),
   },
   {
@@ -102,13 +102,13 @@ export const columns: ColumnDef<Report>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Expenses
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          المصاريف
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">${row.getValue("expenses")}</div>
+      <div className="pr-[20px]">${row.getValue("expenses")}</div>
     ),
   },
   {
@@ -119,18 +119,18 @@ export const columns: ColumnDef<Report>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Additional Expenses
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          المصاريف الإضافية
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">${row.getValue("additionalExpenses")}</div>
+      <div className="pr-[20px]">${row.getValue("additionalExpenses")}</div>
     ),
   },
   {
     accessorKey: "sponsors",
-    header: "Sponsors",
+    header: "الرعاة",
     cell: ({ row }) => {
       const sponsors = row.original.game.sponsorId;
       return <SponsorsDialog sponsors={sponsors} />;
@@ -138,7 +138,7 @@ export const columns: ColumnDef<Report>[] = [
   },
   {
     accessorKey: "hasTrophy",
-    header: "Trophy Status",
+    header: "حالة الكأس",
     cell: ({ row }) => {
       const hasTrophy = row.getValue("hasTrophy");
       return (
@@ -150,7 +150,7 @@ export const columns: ColumnDef<Report>[] = [
                 : "text-[#FF3A3A] bg-[#FFE0E0]"
             }`}
           >
-            {hasTrophy ? "Delivered" : "Pending"}
+            {hasTrophy ? "تم التسليم" : "قيد الانتظار"}
           </div>
         </div>
       );
@@ -164,13 +164,13 @@ export const columns: ColumnDef<Report>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Report Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          تاريخ التقرير
+          <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="pl-[20px]">{formatDate(row.getValue("reportDate"))}</div>
+      <div className="pr-[20px]">{formatDate(row.getValue("reportDate"))}</div>
     ),
   },
 ];
@@ -279,46 +279,50 @@ export function ReportTable() {
       const token = localStorage.getItem("jwt_token");
       if (!token) throw new Error("No authentication token found");
 
-      const response = await fetch(`${apiUrl}:${apiPort}/dashboard/generate-pdf`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/pdf",
-        },
-      });
+      const response = await fetch(
+        `${apiUrl}:${apiPort}/dashboard/generate-pdf`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/pdf",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to download PDF");
       }
 
       // Get filename from response headers if available
-      const contentDisposition = response.headers.get('content-disposition');
+      const contentDisposition = response.headers.get("content-disposition");
       let filename = `Repport.pdf`;
-      
+
       if (contentDisposition) {
-        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(
+          contentDisposition
+        );
         if (matches != null && matches[1]) {
-          filename = matches[1].replace(/['"]/g, '');
+          filename = matches[1].replace(/['"]/g, "");
         }
       }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = filename;
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       window.URL.revokeObjectURL(url);
 
       toast({
         title: "Success",
         description: "PDF downloaded successfully",
       });
-
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast({
@@ -330,34 +334,35 @@ export function ReportTable() {
       setIsLoading(false);
     }
   };
+
   return (
-    <div ref={elementRef} className="w-full h-full">
+    <div ref={elementRef} className="w-full h-full" dir="rtl">
       <div className="flex items-center py-4 w-full justify-between">
         <Input
-          placeholder="Filter by game name..."
+          placeholder="البحث باسم اللعبة..."
           value={(table.getColumn("game")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("game")?.setFilterValue(event.target.value)
           }
           className="max-w-sm rounded-[6px]"
         />
-      
+  
         <Button
           onClick={handleDownloadPDF}
-          className="rounded-[6px] "
+          className="rounded-[6px]"
           variant="outline"
           size="sm"
           disabled={isLoading}
         >
           {isLoading ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2" />
-              Downloading...
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 ml-2" />
+              جاري التحميل...
             </>
           ) : (
             <>
-              <FileText className="h-4 w-4 mr-2" />
-              Download PDF
+              <FileText className="h-4 w-4 ml-2" />
+              تحميل PDF
             </>
           )}
         </Button>
@@ -369,7 +374,7 @@ export function ReportTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead  className="text-right"  key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -405,35 +410,35 @@ export function ReportTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  لا توجد نتائج.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            className="rounded-[6px]"
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            className="rounded-[6px]"
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
         </div>
+    <div className="flex items-center justify-start space-x-2 py-4">
+      <div className="space-x-2 flex-row-reverse">
+        <Button
+          className="rounded-[6px] mx-2"
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          السابق
+        </Button>
+        <Button
+          className="rounded-[6px]"
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          التالي
+        </Button>
       </div>
     </div>
+  </div>
   );
 }

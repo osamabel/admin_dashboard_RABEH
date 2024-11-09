@@ -16,12 +16,12 @@ export function SponsorsDialog({ sponsors }: any) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="outline" className="rounded-[10px] text-[12px]">
-          Sponsors
+        الرعاة
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="!rounded-[10px]">
         <AlertDialogHeader>
-          <AlertDialogTitle>Sponsors of This Game</AlertDialogTitle>
+          <AlertDialogTitle>رعاة هذه اللعبة</AlertDialogTitle>
           <AlertDialogDescription>
             <div className="w-full max-h-[200px]  overflow-auto border rounded-[10px]">
               {sponsors.map((sponsor: any, index: number) => (
@@ -73,7 +73,8 @@ export function SponsorsDialog({ sponsors }: any) {
 
         <AlertDialogFooter>
           <AlertDialogCancel className="rounded-[10px]">
-            Close
+          إغلاق
+
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

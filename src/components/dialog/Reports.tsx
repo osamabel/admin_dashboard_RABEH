@@ -45,15 +45,14 @@ type WinnerReport = {
 interface GameReportGenerationProps {
   game: Game;
 }
-
 const reportSchema = z.object({
-  dateOfDelivery: z.string().min(1, "Date of delivery is required"),
-  expenseOfPrize: z.string().min(1, "Expense of prize is required"),
-  additionalExpense: z.string().min(1, "Additional expense is required"),
+  dateOfDelivery: z.string().min(1, "تاريخ التسليم مطلوب"),
+  expenseOfPrize: z.string().min(1, "تكلفة الجائزة مطلوبة"),
+  additionalExpense: z.string().min(1, "التكلفة الإضافية مطلوبة"),
   isPrizeDelivered: z.boolean(),
   videoUrl: z
     .string()
-    .url("Please enter a valid URL")
+    .url("الرجاء إدخال رابط صحيح")
     .optional()
     .or(z.literal("")),
 });
@@ -123,7 +122,6 @@ const GameReportGeneration = forwardRef<
       sponsorIds: sponsorIds,
     };
 
-
     const token = localStorage.getItem("jwt_token");
     const response = await axios.post(
       `${apiUrl}:${apiPort}/dashboard/${game.id}/winner-report`,
@@ -136,10 +134,10 @@ const GameReportGeneration = forwardRef<
       }
     );
 
-    console.log('API Response:', {
+    console.log("API Response:", {
       status: response.status,
       statusText: response.statusText,
-      data: response.data
+      data: response.data,
     });
   };
 
@@ -171,8 +169,8 @@ const GameReportGeneration = forwardRef<
       }
 
       toast({
-        title: "Reports Created",
-        description: `All reports for ${game.name} have been successfully created and sent.`,
+        title: "تم إنشاء التقارير",
+        description: `تم إنشاء وإرسال جميع تقارير ${game.name} بنجاح.`,
       });
 
       setIsOpen(false);
@@ -181,37 +179,15 @@ const GameReportGeneration = forwardRef<
       setCurrentWinnerIndex(0);
       form.reset();
     } catch (error) {
-      console.error("Error creating reports:", error);
       toast({
-        title: "Error",
-        description: "Failed to create some reports. Please try again.",
+        title: "خطأ",
+        description: "فشل في إنشاء بعض التقارير. يرجى المحاولة مرة أخرى.",
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  // const handlePrevious = () => {
-  //   if (currentWinnerIndex > 0) {
-  //     const prevIndex = currentWinnerIndex - 1;
-  //     setCurrentWinnerIndex(prevIndex);
-
-  //     // Load previous winner's data if it exists
-  //     const prevReport = winnerReports[prevIndex];
-  //     if (prevReport) {
-  //       form.reset({
-  //         dateOfDelivery: prevReport.dateOfDelivery,
-  //         expenseOfPrize: prevReport.expenseOfPrize,
-  //         additionalExpense: prevReport.additionalExpense,
-  //         isPrizeDelivered: prevReport.isPrizeDelivered,
-  //         videoUrl: prevReport.videoUrl,
-  //       });
-  //     } else {
-  //       form.reset();
-  //     }
-  //   }
-  // };
 
   const handleOpenDialog = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -224,7 +200,6 @@ const GameReportGeneration = forwardRef<
 
   const currentWinner = game.userGames[currentWinnerIndex];
   const currentPrize = game.prizes[currentWinnerIndex];
-
   return (
     <>
       <div
@@ -233,25 +208,25 @@ const GameReportGeneration = forwardRef<
         className="flex items-center justify-start gap-x-[10px] p-[5px] w-full hover:bg-accent hover:text-accent-foreground cursor-pointer"
       >
         <FileText width={16} />
-        <p>Report</p>
+        <p>تقرير</p>
       </div>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent className="sm:max-w-[425px] !rounded-[10px]">
+        <AlertDialogContent className="sm:max-w-[425px] !rounded-[10px]" dir="rtl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Generate Report for {game.name}</AlertDialogTitle>
+            <AlertDialogTitle>إنشاء تقرير لـ {game.name}</AlertDialogTitle>
             <AlertDialogDescription className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
                 <AvatarImage
                   src={currentWinner?.avatar}
-                  alt={currentWinner?.name || "Winner"}
+                  alt={currentWinner?.name || "الفائز"}
                 />
                 <AvatarFallback>
                   <User className="h-4 w-4" />
                 </AvatarFallback>
               </Avatar>
-              Create report for {currentWinner?.name || "Unknown Winner"}
+              إنشاء تقرير لـ {currentWinner?.name || "فائز غير معروف"}
               <span className="text-muted-foreground">
-                (Winner {currentWinnerIndex + 1} of {game.userGames.length})
+                (الفائز {currentWinnerIndex + 1} من {game.userGames.length})
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -262,7 +237,7 @@ const GameReportGeneration = forwardRef<
                 name="dateOfDelivery"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date of Delivery</FormLabel>
+                    <FormLabel>تاريخ التسليم</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} className="rounded-[6px]" />
                     </FormControl>
@@ -275,7 +250,7 @@ const GameReportGeneration = forwardRef<
                 name="expenseOfPrize"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Expense of Prize</FormLabel>
+                    <FormLabel>تكلفة الجائزة</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -293,7 +268,7 @@ const GameReportGeneration = forwardRef<
                 name="additionalExpense"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Additional Expense</FormLabel>
+                    <FormLabel>التكلفة الإضافية</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -311,17 +286,17 @@ const GameReportGeneration = forwardRef<
                 name="videoUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Video URL (Optional)</FormLabel>
+                    <FormLabel>رابط الفيديو (اختياري)</FormLabel>
                     <FormControl>
                       <Input
                         type="url"
-                        placeholder="Enter video URL"
+                        placeholder="أدخل رابط الفيديو"
                         {...field}
                         className="rounded-[6px]"
                       />
                     </FormControl>
                     <FormDescription>
-                      Enter a valid URL for the video content
+                      أدخل رابطاً صحيحاً لمحتوى الفيديو
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -331,7 +306,7 @@ const GameReportGeneration = forwardRef<
                 control={form.control}
                 name="isPrizeDelivered"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row-reverse items-start space-x-3 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -339,9 +314,9 @@ const GameReportGeneration = forwardRef<
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>Prize Delivered</FormLabel>
+                      <FormLabel>تم تسليم الجائزة</FormLabel>
                       <FormDescription>
-                        Check if the prize has been delivered
+                        حدد إذا تم تسليم الجائزة
                       </FormDescription>
                     </div>
                   </FormItem>
@@ -358,10 +333,10 @@ const GameReportGeneration = forwardRef<
                   disabled={currentWinnerIndex === 0}
                   className="rounded-[6px]"
                 >
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+                  <ChevronRight className="ml-2 h-4 w-4" /> السابق
                 </Button>
                 <AlertDialogCancel className="rounded-[10px]">
-                  Cancel
+                  إلغاء
                 </AlertDialogCancel>
                 <Button
                   type="submit"
@@ -369,34 +344,32 @@ const GameReportGeneration = forwardRef<
                   className="rounded-[6px]"
                 >
                   {isSubmitting
-                    ? `Submitting ${currentWinnerIndex + 1}/${
-                        game.userGames.length
-                      }...`
+                    ? `جارٍ الإرسال ${currentWinnerIndex + 1}/${game.userGames.length}...`
                     : currentWinnerIndex === game.userGames.length - 1
-                    ? "Submit All Reports"
-                    : "Save & Next"}
+                    ? "إرسال جميع التقارير"
+                    : "حفظ والتالي"}
                   {currentWinnerIndex < game.userGames.length - 1 && (
-                    <ChevronRight className="ml-2 h-4 w-4" />
+                    <ChevronLeft className="mr-2 h-4 w-4" />
                   )}
                 </Button>
               </div>
             </form>
           </Form>
           <div className="mt-4">
-            <h3 className="font-semibold mb-2">Current Winner and Prize:</h3>
+            <h3 className="font-semibold mb-2">الفائز والجائزة الحالية:</h3>
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
                 <AvatarImage
                   src={currentWinner?.avatar}
-                  alt={currentWinner?.name || "Winner"}
+                  alt={currentWinner?.name || "الفائز"}
                 />
                 <AvatarFallback>
                   <User className="h-4 w-4" />
                 </AvatarFallback>
               </Avatar>
               <p>
-                {currentWinner?.name || "Unknown Winner"} -{" "}
-                {currentPrize || "Unknown Prize"}
+                {currentWinner?.name || "فائز غير معروف"} -{" "}
+                {currentPrize || "جائزة غير معروفة"}
               </p>
             </div>
           </div>

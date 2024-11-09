@@ -192,7 +192,7 @@ const QuizCreator: React.FC = () => {
     <div className="p-4 mx-auto h-full overflow-auto w-full flex gap-x-[40px]">
       <div className="flex-1">
         <h1 className="text-2xl font-bold mb-4">
-          Quiz Creator (Required Fields)
+        منشئ الاختبارات (الحقول المطلوبة)
         </h1>
         <div className="h-[80vh] overflow-auto">
           {errors.length > 0 && (
@@ -210,7 +210,7 @@ const QuizCreator: React.FC = () => {
           {questions.map((q, qIndex) => (
             <div key={qIndex} className="mb-6 p-4 border rounded">
               <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-semibold">Question {qIndex + 1}</h2>
+                <h2 className="text-lg font-semibold">السؤال {qIndex + 1}</h2>
                 <Button
                   variant="destructive"
                   size="icon"
@@ -225,7 +225,7 @@ const QuizCreator: React.FC = () => {
                 onChange={(e) =>
                   updateQuestion(qIndex, "question", e.target.value)
                 }
-                placeholder="Enter question (required)"
+                placeholder="أدخل السؤال (مطلوب)"
                 className="mb-2 rounded-[6px]"
               />
               <div className="mb-2">
@@ -233,7 +233,7 @@ const QuizCreator: React.FC = () => {
                   htmlFor={`time-${qIndex}`}
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Time Allowed (seconds):
+                                  الوقت المسموح به (ثواني):
                 </label>
                 <Input
                   id={`time-${qIndex}`}
@@ -253,7 +253,7 @@ const QuizCreator: React.FC = () => {
                     onChange={(e) =>
                       updateOption(qIndex, oIndex, "text", e.target.value)
                     }
-                    placeholder={`Option ${oIndex + 1} (required)`}
+                    placeholder={`الخيار ${oIndex + 1} (مطلوب)`}
                     className="flex-grow mr-2 rounded-[6px]"
                   />
                   <Checkbox
@@ -275,7 +275,7 @@ const QuizCreator: React.FC = () => {
                 </div>
               ))}
               <Button onClick={() => addOption(qIndex)} className="mt-2 rounded-[6px]">
-                <Plus className="mr-2 h-4 w-4" /> Add Option
+                <Plus className="mr-2 h-4 w-4" /> إضافة خيار
               </Button>
             </div>
           ))}
@@ -283,16 +283,16 @@ const QuizCreator: React.FC = () => {
 
         <div className="flex justify-between mb-4">
           <Button onClick={addQuestion} className="rounded-[6px]">
-            <Plus className="mr-2 h-4 w-4 " /> Add Question
+            <Plus className="mr-2 h-4 w-4 " /> إضافة سؤال
           </Button>
-          <Button className="rounded-[6px]" onClick={generateJSON}>Generate JSON</Button>
+          <Button className="rounded-[6px]" onClick={generateJSON}>توليد JSON</Button>
         </div>
       </div>
       <div className="flex-1 border h-full">
         {jsonOutput && (
           <div className="mt-4">
-            <h2 className="text-lg font-semibold mb-2">Generated JSON</h2>
-            <div className="relative">
+            <h2 className="text-lg font-semibold mb-2">توليد JSON</h2>
+            <div dir="ltr"   className="relative">
               <Textarea
                 value={jsonOutput}
                 onChange={handleJSONEdit}
@@ -308,7 +308,7 @@ const QuizCreator: React.FC = () => {
               </div>
             </div>
             <Button onClick={applyJSONChanges} className="mt-2 rounded-[6px]">
-              Apply JSON Changes
+            تطبيق تغييرات JSON
             </Button>
           </div>
         )}
@@ -321,7 +321,7 @@ const QuizCreator: React.FC = () => {
             className="hidden rounded-[6px]"
           />
           <Button className="rounded-[6px]" onClick={() => fileInputRef.current?.click()}>
-            <Upload className="mr-2 h-4 w-4" /> Import JSON
+            <Upload className="mr-2 h-4 w-4" /> استيراد JSON
           </Button>
         </div>
       </div>
