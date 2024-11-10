@@ -55,11 +55,11 @@ const ProtectedRoute = () => {
   }, []);
 
   if (isAuthenticated === null) {
-    return <div>Loading...</div>;
+    return <div>Loading...6</div>;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/تسجيل-الدخول" replace />;
   }
 
   return <Outlet />;
