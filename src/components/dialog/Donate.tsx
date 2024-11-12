@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { ForwardedRef, forwardRef, useState } from "react";
-const apiPort = import.meta.env.VITE_API_PORT;
+
 const apiUrl = import.meta.env.VITE_API_URL;
 interface DonateProps {
   userId: string | number;
@@ -34,7 +34,7 @@ export const Donate = forwardRef<HTMLDivElement, DonateProps>(
         // Sending coin donation if coin checkbox is selected
         if (donateCoin && coinAmount) {
           const coinResponse = await fetch(
-            `${apiUrl}:${apiPort}/user/addCoin/${userId}/${coinAmount}`,
+            `${apiUrl}/user/addCoin/${userId}/${coinAmount}`,
             {
               method: "POST",
               headers: {
@@ -50,7 +50,7 @@ export const Donate = forwardRef<HTMLDivElement, DonateProps>(
         // Sending diamond donation if diamond checkbox is selected
         if (donateDiamond && diamondAmount) {
           const diamondResponse = await fetch(
-            `${apiUrl}:${apiPort}/user/addDiamond/${userId}/${diamondAmount}`,
+            `${apiUrl}/user/addDiamond/${userId}/${diamondAmount}`,
             {
               method: "POST",
               headers: {

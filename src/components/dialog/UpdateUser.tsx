@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "../ui/select";
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 interface UserData {
   id: string;
   name: string;
@@ -62,7 +62,7 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
       try {
         setIsLoading(true);
 
-        const response = await fetch(`${apiUrl}:${apiPort}/user/${id}`, {
+        const response = await fetch(`${apiUrl}/user/${id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -117,7 +117,7 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
           formData.append("avatar", avatarFile);
           // Assuming you have an avatar upload endpoint
           const uploadResponse = await fetch(
-            `${apiUrl}:${apiPort}/user/${userData.id}/upload-avatar`,
+            `${apiUrl}/user/${userData.id}/upload-avatar`,
             {
               method: "PUT",
               headers: {
@@ -138,7 +138,7 @@ const UpdateUser = React.forwardRef<HTMLDivElement, UpdateUserProps>(
         const { id, ...userDataWithoutId } = userData;
         // Update user data
         const response = await fetch(
-          `${apiUrl}:${apiPort}/user/${userData.id}`,
+          `${apiUrl}/user/${userData.id}`,
           {
             method: "PUT",
             headers: {

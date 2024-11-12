@@ -39,7 +39,7 @@ import GameCration from "../dialog/GameCreation";
 import { Delete } from "../dialog/Delete";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
-const apiPort = import.meta.env.VITE_API_PORT;
+
 const apiUrl = import.meta.env.VITE_API_URL;
 interface sponsor {
   id: number;
@@ -221,7 +221,7 @@ export function GameNeedReports() {
       }
 
       const response = await fetch(
-        `${apiUrl}:${apiPort}/dashboard/unreportedGames`,
+        `${apiUrl}/dashboard/unreportedGames`,
         {
           method: "GET",
           headers: {

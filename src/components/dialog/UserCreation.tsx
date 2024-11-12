@@ -108,7 +108,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
     initialDiamonds: 0,
   });
   const apiUrl = import.meta.env.VITE_API_URL;
-  const apiPort = import.meta.env.VITE_API_PORT;
+  
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -184,7 +184,7 @@ const UserCreation = ({ onSuccess }: UserCreationProps) => {
         throw new Error("No authentication token found");
       }
       // Make the API call
-      const response = await fetch(`${apiUrl}:${apiPort}/user/createUser`, {
+      const response = await fetch(`${apiUrl}/user/createUser`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

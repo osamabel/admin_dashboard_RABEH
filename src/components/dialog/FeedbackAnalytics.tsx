@@ -35,7 +35,7 @@ interface DistributionItem {
   count: number;
 }
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 interface QuestionAnalytics {
   questionId: number;
   questionText: string;
@@ -79,7 +79,7 @@ export const FeedbackAnalyticsDialog: React.FC<Props> = ({ feedbackId }) => {
       if (!token) throw new Error("No authentication token found");
 
       const response = await fetch(
-        `${apiUrl}:${apiPort}/sponsor-forms/${feedbackId}/analytics`,
+        `${apiUrl}/sponsor-forms/${feedbackId}/analytics`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

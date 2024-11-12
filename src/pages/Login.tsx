@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ButtonLoading } from "@/components/ui/ButtonLoading";
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -21,7 +21,7 @@ const Login = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  console.log(`${apiUrl}:${apiPort}/auth/admin/login`);
+  console.log(`${apiUrl}/auth/admin/login`);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,7 +29,7 @@ const Login = () => {
     setIsError(false);
 
     try {
-      const response = await fetch(`${apiUrl}:${apiPort}/auth/admin/login`, {
+      const response = await fetch(`${apiUrl}/auth/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

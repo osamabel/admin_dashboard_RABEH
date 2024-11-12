@@ -11,7 +11,7 @@ import Reports from "./pages/Reports";
 import { useEffect, useState } from "react";
 import Store from "./pages/Store";
 import Feedback from "./pages/Feedback";
-const apiPort = import.meta.env.VITE_API_PORT;
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const ProtectedRoute = () => {
@@ -22,7 +22,7 @@ const ProtectedRoute = () => {
       try {
         const token = localStorage.getItem("jwt_token");
         const response = await fetch(
-          `${apiUrl}:${apiPort}/auth/check-auth`,
+          `${apiUrl}/auth/check-auth`,
           {
             method: "GET",
             headers: {

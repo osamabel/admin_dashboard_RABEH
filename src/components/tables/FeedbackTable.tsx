@@ -35,7 +35,7 @@ import { FeedbackAnalyticsDialog } from "../dialog/FeedbackAnalytics";
 import { FeedbackCreationDialog } from "../dialog/FeedbackCreation";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 
 interface Sponsor {
   id: number;
@@ -150,7 +150,7 @@ export function FeedbackTable() {
       const token = localStorage.getItem("jwt_token");
       if (!token) throw new Error("No authentication token found");
 
-      const response = await fetch(`${apiUrl}:${apiPort}/sponsor`, {
+      const response = await fetch(`${apiUrl}/sponsor`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -181,7 +181,7 @@ export function FeedbackTable() {
       if (!token) throw new Error("No authentication token found");
 
       const response = await fetch(
-        `${apiUrl}:${apiPort}/sponsor-forms/sponsor/${sponsorId}`,
+        `${apiUrl}/sponsor-forms/sponsor/${sponsorId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

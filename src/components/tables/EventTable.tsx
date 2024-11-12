@@ -47,7 +47,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from '@/hooks/use-toast';
 
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 
 type ScratchReward = {
   type: "Coins" | "diamond";
@@ -157,7 +157,7 @@ const CreateEventDialog = ({ onEventCreated }: { onEventCreated: () => void }) =
         payload
       });
   
-      const response = await fetch(`${apiUrl}:${apiPort}/game/event`, {
+      const response = await fetch(`${apiUrl}/game/event`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -311,7 +311,7 @@ export function EventTable() {
       const token = localStorage.getItem("jwt_token");
       if (!token) throw new Error("No authentication token found");
 
-      const response = await fetch(`${apiUrl}:${apiPort}/game/events_dashboard`, {
+      const response = await fetch(`${apiUrl}/game/events_dashboard`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -340,7 +340,7 @@ export function EventTable() {
       const token = localStorage.getItem("jwt_token");
       if (!token) throw new Error("No authentication token found");
 
-      const response = await fetch(`${apiUrl}:${apiPort}/game/events/${id}`, {
+      const response = await fetch(`${apiUrl}/game/events/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

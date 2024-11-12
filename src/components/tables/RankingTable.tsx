@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/table";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 
 export type RankingUser = {
   id: number;
@@ -81,7 +81,7 @@ export function RankingTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`${apiUrl}:${apiPort}/user`, {
+      const response = await fetch(`${apiUrl}/user`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -167,7 +167,7 @@ export function RankingTable() {
                 <div className="w-[45px] aspect-square border rounded-full overflow-hidden">
                   {avatar ? (
                     <img
-                      src={`${apiUrl}:${apiPort}/${avatar}`}
+                      src={`${apiUrl}/${avatar}`}
                       alt={row.original.name}
                       className="w-full h-full object-cover"
                     />

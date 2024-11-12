@@ -23,7 +23,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 
 interface Question {
   questionText: string;
@@ -93,7 +93,7 @@ export const FeedbackCreationDialog: React.FC<Props> = ({ onSuccess }) => {
       const token = localStorage.getItem("jwt_token");
       if (!token) throw new Error("No authentication token found");
 
-      const response = await fetch(`${apiUrl}:${apiPort}/sponsor-forms`, {
+      const response = await fetch(`${apiUrl}/sponsor-forms`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

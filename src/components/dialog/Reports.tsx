@@ -31,7 +31,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Game } from "../tables/GameNeedReports";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 
 type WinnerReport = {
   winnerId: number;
@@ -124,7 +124,7 @@ const GameReportGeneration = forwardRef<
 
     const token = localStorage.getItem("jwt_token");
     const response = await axios.post(
-      `${apiUrl}:${apiPort}/dashboard/${game.id}/winner-report`,
+      `${apiUrl}/dashboard/${game.id}/winner-report`,
       payload,
       {
         headers: {

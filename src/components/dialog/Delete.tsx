@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Trash2 } from "lucide-react";
 import { forwardRef, useState, ForwardedRef } from "react";
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 interface DeleteProps {
   id: string | number;
   api: string;
@@ -34,7 +34,7 @@ export const Delete = forwardRef<HTMLDivElement, DeleteProps>(
           throw new Error("No authentication token found");
         }
 
-        const response = await fetch(`${apiUrl}:${apiPort}/${api}/${id}`, {
+        const response = await fetch(`${apiUrl}/${api}/${id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

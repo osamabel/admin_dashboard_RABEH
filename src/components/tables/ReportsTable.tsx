@@ -28,7 +28,7 @@ import { SponsorsDialog } from "../dialog/Sponsors";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 interface Sponsor {
   id: number;
   name: string;
@@ -198,7 +198,7 @@ export function ReportTable() {
       }
 
       const response = await fetch(
-        `${apiUrl}:${apiPort}/dashboard/allReports`,
+        `${apiUrl}/dashboard/allReports`,
         {
           method: "GET",
           headers: {
@@ -280,7 +280,7 @@ export function ReportTable() {
       if (!token) throw new Error("No authentication token found");
 
       const response = await fetch(
-        `${apiUrl}:${apiPort}/dashboard/generate-pdf`,
+        `${apiUrl}/dashboard/generate-pdf`,
         {
           method: "GET",
           headers: {

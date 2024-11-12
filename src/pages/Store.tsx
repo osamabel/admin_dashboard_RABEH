@@ -44,7 +44,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Delete } from "@/components/dialog/Delete";
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 interface StoreItem {
   id: number;
   name: string;
@@ -83,7 +83,7 @@ export function StoreTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`${apiUrl}:${apiPort}/store`, {
+      const response = await fetch(`${apiUrl}/store`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -141,7 +141,7 @@ export function StoreTable() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`${apiUrl}:${apiPort}/store`, {
+      const response = await fetch(`${apiUrl}/store`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

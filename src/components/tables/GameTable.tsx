@@ -39,7 +39,7 @@ import { Delete } from "../dialog/Delete";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "./SponsorsTable";
 const apiUrl = import.meta.env.VITE_API_URL;
-const apiPort = import.meta.env.VITE_API_PORT;
+
 interface sponsor {
   logo: string;
   name: string;
@@ -213,7 +213,7 @@ export function DataTableDemo() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`${apiUrl}:${apiPort}/dashboard/allGames`, {
+      const response = await fetch(`${apiUrl}/dashboard/allGames`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
